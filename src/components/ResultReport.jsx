@@ -139,15 +139,28 @@ export default function ResultReport({ state, levelInfo }) {
           </div>
           <div className="prompt-list">
             {promptPack.map((prompt, index) => (
-              <article key={prompt} className="prompt-card">
-                <p>{prompt}</p>
+              <article key={index} className="prompt-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', border: 'none', padding: 0 }}>
+                <div style={{ 
+                  background: '#1E293B', // Tailwind Slate-800
+                  color: '#F8FAFC', // Tailwind Slate-50
+                  padding: '24px', 
+                  borderRadius: '12px', 
+                  fontSize: '0.9rem', 
+                  lineHeight: '1.6', 
+                  whiteSpace: 'pre-wrap',
+                  border: '1px solid var(--border)',
+                  fontFamily: 'monospace'
+                }}>
+                  {prompt}
+                </div>
                 <button
                   type="button"
-                  className="ghost-button"
+                  className="btn btn-primary"
+                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px' }}
                   onClick={() => handleCopy(prompt, index)}
-                  aria-label={`프롬프트 ${index + 1} 복사`}
+                  aria-label="프롬프트 템플릿 복사"
                 >
-                  {copiedIndex === index ? '복사됨' : '복사'}
+                  {copiedIndex === index ? '✅ 클립보드에 복사됨' : '📋 전체 프롬프트 복사하기'}
                 </button>
               </article>
             ))}
