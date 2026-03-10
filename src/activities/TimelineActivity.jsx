@@ -67,33 +67,6 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
 
       <div className="workspace-content split-view">
         <div className="split-left">
-          <h3 style={{ marginBottom: '16px' }}>연간 일정 슬롯</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', overflowY: 'auto' }}>
-            {MONTHS.map((month, idx) => (
-              <div 
-                key={month} 
-                className={`drop-zone ${placedEvents[idx] ? 'filled' : ''}`}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, idx)}
-              >
-                {placedEvents[idx] ? (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', position: 'absolute', top: '8px', left: '12px' }}>{month}</span>
-                    <strong style={{ fontSize: '0.875rem', textAlign: 'center', padding: '0 12px' }}>{placedEvents[idx].text}</strong>
-                    <button 
-                      onClick={() => handleRemove(idx)}
-                      style={{ position: 'absolute', top: '4px', right: '4px', color: 'var(--text-light)', border: 'none', background: 'none', cursor: 'pointer', padding: '4px' }}
-                    >✕</button>
-                  </div>
-                ) : (
-                  <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-light)' }}>{month} Drop</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="split-right" style={{ paddingLeft: '24px' }}>
           <h3 style={{ marginBottom: '16px' }}>배치 대기 이벤트</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {availableEvents.length === 0 && (
@@ -126,6 +99,33 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
             >
               타임라인 완료 및 저장하기
             </button>
+          </div>
+        </div>
+
+        <div className="split-right" style={{ paddingLeft: '24px' }}>
+          <h3 style={{ marginBottom: '16px' }}>연간 일정 슬롯</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', overflowY: 'auto', paddingRight: '8px' }}>
+            {MONTHS.map((month, idx) => (
+              <div 
+                key={month} 
+                className={`drop-zone ${placedEvents[idx] ? 'filled' : ''}`}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, idx)}
+              >
+                {placedEvents[idx] ? (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', position: 'absolute', top: '8px', left: '12px' }}>{month}</span>
+                    <strong style={{ fontSize: '0.875rem', textAlign: 'center', padding: '0 12px' }}>{placedEvents[idx].text}</strong>
+                    <button 
+                      onClick={() => handleRemove(idx)}
+                      style={{ position: 'absolute', top: '4px', right: '4px', color: 'var(--text-light)', border: 'none', background: 'none', cursor: 'pointer', padding: '4px' }}
+                    >✕</button>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-light)' }}>{month} Drop</span>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>

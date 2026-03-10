@@ -541,6 +541,7 @@ p { color: var(--text-muted); }
 /* ─── SPLIT SCREEN (DRAG & DROP) ─── */
 .split-view {
   display: flex;
+  flex-direction: row;
   gap: var(--space-xl);
   height: 100%;
 }
