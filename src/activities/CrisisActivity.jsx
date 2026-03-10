@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import ActivityShell from '../components/ActivityShell';
+import { motion } from 'framer-motion';
 
 const CRISIS_SCENARIOS = [
   { id: 'parent-call', title: '학부모 항의 전화', desc: '저녁 9시, 화난 학부모가 전화를 걸어왔습니다.', prompts: ['가장 먼저 한 말은?', '그 다음 확인한 것은?', '최종적으로 어떻게 마무리했나요?'] },
@@ -20,76 +20,112 @@ function countCompletedScenarios(answerMap) {
   return CRISIS_SCENARIOS.filter((scenario) => (answerMap[scenario.id] ?? []).every((value) => typeof value === 'string' && value.trim())).length;
 }
 
-export default function CrisisActivity({ data, onSave, onComplete, onBack }) {
+export default function CrisisActivity({ data, saveData, complete, onBack }) {
   const [selectedId, setSelectedId] = useState(CRISIS_SCENARIOS[0].id);
   const [answers, setAnswers] = useState(data?.answers ?? {});
 
   const completedScenarios = useMemo(() => countCompletedScenarios(answers), [answers]);
-
   const selectedScenario = CRISIS_SCENARIOS.find((scenario) => scenario.id === selectedId) ?? CRISIS_SCENARIOS[0];
 
   return (
-    <ActivityShell
-      title="위기의 순간 리플레이"
-      desc="세 가지 위기를 다시 떠올리고, 그때의 즉각적 판단을 말로 복기합니다. 세 시나리오를 모두 쓰면 완료됩니다."
-      icon="⚡"
-      color="#F59E0B"
-      time="5분"
-      onBack={onBack}
-      actions={
-        <button
-          type="button"
-          className="primary-button"
-          disabled={completedScenarios < 3}
-          onClick={() => onComplete({ activityData: { answers, completedScenarios }, metrics: { crisisAll: true } })}
-          aria-label="위기 리플레이 완료"
-        >
-          위기 리플레이 완료
-        </button>
-      }
-    >
-      <div className="scenario-list">
-        {CRISIS_SCENARIOS.map((scenario) => (
-          <button
-            key={scenario.id}
-            type="button"
-            className={`scenario-card ${selectedId === scenario.id ? 'is-active' : ''} ${(answers[scenario.id] ?? []).every((value) => value?.trim()) ? 'is-filled' : ''}`}
-            onClick={() => setSelectedId(scenario.id)}
-            aria-label={`${scenario.title} 시나리오 열기`}
-          >
-            <strong>{scenario.title}</strong>
-            <span>{scenario.desc}</span>
-          </button>
-        ))}
-      </div>
+    <div className="activity-workspace">
+      <header className="workspace-header">
+        <div>
+          <span className="tag" style={{ marginBottom: '8px', background: 'var(--warning)', color: 'white' }}>Layer B: Deepening</span>
+          <h2 className="question-title" style={{ marginBottom: 0 }}>위기의 순간 리플레이</h2>
+          <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>세 가지 위기 시나리오를 떠올리고, 즉각적 판단을 입력하세요. 모두 쓰면 완료됩니다.</p>
+        </div>
+        <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
+      </header>
 
-      <div className="glass-panel inner-panel">
-        <p className="eyebrow">CRISIS LOG</p>
-        <h3>{selectedScenario.title}</h3>
-        <p className="muted-copy">{selectedScenario.desc}</p>
-        <div className="stack-list">
-          {selectedScenario.prompts.map((prompt, index) => (
-            <label key={prompt} className="prompt-block">
-              <span>{prompt}</span>
-              <textarea
-                value={answers[selectedScenario.id]?.[index] ?? ''}
-                onChange={(event) => {
-                  const nextAnswers = createScenarioAnswers(answers, selectedScenario.id, index, event.target.value);
-                  setAnswers(nextAnswers);
-                  onSave({ answers: nextAnswers, completedScenarios: countCompletedScenarios(nextAnswers) });
-                }}
-                placeholder="그 순간 실제로 했던 대응을 적어보세요."
-                aria-label={`${selectedScenario.title} 질문 ${index + 1}`}
-              />
-            </label>
-          ))}
+      <div className="workspace-content split-view">
+        <div className="split-left" style={{ flex: '0 0 320px' }}>
+          <h3 style={{ marginBottom: '16px' }}>위기 시나리오 선택</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {CRISIS_SCENARIOS.map((scenario) => {
+              const isFilled = (answers[scenario.id] ?? []).every((value) => value?.trim());
+              const isSelected = selectedId === scenario.id;
+
+              return (
+                <button
+                  key={scenario.id}
+                  className={`choice-btn ${isSelected ? 'selected' : ''}`}
+                  onClick={() => setSelectedId(scenario.id)}
+                  style={{ 
+                    padding: '16px', 
+                    flexDirection: 'column', 
+                    alignItems: 'flex-start',
+                    gap: '4px',
+                    borderColor: isFilled && !isSelected ? 'var(--success)' : ''
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                    <strong style={{ fontSize: '1rem' }}>{scenario.title}</strong>
+                    {isFilled && <span style={{ color: 'var(--success)', fontSize: '0.875rem' }}>✓</span>}
+                  </div>
+                  <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 400, textAlign: 'left' }}>{scenario.desc}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="split-right" style={{ paddingLeft: '24px' }}>
+          <motion.div
+            key={selectedScenario.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="card" style={{ marginBottom: '24px', background: 'var(--bg-card-hover)', border: 'none' }}>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>{selectedScenario.title} 대응 로그</h3>
+              <p style={{ color: 'var(--text-muted)' }}>{selectedScenario.desc}</p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {selectedScenario.prompts.map((promptText, index) => (
+                <div key={index}>
+                  <p style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '8px' }}>Q. {promptText}</p>
+                  <textarea
+                    value={answers[selectedScenario.id]?.[index] ?? ''}
+                    onChange={(event) => {
+                      const nextAnswers = createScenarioAnswers(answers, selectedScenario.id, index, event.target.value);
+                      setAnswers(nextAnswers);
+                      saveData({ answers: nextAnswers });
+                    }}
+                    placeholder="그 순간 실제로 했던 대응을 상세히 적어보세요."
+                    style={{ 
+                      width: '100%', 
+                      minHeight: '80px', 
+                      padding: '16px', 
+                      fontSize: '1rem',
+                      borderRadius: '12px',
+                      border: '1px solid var(--border)',
+                      outline: 'none',
+                      resize: 'vertical',
+                      transition: 'border-color 0.2s',
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = 'var(--warning)'}
+                    onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="confidence-module" style={{ marginTop: '32px', borderColor: 'var(--warning)' }}>
+              <p style={{ marginBottom: '16px' }}><strong style={{ color: 'var(--warning)' }}>{completedScenarios} / 3</strong> 시나리오 분석 완료</p>
+              <button 
+                className="btn btn-primary" 
+                style={{ width: '100%', background: completedScenarios === 3 ? 'var(--warning)' : 'var(--border)', color: completedScenarios === 3 ? 'white' : 'var(--text-muted)' }}
+                disabled={completedScenarios < 3}
+                onClick={() => complete({ activityData: { answers }, bonusXp: 30 })}
+              >
+                위기 리플레이 추출 완료
+              </button>
+            </div>
+          </motion.div>
         </div>
       </div>
-
-      <div className="insight-banner">
-        <strong>{completedScenarios}/3 시나리오 완성</strong>
-        <p>위기 때 즉각적으로 튀어나오는 대응은 대부분 경험이 응축된 판단 프레임입니다.</p>
-      </div>
-    </ActivityShell>
+    </div>
   );
 }
