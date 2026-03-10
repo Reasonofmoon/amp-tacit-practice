@@ -1,22 +1,8 @@
 import { useMemo, useState } from 'react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { ACTIVITIES, AXES } from '../data/activities';
 import { buildPromptPack, buildSeciMap, buildTopInsights } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
-
-function toPoint(index, total, score, radius, center) {
-  const angle = ((index / total) * Math.PI * 2) - Math.PI / 2;
-  const distance = (score / 100) * radius;
-  return [center + Math.cos(angle) * distance, center + Math.sin(angle) * distance];
-}
-
-function toPolygon(values, radius, center) {
-  return values
-    .map((value, index) => {
-      const [x, y] = toPoint(index, values.length, value, radius, center);
-      return `${x},${y}`;
-    })
-    .join(' ');
-}
 
 function buildAxisScores(state) {
   return AXES.map((axis) => {
@@ -48,7 +34,6 @@ export default function ResultReport({ state, levelInfo }) {
   const topInsights = useMemo(() => buildTopInsights(state.activityData), [state.activityData]);
   const seciMap = useMemo(() => buildSeciMap(state.activityData), [state.activityData]);
 
-  const polygon = toPolygon(axisScores.map((axis) => axis.score), 92, 120);
   const profileName = state.profile.name?.trim() || '익명 원장';
   const career = state.profile.career?.trim() || '경력 미입력';
   const academy = state.profile.academy?.trim() || '우리 학원';
@@ -67,83 +52,77 @@ export default function ResultReport({ state, levelInfo }) {
     <section className="report-shell">
       <div className="section-heading report-heading">
         <div>
-          <p className="eyebrow">FINAL REPORT</p>
-          <h2>암묵지 프로필 리포트</h2>
+          <span className="tag" style={{ marginBottom: '8px' }}>FINAL DIAGNOSTIC</span>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>암묵지 프로필 리포트</h2>
         </div>
-        <strong>{state.xp} XP</strong>
+        <div style={{ textAlign: 'right' }}>
+          <strong style={{ fontSize: '2rem', color: 'var(--primary)', lineHeight: 1 }}>{state.xp} XP</strong>
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600 }}>Total Experience</div>
+        </div>
       </div>
 
       <div className="report-grid">
-        <article className="glass-panel report-card">
-          <div className="profile-card-header">
+        <article className="card" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
             <div>
-              <p className="eyebrow">PROFILE CARD</p>
-              <h3>{profileName}</h3>
-              <p>{career} · {academy}</p>
+              <p className="eyebrow" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px' }}>PROFILE CARD</p>
+              <h3 style={{ fontSize: '1.5rem', marginTop: '4px' }}>{profileName}</h3>
+              <p style={{ color: 'var(--text-main)', fontWeight: 500 }}>{career} · {academy}</p>
             </div>
-            <div className="profile-level-pill">
-              <span>{levelInfo.icon}</span>
-              <strong>{levelInfo.title}</strong>
+            <div style={{ background: 'var(--primary-light)', padding: '8px 16px', borderRadius: '12px', textAlign: 'center' }}>
+              <div style={{ fontSize: '1.5rem' }}>{levelInfo.icon}</div>
+              <strong style={{ color: 'var(--primary)', fontSize: '0.875rem' }}>{levelInfo.title}</strong>
             </div>
           </div>
-          <div className="profile-metrics">
-            <div>
-              <strong>{state.completed.length}</strong>
-              <span>완료 활동</span>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center' }}>
+            <div style={{ background: 'var(--bg-app)', padding: '12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>{state.completed.length}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>완료 활동</div>
             </div>
-            <div>
-              <strong>{state.badges.length}</strong>
-              <span>획득 뱃지</span>
+            <div style={{ background: 'var(--bg-app)', padding: '12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>{state.badges.length}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>획득 뱃지</div>
             </div>
-            <div>
-              <strong>{state.maxCombo}</strong>
-              <span>최대 콤보</span>
+            <div style={{ background: 'var(--bg-app)', padding: '12px', borderRadius: '8px' }}>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)' }}>{state.maxCombo}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>최대 콤보</div>
             </div>
           </div>
-          <div className="profile-insights">
-            <h4>핵심 암묵지 Top 3</h4>
-            <ul>
-              {topInsights.length === 0 ? <li>활동 답변이 쌓이면 여기에 당신만의 핵심 통찰이 요약됩니다.</li> : null}
-              {topInsights.map((insight) => (
-                <li key={insight}>{insight}</li>
+
+          <div>
+            <h4 style={{ marginBottom: '12px', color: 'var(--text-main)' }}>핵심 암묵지 Top 3</h4>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {topInsights.length === 0 ? <li style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>활동 답변이 쌓이면 여기에 당신만의 핵심 통찰이 요약됩니다.</li> : null}
+              {topInsights.map((insight, idx) => (
+                <li key={idx} style={{ padding: '12px', background: 'var(--bg-app)', borderRadius: '8px', fontSize: '0.9rem', color: 'var(--text-main)', borderLeft: '3px solid var(--primary)' }}>
+                  {insight}
+                </li>
               ))}
             </ul>
           </div>
         </article>
 
-        <article className="glass-panel radar-card">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">RADAR MAP</p>
-              <h3>발견된 암묵지 영역</h3>
-            </div>
+        <article className="card">
+          <div style={{ marginBottom: '24px' }}>
+             <p className="eyebrow" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px' }}>RADAR MAP</p>
+             <h3 style={{ fontSize: '1.25rem' }}>발견된 암묵지 영역</h3>
           </div>
-          <svg viewBox="0 0 240 240" className="radar-svg" aria-label="암묵지 영역 레이더 차트">
-            {[25, 50, 75, 100].map((value) => (
-              <polygon
-                key={value}
-                className="radar-grid"
-                points={toPolygon(axisScores.map(() => value), 92, 120)}
-              />
-            ))}
-            {axisScores.map((axis, index) => {
-              const [x, y] = toPoint(index, axisScores.length, 100, 92, 120);
-              return (
-                <g key={axis.key}>
-                  <line className="radar-axis" x1="120" y1="120" x2={x} y2={y} />
-                  <text className="radar-label" x={x} y={y}>
-                    {axis.label}
-                  </text>
-                </g>
-              );
-            })}
-            <polygon className="radar-area" points={polygon} />
-          </svg>
-          <div className="radar-legend">
+          <div style={{ width: '100%', height: '300px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={axisScores}>
+                <PolarGrid stroke="var(--border)" />
+                <PolarAngleAxis dataKey="label" tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 600 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar name="원장님" dataKey="score" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '16px' }}>
             {axisScores.map((axis) => (
-              <div key={axis.key}>
-                <span>{axis.label}</span>
-                <strong>{axis.score}</strong>
+              <div key={axis.key} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--bg-app)', borderRadius: '6px', fontSize: '0.875rem' }}>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{axis.label}</span>
+                <strong style={{ color: 'var(--text-main)' }}>{axis.score}</strong>
               </div>
             ))}
           </div>

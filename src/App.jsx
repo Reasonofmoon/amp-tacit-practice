@@ -58,25 +58,64 @@ export default function App() {
         showReportButton={game.state.completed.length >= 3}
       >
         {currentView === 'home' && (
-          <>
-            <div className="activity-grid">
-              {ACTIVITIES.map((activity, index) => (
-                <ActivityCard
-                  key={activity.id}
-                  activity={activity}
-                  index={index}
-                  completed={game.state.completed.includes(activity.id)}
-                  progress={getActivityProgress(activity.id, game.state.activityData[activity.id])}
-                  onClick={() => setCurrentView(activity.id)}
-                />
-              ))}
+          <div className="dashboard-layers">
+            <div className="layer-section">
+              <div className="layer-header">
+                <div className="layer-indicator layer-a">A</div>
+                <h3>기초 진단 (Foundation)</h3>
+              </div>
+              <div className="grid-3">
+                {ACTIVITIES.slice(0, 3).map((activity, index) => (
+                  <ActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    index={index}
+                    completed={game.state.completed.includes(activity.id)}
+                    progress={getActivityProgress(activity.id, game.state.activityData[activity.id])}
+                    onClick={() => setCurrentView(activity.id)}
+                  />
+                ))}
+              </div>
             </div>
 
-            <footer className="app-footer">
-              <p>"당신의 20년은 사라지지 않습니다. AI와 결합하면 7개의 앱이 됩니다."</p>
-              <small>송세훈 · 암묵지에서 AI 앱까지</small>
-            </footer>
-          </>
+            <div className="layer-section">
+              <div className="layer-header">
+                <div className="layer-indicator layer-b">B</div>
+                <h3>심화 발굴 (Deepening)</h3>
+              </div>
+              <div className="grid-3">
+                {ACTIVITIES.slice(3, 6).map((activity, index) => (
+                  <ActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    index={index}
+                    completed={game.state.completed.includes(activity.id)}
+                    progress={getActivityProgress(activity.id, game.state.activityData[activity.id])}
+                    onClick={() => setCurrentView(activity.id)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="layer-section">
+              <div className="layer-header">
+                <div className="layer-indicator layer-c">C</div>
+                <h3>패턴 응용 (Application)</h3>
+              </div>
+              <div className="grid-3">
+                {ACTIVITIES.slice(6, 9).map((activity, index) => (
+                  <ActivityCard
+                    key={activity.id}
+                    activity={activity}
+                    index={index}
+                    completed={game.state.completed.includes(activity.id)}
+                    progress={getActivityProgress(activity.id, game.state.activityData[activity.id])}
+                    onClick={() => setCurrentView(activity.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         )}
 
         {currentView === 'report' && (

@@ -1,102 +1,134 @@
-import { useMemo, useState } from 'react';
-import ActivityShell from '../components/ActivityShell';
-import { MONTHS, YEAR_EVENTS } from '../data/yearEvents';
+import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { ACTIVITY_MODELS } from '../data/activities';
 
-export default function TimelineActivity({ data, onSave, onComplete, onBack }) {
-  const [entries, setEntries] = useState(data?.entries ?? {});
-  const [selectedMonth, setSelectedMonth] = useState(null);
-  const [draft, setDraft] = useState('');
+const MONTHS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+const EVENTS = [
+  { id: 'ev1', text: '신규생 집중 상담 주간' },
+  { id: 'ev2', text: '학부모 간담회 (상반기)' },
+  { id: 'ev3', text: '1학기 중간고사 리포트 발송' },
+  { id: 'ev4', text: '여름방학 특강 기획' },
+  { id: 'ev5', text: '강사 워크샵 및 재교육' },
+  { id: 'ev6', text: '2학기 기말고사 대비반 편성' },
+  { id: 'ev7', text: '학부모 간담회 (하반기)' },
+  { id: 'ev8', text: '겨울방학 특강 설명회' },
+  { id: 'ev9', text: '졸업생 환송 및 성취도 평가' },
+];
 
-  const filledCount = useMemo(
-    () => Object.values(entries).filter((value) => typeof value === 'string' && value.trim()).length,
-    [entries],
-  );
+export default function TimelineActivity({ data, saveData, complete, onBack }) {
+  const [placedEvents, setPlacedEvents] = useState(data?.placedEvents ?? {});
+  const [draggedId, setDraggedId] = useState(null);
 
-  const handleSelectMonth = (index) => {
-    setSelectedMonth(index);
-    setDraft(entries[index] ?? '');
+  const availableEvents = EVENTS.filter(ev => !Object.values(placedEvents).some(placed => placed.id === ev.id));
+  const filledCount = Object.keys(placedEvents).length;
+
+  const handleDragStart = (e, eventItem) => {
+    setDraggedId(eventItem.id);
+    e.dataTransfer.effectAllowed = 'move';
+    // Firefox requires dataTransfer data
+    e.dataTransfer.setData('text/plain', eventItem.id);
   };
 
-  const handleSaveMonth = () => {
-    if (selectedMonth === null || !draft.trim()) {
-      return;
+  const handleDrop = (e, monthIndex) => {
+    e.preventDefault();
+    if (!draggedId) return;
+
+    const eventToDrop = EVENTS.find(ev => ev.id === draggedId);
+    if (eventToDrop) {
+      const nextPlaced = { ...placedEvents, [monthIndex]: eventToDrop };
+      setPlacedEvents(nextPlaced);
+      saveData({ placedEvents: nextPlaced });
     }
+    setDraggedId(null);
+  };
 
-    const nextEntries = {
-      ...entries,
-      [selectedMonth]: draft.trim(),
-    };
+  const handleRemove = (monthIndex) => {
+    const nextPlaced = { ...placedEvents };
+    delete nextPlaced[monthIndex];
+    setPlacedEvents(nextPlaced);
+    saveData({ placedEvents: nextPlaced });
+  };
 
-    setEntries(nextEntries);
-    onSave({ entries: nextEntries });
-    setSelectedMonth(null);
-    setDraft('');
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
   };
 
   return (
-    <ActivityShell
-      title="나의 1년 타임라인"
-      desc="각 월을 눌러 그 시기에 반복적으로 하는 운영 습관을 적어보세요. 3개월 이상 기록하면 활동을 완료할 수 있습니다."
-      icon="🗓️"
-      color="#10B981"
-      time="5분"
-      onBack={onBack}
-      actions={
-        <button
-          type="button"
-          className="primary-button"
-          disabled={filledCount < 3}
-          onClick={() => onComplete({ activityData: { entries }, bonusXp: filledCount >= 6 ? 12 : 0 })}
-          aria-label="타임라인 활동 완료"
-        >
-          타임라인 완료하고 XP 받기
-        </button>
-      }
-    >
-      <div className="month-grid">
-        {YEAR_EVENTS.map((event, index) => {
-          const saved = Boolean(entries[index]?.trim());
-          const active = selectedMonth === index;
-
-          return (
-            <button
-              key={event.label}
-              type="button"
-              className={`month-card ${active ? 'is-active' : ''} ${saved ? 'is-filled' : ''}`}
-              onClick={() => handleSelectMonth(index)}
-              aria-label={`${MONTHS[index]} 기록 열기`}
-            >
-              <span className="month-icon" aria-hidden="true">
-                {event.icon}
-              </span>
-              <strong>{MONTHS[index]}</strong>
-              <span>{event.label}</span>
-              {saved ? <em>기록됨</em> : null}
-            </button>
-          );
-        })}
-      </div>
-
-      {selectedMonth !== null ? (
-        <div className="glass-panel inner-panel">
-          <p className="eyebrow">{MONTHS[selectedMonth]} · {YEAR_EVENTS[selectedMonth].label}</p>
-          <h3>{YEAR_EVENTS[selectedMonth].desc}</h3>
-          <textarea
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            placeholder="예: 3월이면 항상 조용한 아이를 먼저 파악해 짝을 붙여줍니다."
-            aria-label="타임라인 기록 입력"
-          />
-          <button type="button" className="primary-button" onClick={handleSaveMonth} aria-label="이번 달 기록 저장">
-            저장
-          </button>
+    <div className="activity-workspace">
+      <header className="workspace-header">
+        <div>
+          <span className="tag" style={{ marginBottom: '8px' }}>Layer A: Foundation</span>
+          <h2 className="question-title" style={{ marginBottom: 0 }}>나의 1년 타임라인</h2>
+          <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>오른쪽의 주요 사건을 해당하는 월(Month) 슬롯으로 <strong>드래그 앤 드랍</strong> 해보세요. 학원의 운영 리듬이 시각화됩니다.</p>
         </div>
-      ) : null}
+        <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
+      </header>
 
-      <div className="insight-banner">
-        <strong>{filledCount}개월 기록됨</strong>
-        <p>매뉴얼에 없지만 해마다 반복되는 행동은 이미 당신의 운영 알고리즘입니다.</p>
+      <div className="workspace-content split-view">
+        <div className="split-left">
+          <h3 style={{ marginBottom: '16px' }}>연간 일정 슬롯</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', overflowY: 'auto' }}>
+            {MONTHS.map((month, idx) => (
+              <div 
+                key={month} 
+                className={`drop-zone ${placedEvents[idx] ? 'filled' : ''}`}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, idx)}
+              >
+                {placedEvents[idx] ? (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', position: 'absolute', top: '8px', left: '12px' }}>{month}</span>
+                    <strong style={{ fontSize: '0.875rem', textAlign: 'center', padding: '0 12px' }}>{placedEvents[idx].text}</strong>
+                    <button 
+                      onClick={() => handleRemove(idx)}
+                      style={{ position: 'absolute', top: '4px', right: '4px', color: 'var(--text-light)', border: 'none', background: 'none', cursor: 'pointer', padding: '4px' }}
+                    >✕</button>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-light)' }}>{month} Drop</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="split-right" style={{ paddingLeft: '24px' }}>
+          <h3 style={{ marginBottom: '16px' }}>배치 대기 이벤트</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {availableEvents.length === 0 && (
+              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--success)', background: 'var(--primary-light)', borderRadius: '12px', fontWeight: 600 }}>
+                모든 이벤트를 배치했습니다! 🎉
+              </div>
+            )}
+            {availableEvents.map(ev => (
+              <motion.div
+                key={ev.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, ev)}
+                className="drag-item"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)' }} />
+                {ev.text}
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="confidence-module" style={{ marginTop: 'auto' }}>
+            <p>기본 사이클이 파악되었습니다. {filledCount}개 배치 완료.</p>
+            <button 
+              className="btn btn-primary" 
+              style={{ width: '100%' }}
+              disabled={filledCount < 3}
+              onClick={() => complete({ activityData: { placedEvents }, bonusXp: filledCount >= 6 ? 15 : 0 })}
+            >
+              타임라인 완료 및 저장하기
+            </button>
+          </div>
+        </div>
       </div>
-    </ActivityShell>
+    </div>
   );
 }
