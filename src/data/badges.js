@@ -1,0 +1,58 @@
+export const BADGES = [
+  {
+    id: 'observer',
+    name: '관찰자',
+    icon: '🔍',
+    desc: '자동조종 탐지기 완료',
+    condition: (state) => state.completed.has('autopilot'),
+  },
+  {
+    id: 'crisis_manager',
+    name: '위기관리자',
+    icon: '⚡',
+    desc: '위기 시나리오 3개 모두 작성',
+    condition: (state) => state.crisisAll,
+  },
+  {
+    id: 'mentor',
+    name: '멘토',
+    icon: '🎓',
+    desc: '전수 6개 완료',
+    condition: (state) => state.transferAll,
+  },
+  {
+    id: 'transformer',
+    name: '변환자',
+    icon: '🔮',
+    desc: 'SECI 변환 완료',
+    condition: (state) => state.completed.has('seci'),
+  },
+  {
+    id: 'speedster',
+    name: '스피드스터',
+    icon: '⏱️',
+    desc: '퀴즈 3분 이내 완료',
+    condition: (state) => typeof state.quizTime === 'number' && state.quizTime > 0 && state.quizTime < 180,
+  },
+  {
+    id: 'empath',
+    name: '공감자',
+    icon: '💬',
+    desc: '역할극 시나리오 완료',
+    condition: (state) => state.completed.has('roleplay'),
+  },
+  {
+    id: 'pattern_finder',
+    name: '패턴 파인더',
+    icon: '🧩',
+    desc: '패턴 매칭 전체 완료',
+    condition: (state) => state.completed.has('pattern'),
+  },
+  {
+    id: 'master',
+    name: '통찰가',
+    icon: '🎯',
+    desc: '모든 활동 완료',
+    condition: (state) => state.completed.size >= 9,
+  },
+];
