@@ -11,12 +11,12 @@ const AUTOPILOT_PROMPTS = [
 ];
 
 const DEV_AUTOPILOT_PROMPTS = [
-  { area: '에이전트 선택', q: '특정 버그를 만났을 때, 코드 치는 LLM 대신 검색/분석 특화 에이전트를 부르게 되는 직관적 기준은?', hint: '코드의 양? 에러 로그의 형태? 당신만의 기준이 있습니다.' },
-  { area: '디버깅 시작점', q: '에러 화면만 보고도 "아 이건 OOO 문제다"라고 파일부터 열어보는 감각은 어디서 옵니까?', hint: '에러 메시지의 첫 단어, 특정 파일명 등 직관적 패스파인딩을 떠올려보세요.' },
-  { area: '프롬프트 작성', q: 'AI에게 코딩을 시킬 때, 무의식적으로 항상 맨 마지막에 덧붙이는 필수 제약조건은?', hint: '예: "기존 코드는 지우지 마", "console.log 빼고 해줘" 등' },
-  { area: '의존성 충돌', q: 'npm install 에러 텍스트 더미 속에서, 1초 만에 "범인" 라이브러리를 찾아내는 안목은?', hint: '버전 숫자? peer dependencies? 로그의 특정 색상?' },
-  { area: '배포 타이밍', q: '로컬 테스트는 다 통과했지만 "지금 배포하면 무조건 터진다"고 멈칫하게 되는 순간은 언제입니까?', hint: '금요일 오후, 특정 환경변수, 관련 라이브러리 업데이트 직후 등' },
-  { area: '코드 냄새', q: '다른 팀원의 코드나 AI가 짠 코드를 리뷰할 때, 10초 만에 "이건 엎어야겠다"고 느끼는 징후는?', hint: '중첩된 if문 깊이, useEffect 내의 렌더 함수, 변수명 짓는 방식 등' },
+  { area: '권한 및 인증', q: '구글 워크스페이스(Drive/Sheets) API 권한 에러 해결 시 1순위로 확인하는 것은?', hint: 'Manifest 파일(appsscript.json)의 oauthScopes 배열이나 Cloud Project 연동 여부를 떠올려보세요.' },
+  { area: '대용량 데이터 처리', q: '수만 줄의 시트 데이터를 반복문으로 돌릴 때, 6분 Time Limit 에러를 회피하는 당신만의 직관은?', hint: 'getValues() 배치 처리, Continuation Token, 릴레이 트리거 등의 회피 패턴을 적어보세요.' },
+  { area: '캐싱 및 배포', q: 'Apps Script 웹앱 로직을 수정했는데 브라우저에서 반영이 안 될 때 느끼는 "아, 역시" 하는 순간은?', hint: '새 버전으로 재배포(Manage Deployments), 브라우저 캐시 무효화, /dev URL로의 전환 등을 떠올려보세요.' },
+  { area: '백그라운드 디버깅', q: '시간 구동(Time-driven) 트리거로 돌아가는 코드가 오작동할 때 에러를 추적하는 노하우는?', hint: 'Logger.log 한계, Stackdriver(GCP) 에러 리포팅, 이메일/슬랙 알림 훅 스니펫 등을 적어보세요.' },
+  { area: '사용자 UI 설계', q: 'HTML Service로 커스텀 폼을 만들 때, 기존 구글 폼(Google Forms) 대신 굳이 이걸 쓰는 결정적 이유는?', hint: 'doGet/doPost 활용, 실시간 시트 데이터 양방향 바인딩, Bootstrap/Tailwind CSS 연동 등을 떠올려보세요.' },
+  { area: 'LLM API 결합', q: 'Apps Script 내에서 외부 AI API(OpenAI/Gemini) 엔드포인트를 호출할 때 가장 신경 쓰이는 제약사항은?', hint: 'UrlFetchApp의 100MB 페이로드 제한, 대기 타임아웃, API 키 프로퍼티 은닉(PropertiesService) 등을 떠올려보세요.' },
 ];
 
 export default function AutopilotActivity({ id, data, saveData, complete, onBack }) {

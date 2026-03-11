@@ -21,7 +21,7 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
   return (
     <div className="overlay-backdrop" role="dialog" aria-modal="true" aria-label="첫 진입 안내">
       <div className="overlay-card glass-panel">
-        <p className="eyebrow">ONBOARDING</p>
+        <p style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '1px', marginBottom: '8px' }}>ONBOARDING</p>
         <h2>암묵지 발굴 워크숍에 오신 것을 환영합니다</h2>
         <div className="overlay-steps">
           {STEPS.map((step, index) => (
@@ -63,7 +63,7 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
             />
           </label>
         </div>
-        <button type="button" className="primary-button full-width" onClick={onClose} aria-label="온보딩 시작하기">
+        <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }} onClick={onClose} aria-label="온보딩 시작하기">
           시작하기
         </button>
       </div>

@@ -110,17 +110,17 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
         <div style={{ maxWidth: '800px', margin: '0 auto', width: '100%' }}>
           
           {phase === 'strategy' && (
-            <div className="strategy-overlay">
-              <h3>문제 풀이 전략 선택</h3>
-              <p>이 문제를 어떤 방식으로 접근하시겠습니까?</p>
+            <div className="strategy-overlay" style={{ background: 'var(--bg-card)', border: '2px solid var(--primary)', boxShadow: 'var(--shadow-md)' }}>
+              <h3 style={{ color: 'var(--primary)' }}>문제 풀이 전략 선택</h3>
+              <p style={{ color: 'var(--text-main)', marginBottom: '16px' }}>이 문제를 어떤 방식으로 접근하시겠습니까?</p>
               <div className="strategy-cards">
-                <div className="strategy-card" onClick={() => handleStrategySelect('직관적 선택')}>
-                  <h4>⚡ 직관적 선택</h4>
-                  <p>경험에 비추어 바로 떠오르는 답을 고릅니다.</p>
+                <div className="strategy-card" onClick={() => handleStrategySelect('직관적 선택')} style={{ background: 'var(--bg-app)' }}>
+                  <h4 style={{ color: 'var(--text-main)' }}>⚡ 직관적 선택</h4>
+                  <p style={{ color: 'var(--text-muted)' }}>경험에 비추어 바로 떠오르는 답을 고릅니다.</p>
                 </div>
-                <div className="strategy-card" onClick={() => handleStrategySelect('논리적 소거')}>
-                  <h4>🧠 논리적 소거방식</h4>
-                  <p>오답을 하나씩 지워가며 신중하게 선택합니다.</p>
+                <div className="strategy-card" onClick={() => handleStrategySelect('논리적 소거')} style={{ background: 'var(--bg-app)' }}>
+                  <h4 style={{ color: 'var(--text-main)' }}>🧠 논리적 소거방식</h4>
+                  <p style={{ color: 'var(--text-muted)' }}>오답을 하나씩 지워가며 신중하게 선택합니다.</p>
                 </div>
               </div>
             </div>
@@ -139,7 +139,6 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
                   let btnClass = 'choice-btn';
                   if (phase === 'feedback') {
                     if (isAnswer) btnClass += ' selected'; // Highlight correct answer
-                    else if (isSelected && !isAnswer) btnClass += ' disabled'; // Highlight wrong selection vaguely
                   }
 
                   return (
@@ -148,10 +147,20 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
                       className={btnClass}
                       onClick={() => phase === 'quiz' && handleAnswer(idx)}
                       disabled={phase === 'feedback'}
-                      style={{ borderColor: isAnswer ? 'var(--success)' : isSelected ? 'var(--danger)' : '' }}
+                      style={{ 
+                        borderColor: isAnswer ? 'var(--success)' : isSelected && !isAnswer ? 'var(--danger)' : '',
+                        opacity: phase === 'feedback' && !isAnswer && !isSelected ? 0.6 : 1,
+                        background: isSelected && !isAnswer ? '#FEF2F2' : '',
+                        color: isSelected && !isAnswer ? 'var(--danger)' : 'var(--text-main)',
+                        cursor: phase === 'feedback' ? 'default' : 'pointer'
+                      }}
                     >
-                      <span className="choice-number">{idx + 1}</span>
-                      <span>{opt}</span>
+                      <span className="choice-number" style={{
+                        background: isAnswer ? 'var(--success)' : isSelected && !isAnswer ? 'var(--danger)' : '',
+                        color: isAnswer || isSelected ? 'white' : '',
+                        borderColor: isAnswer ? 'var(--success)' : isSelected && !isAnswer ? 'var(--danger)' : ''
+                      }}>{idx + 1}</span>
+                      <span style={{ fontWeight: isAnswer || isSelected ? 700 : 500 }}>{opt}</span>
                     </button>
                   );
                 })}

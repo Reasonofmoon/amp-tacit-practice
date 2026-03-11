@@ -138,10 +138,10 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
                 {placedEvents[idx] ? (
                   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                     <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', position: 'absolute', top: '8px', left: '12px' }}>{month}</span>
-                    <strong style={{ fontSize: '0.875rem', textAlign: 'center', padding: '0 12px' }}>{placedEvents[idx].text}</strong>
+                    <strong style={{ fontSize: '0.875rem', textAlign: 'center', padding: '16px 20px', wordBreak: 'keep-all' }}>{placedEvents[idx].text}</strong>
                     <button 
                       onClick={() => handleRemove(idx)}
-                      style={{ position: 'absolute', top: '4px', right: '4px', color: 'var(--text-light)', border: 'none', background: 'none', cursor: 'pointer', padding: '4px' }}
+                      style={{ position: 'absolute', top: '4px', right: '4px', width: '24px', height: '24px', borderRadius: '50%', background: 'var(--bg-app)', color: 'var(--text-muted)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', zIndex: 10 }}
                     >✕</button>
                   </div>
                 ) : (

@@ -10,7 +10,19 @@ const TRANSFER_QUESTIONS = [
   '강사에게 피드백할 때 나만의 원칙',
 ];
 
-export default function TransferActivity({ data, saveData, complete, onBack }) {
+const DEV_TRANSFER_QUESTIONS = [
+  'Expo Router에서 네이티브 탭 네비게이션을 구성할 때 핵심 패턴',
+  '앱스토어 리젝 사유 1순위와 이를 방어하는 전략',
+  '온라인 상태가 아닐 때 유저에게 보여줘야 할 올바른 Offline UX',
+  'Push Notification 환경설정 시 빼먹기 쉬운 체크리스트',
+  'OTA(Over The Air) 업데이트로 긴급 버그를 핫픽스하는 가이드',
+  'React Native 모바일 앱 초기 렌더링 성능(TTV) 최적화 기법',
+];
+
+export default function TransferActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetQuestions = isDev ? DEV_TRANSFER_QUESTIONS : TRANSFER_QUESTIONS;
+  
   const [selected, setSelected] = useState(0);
   const [answers, setAnswers] = useState(data?.answers ?? {});
   const [draft, setDraft] = useState(data?.answers?.[0] ?? '');
@@ -39,7 +51,7 @@ export default function TransferActivity({ data, saveData, complete, onBack }) {
 
   const handleNext = () => {
     commitCurrent();
-    if (selected < TRANSFER_QUESTIONS.length - 1) {
+    if (selected < targetQuestions.length - 1) {
       handleSelect(selected + 1);
     }
   };
@@ -59,7 +71,7 @@ export default function TransferActivity({ data, saveData, complete, onBack }) {
         <div className="split-left" style={{ flex: '0 0 320px' }}>
           <h3 style={{ marginBottom: '16px' }}>전수 항목 (6개)</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {TRANSFER_QUESTIONS.map((question, index) => {
+            {targetQuestions.map((question, index) => {
               const isFilled = answers[index]?.trim();
               const isSelected = selected === index;
 
@@ -114,7 +126,7 @@ export default function TransferActivity({ data, saveData, complete, onBack }) {
             >
               <div className="card" style={{ background: 'var(--layer-c)', border: 'none', color: 'white', marginBottom: '24px' }}>
                 <p style={{ fontSize: '0.875rem', fontWeight: 600, opacity: 0.8, marginBottom: '8px' }}>MENTOR NOTE #{selected + 1}</p>
-                <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{TRANSFER_QUESTIONS[selected]}</h3>
+                <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{targetQuestions[selected]}</h3>
               </div>
 
               <textarea
@@ -143,7 +155,7 @@ export default function TransferActivity({ data, saveData, complete, onBack }) {
                 </div>
                 
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  {selected < TRANSFER_QUESTIONS.length - 1 ? (
+                  {selected < targetQuestions.length - 1 ? (
                     <button className="btn btn-primary" onClick={handleNext}>
                       메뉴얼 저장하고 다음 →
                     </button>

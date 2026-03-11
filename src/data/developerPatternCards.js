@@ -1,20 +1,20 @@
 export const DEV_PATTERN_CARDS = [
   {
     situations: [
-      { id: 's1', text: '오래된 React 앱 의존성 파악', icon: '🔍' },
-      { id: 's2', text: '프롬프트 비대화/AI 망각 현상', icon: '🧠' },
-      { id: 's3', text: '10개 파일에 걸친 반복 단순 작업', icon: '🔁' },
-      { id: 's4', text: 'AI가 폐기된 구버전 문법 사용', icon: '👴' },
-      { id: 's5', text: '무한 루프 에러 (Claude Code 등)', icon: '🚨' },
-      { id: 's6', text: '신규 구조(아키텍처) 통합 요구', icon: '🏗️' },
+      { id: 's1', text: 'API에서 데이터를 가져와 안전하게 화면에 렌더링해야 함', icon: '🌐' },
+      { id: 's2', text: '여러 개의 독립적인 비동기 요청을 동시에 빠르게 처리해야 함', icon: '⚡' },
+      { id: 's3', text: '콜백 지옥(Callback Hell)에 빠져 가독성이 떨어진 레거시 코드', icon: '🍝' },
+      { id: 's4', text: '스크롤/입력 등 DOM 이벤트가 너무 빈번하게 발생하여 성능 저하', icon: '📉' },
+      { id: 's5', text: '기존 배열의 데이터를 가공하여 새로운 형태의 배열 생성', icon: '🔄' },
+      { id: 's6', text: '전역 변수 오염을 막고 함수 내부의 상태를 안전하게 은닉', icon: '🔒' },
     ],
     responses: [
-      { id: 'r1', text: 'Codebase 스캔 및 Search 에이전트 호출', icon: '🔎' },
-      { id: 'r2', text: 'RAG 컨텍스트(Docs) 명시적 강제 주입', icon: '📚' },
-      { id: 'r3', text: '정규식/Bash Script 작성 지시로 우회', icon: '⚡' },
-      { id: 'r4', text: '공통 지침 분리 후 릴레이 핸드오프', icon: '🤝' },
-      { id: 'r5', text: '프로세스 정지 후 가설/맥락 교정', icon: '🛑' },
-      { id: 'r6', text: '마크다운 스펙(.md) 작성 후 구현 지시', icon: '📝' },
+      { id: 'r1', text: 'async/await 패턴 적용 및 try-catch 에러 핸들링', icon: '🛡️' },
+      { id: 'r2', text: 'Promise.all()을 활용한 병렬(Parallel) 처리', icon: '🏎️' },
+      { id: 'r3', text: 'Promise 반환 또는 async 체이닝으로 로직 평탄화', icon: '📏' },
+      { id: 'r4', text: '디바운싱(Debouncing) 또는 쓰로틀링(Throttling) 적용', icon: '⏳' },
+      { id: 'r5', text: 'Array.prototype.map()과 불변성 파생 활용', icon: '✨' },
+      { id: 'r6', text: '클로저(Closure) 또는 ES 모듈 시스템(IIFE) 패턴', icon: '📦' },
     ],
   },
 ];

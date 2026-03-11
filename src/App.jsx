@@ -80,31 +80,17 @@ export default function App() {
         celebration={game.celebration}
         onGoHome={goHome}
         onGoReport={goReport}
-        showReportButton={game.state.completed.length >= 3}
+        showReportButton={true}
+        isDev={activeJourney === 'developer'}
+        onToggleJourney={setActiveJourney}
       >
         {currentView === 'home' && (
           <div style={{ textAlign: 'center' }}>
             <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '2rem' }}>탁월함의 발자취 (Monopoly Path)</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-lg)' }}>
+            <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-xl)' }}>
               각 노드를 클릭해 암묵지 발굴 여정을 진행하세요.
             </p>
             
-            {/* Journey Toggle */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: 'var(--space-xl)' }}>
-              <button 
-                className={`btn ${activeJourney === 'director' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => setActiveJourney('director')}
-              >
-                🎓 원장 여정
-              </button>
-              <button 
-                className={`btn ${activeJourney === 'developer' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => setActiveJourney('developer')}
-              >
-                💻 개발자 여정
-              </button>
-            </div>
-
             <div className="monopoly-board">
               {(activeJourney === 'director' ? ACTIVITIES : DEV_ACTIVITIES).map((activity, index) => {
                 const isCompleted = game.state.completed.includes(activity.id);
@@ -122,13 +108,17 @@ export default function App() {
               })}
             </div>
             
-            {game.state.completed.length >= 3 && (
-              <div style={{ marginTop: 'var(--space-xl)', textAlign: 'center' }}>
-                <button className="btn btn-primary neon-btn" onClick={goReport} style={{ padding: '16px 32px', fontSize: '1.25rem' }}>
-                  최종 진단 리포트 & 프롬프트 발급받기 →
-                </button>
-              </div>
-            )}
+            {/* Render the report button always, but visually disabled if length === 0 */}
+            <div style={{ marginTop: 'var(--space-xl)', textAlign: 'center' }}>
+              <button 
+                className="btn btn-primary neon-btn" 
+                onClick={goReport} 
+                disabled={game.state.completed.length === 0}
+                style={{ padding: '16px 32px', fontSize: '1.25rem', opacity: game.state.completed.length === 0 ? 0.5 : 1 }}
+              >
+                {game.state.completed.length > 0 ? "최종 진단 리포트 & 프롬프트 발급받기 →" : "활동을 1개 이상 완료해야 리포트를 볼 수 있습니다"}
+              </button>
+            </div>
           </div>
         )}
 

@@ -25,13 +25,13 @@ export default function ActivityCard({ activity, completed, progress = 0, index,
       <h3 className="activity-card-title">{activity.title}</h3>
       <p className="activity-card-desc">{activity.subtitle}</p>
       
-      <div className="activity-card-progress">
+      <div className="activity-card-progress" style={{ marginBottom: '8px' }}>
         <div className="progress-text">
           <span>진행도</span>
-          <span>{Math.round(progress * 100)}%</span>
+          <span>{completed ? 100 : Math.round(progress * 100)}%</span>
         </div>
         <div className="progress-thin">
-          <div className="progress-thin-fill" style={{ width: `${Math.round(progress * 100)}%` }} />
+          <div className="progress-thin-fill" style={{ width: `${completed ? 100 : Math.round(progress * 100)}%` }} />
         </div>
       </div>
     </motion.button>

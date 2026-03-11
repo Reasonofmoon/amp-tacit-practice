@@ -10,9 +10,16 @@ export default function Layout({
   onGoHome,
   onGoReport,
   showReportButton,
+  isDev,
+  onToggleJourney,
   children,
 }) {
   const isHome = currentView === 'home';
+
+  const title = isDev ? "AI 개발자의 1년" : "학원 원장의 1년";
+  const subtitle = isDev 
+    ? "소프트웨어 개발 과정에서 발생하는 암묵지 패턴을 추출하여 시스템 프롬프트로 변환합니다."
+    : "무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.";
 
   return (
     <div className="app-shell">
@@ -47,12 +54,28 @@ export default function Layout({
 
       <main className="app-frame">
         {isHome && (
-          <div className="hero-shell">
+          <div className="hero-shell" style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
             <span className="tag" style={{ marginBottom: '16px' }}>Diagnostic Platform</span>
-            <h1>학원 원장의 1년</h1>
-            <p style={{ marginTop: '12px', fontSize: '1.1rem' }}>
-              무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.
+            <h1>{title}</h1>
+            <p style={{ marginTop: '12px', fontSize: '1.1rem', maxWidth: '600px', margin: '12px auto 0' }}>
+              {subtitle}
             </p>
+            
+            {/* Journey Toggle */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: 'var(--space-lg)' }}>
+              <button 
+                className={`btn ${!isDev ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => onToggleJourney('director')}
+              >
+                🎓 원장 여정
+              </button>
+              <button 
+                className={`btn ${isDev ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => onToggleJourney('developer')}
+              >
+                💻 개발자 여정
+              </button>
+            </div>
             
             <div style={{ marginTop: '32px', maxWidth: '400px', margin: '32px auto 0' }}>
               <XPBar xp={state.xp} levelInfo={levelInfo} nextLevel={nextLevel} xpGain={celebration.xpGain} />
