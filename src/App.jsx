@@ -16,6 +16,8 @@ import GalleryActivity from './activities/GalleryActivity';
 import QuickQuizActivity from './activities/QuickQuizActivity';
 import RolePlayActivity from './activities/RolePlayActivity';
 import PatternMatchActivity from './activities/PatternMatchActivity';
+import NoticingDrillActivity from './activities/NoticingDrillActivity';
+import CdmSimulatorActivity from './activities/CdmSimulatorActivity';
 
 const ACTIVITY_COMPONENTS = {
   timeline: TimelineActivity,
@@ -27,6 +29,8 @@ const ACTIVITY_COMPONENTS = {
   quiz: QuickQuizActivity,
   roleplay: RolePlayActivity,
   pattern: PatternMatchActivity,
+  noticing: NoticingDrillActivity,
+  cdm: CdmSimulatorActivity,
 };
 
 export default function App() {
@@ -65,7 +69,7 @@ export default function App() {
                 <h3>기초 진단 (Foundation)</h3>
               </div>
               <div className="grid-3">
-                {ACTIVITIES.slice(0, 3).map((activity, index) => (
+                {ACTIVITIES.slice(0, 4).map((activity, index) => (
                   <ActivityCard
                     key={activity.id}
                     activity={activity}
@@ -84,7 +88,7 @@ export default function App() {
                 <h3>심화 발굴 (Deepening)</h3>
               </div>
               <div className="grid-3">
-                {ACTIVITIES.slice(3, 6).map((activity, index) => (
+                {ACTIVITIES.slice(4, 8).map((activity, index) => (
                   <ActivityCard
                     key={activity.id}
                     activity={activity}
@@ -103,7 +107,7 @@ export default function App() {
                 <h3>패턴 응용 (Application)</h3>
               </div>
               <div className="grid-3">
-                {ACTIVITIES.slice(6, 9).map((activity, index) => (
+                {ACTIVITIES.slice(8, 11).map((activity, index) => (
                   <ActivityCard
                     key={activity.id}
                     activity={activity}
