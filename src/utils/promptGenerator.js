@@ -106,6 +106,14 @@ export function buildPromptPack(activityData, profile) {
   const career = profile?.career?.trim() || '경력 미입력';
   const academy = profile?.academy?.trim() || '우리 학원';
 
+  const insights = [];
+  Object.values(activityData || {}).forEach(data => {
+    if (data && data.insight && data.insight !== 'Skipped') {
+      insights.push(data.insight);
+    }
+  });
+  const customInsightsText = insights.length > 0 ? insights.join('\n- ') : "특별한 추가 인사이트 없음";
+
   const masterPrompt = `[역할 부여: Enterprise AX/DX 컨설턴트 AI]
 당신은 최고 수준의 교육 비즈니스 디지털 전환(DX) 및 AI 전환(AX) 전략 컨설턴트입니다.
 아래 제공된 원장님의 '암묵지 추출 데이터'를 분석하여, 학원 운영 체계를 자동화하고 스케일업할 수 있는 [기업수준 AX/DX 역량 진단 및 처방 리포트]를 작성해주세요.
@@ -115,6 +123,8 @@ export function buildPromptPack(activityData, profile) {
 - 경력: ${career}
 - 학원명: ${academy}
 - 발견된 핵심 암묵지 키워드: ${coreKeywords}
+- 원장님의 현장 인사이트(Insights):
+- ${customInsightsText}
 
 [출력 형식 및 필수 포함 내용]
 다음 4가지 섹션을 마크다운 양식으로 상세히 출력하세요.

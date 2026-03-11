@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
+import ActivityFooter from '../components/ActivityFooter';
 
 export default function NoticingDrillActivity({ data, saveData, complete, onBack }) {
   const [step, setStep] = useState(0);
@@ -8,7 +9,6 @@ export default function NoticingDrillActivity({ data, saveData, complete, onBack
   const [interp, setInterp] = useState('');
   const [resp, setResp] = useState('');
 
-  // Use the dropout risk scenario as the training stimulus
   const sc = ROLEPLAY_SCENARIOS[1];
   const stimulus = sc.steps[0].message;
 
@@ -16,8 +16,15 @@ export default function NoticingDrillActivity({ data, saveData, complete, onBack
     if (step < 3) setStep(step + 1);
   };
 
-  const handleComplete = () => {
-    complete({ ...data, cues, interp, resp });
+  const handleComplete = (insight = '') => {
+    complete({ ...data, cues, interp, resp, insight });
+  };
+
+  const handleAutoFill = () => {
+    setCues(['눈을 피함', '필기량 급감', '단답형 대답']);
+    setInterp('학업 외 관계 스트레스이거나 레벨 부적응일 가능성 높음');
+    setResp('수업 후 1:1로 가볍게 무거운 표정의 원인을 묻는다');
+    setStep(3);
   };
 
   const variants = {
@@ -70,7 +77,10 @@ export default function NoticingDrillActivity({ data, saveData, complete, onBack
             <AnimatePresence mode="wait">
               {step === 0 && (
                 <motion.div key="step0" variants={variants} initial="hidden" animate="visible" exit="exit" className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <h3 style={{ color: 'var(--primary)', marginBottom: 8 }}>Step 1. 관찰 (해석 금지!)</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <h3 style={{ color: 'var(--primary)' }}>Step 1. 관찰 (해석 금지!)</h3>
+                    <button className="btn btn-sm btn-outline" onClick={handleAutoFill}>🪄 마법봉 (자동 채움)</button>
+                  </div>
                   <p style={{ marginBottom: 24, fontSize: '0.875rem' }}>눈으로 본 사실만 3가지 적으세요. "왜 그런 행동을 했는지" 추측하는 것은 금지입니다.</p>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
@@ -130,22 +140,28 @@ export default function NoticingDrillActivity({ data, saveData, complete, onBack
                   />
 
                   <button className="btn btn-primary" style={{ width: '100%', marginTop: 24, background: 'var(--success)' }} onClick={handleNext} disabled={!resp.trim()}>
-                    완료하기 ✓
+                    결과 보기 ✓
                   </button>
                 </motion.div>
               )}
 
               {step === 3 && (
-                <motion.div key="step3" variants={variants} initial="hidden" animate="visible" exit="exit" className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-                  <div style={{ fontSize: 48, marginBottom: 16 }}>🎯</div>
-                  <h3 style={{ color: 'var(--success)', marginBottom: 12 }}>Professional Vision 완료</h3>
-                  <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 32 }}>
+                <motion.div key="step3" variants={variants} initial="hidden" animate="visible" exit="exit" className="card" style={{ flex: 1, display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                    <div style={{ fontSize: 32 }}>🎯</div>
+                    <h3 style={{ color: 'var(--success)', margin: 0 }}>Professional Vision 완료</h3>
+                  </div>
+                  <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: 24, fontSize: '0.9rem' }}>
                     같은 장면을 보고도 초보와 숙련자는 완전히 다른 단서를 포착합니다.<br/>
-                    방금 당신이 분리해낸 <strong>관찰-해석-행동</strong>의 고리가 바로 20년이 만든 당신만의 고유한 암묵지입니다.
+                    방금 분리해낸 <strong>관찰-해석-행동</strong>의 고리를 아래에 자유롭게 메모 후 완료하세요.
                   </p>
-                  <button className="btn btn-primary" onClick={handleComplete}>
-                    대시보드로 돌아가기
-                  </button>
+                  
+                  <div style={{ marginTop: 'auto' }}>
+                    <ActivityFooter 
+                      onComplete={handleComplete}
+                      onSkip={() => complete({ ...data, cues, interp, resp, insight: 'Skipped' })}
+                    />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
+import ActivityFooter from '../components/ActivityFooter';
 
 const CDM_PROBES = [
   "그 순간 가장 결정적인 단서 1개는 무엇이었나요?",
@@ -26,12 +27,20 @@ export default function CdmSimulatorActivity({ data, saveData, complete, onBack 
   const [aarAns, setAarAns] = useState({});
   const [card, setCard] = useState({ cue: "", interpret: "", action: "", boundary: "", alt: "" });
 
-  // Use the instructor absence scenario as the extremely high pressure case
   const sc = ROLEPLAY_SCENARIOS[2];
   const stimulus = sc.steps[0].message;
 
   const handleNext = () => setPhase(p => Math.min(p + 1, 5));
-  const handleComplete = () => complete({ ...data, intuition, timeline, probeAns, aarAns, card });
+
+  const handleAutoFill = () => {
+    setCard({
+      cue: "결강 강사의 카톡 발송 지연 시간",
+      interpret: "단순 지각이 아닌 무단 결근 가능성 사전 인지",
+      action: "대체 강사 1순위 즉시 투입 및 학부모 안심 문자 초안 작성",
+      boundary: "대체 강사의 해당 반 진도 파악이 안 된 경우",
+      alt: "원장 본인 직접 투입 및 환불 규정 검토"
+    });
+  };
 
   const variants = {
     hidden: { opacity: 0, x: 20 },
@@ -237,9 +246,14 @@ export default function CdmSimulatorActivity({ data, saveData, complete, onBack 
                     ))}
                   </div>
 
-                  <button className="btn btn-primary" style={{ width: '100%', marginTop: 24, background: '#EC4899' }} onClick={handleComplete} disabled={!card.cue.trim() || !card.action.trim()}>
-                    카드 완성 및 대시보드 복귀 ✓
-                  </button>
+                  <div style={{ marginTop: 'auto' }}>
+                    <ActivityFooter 
+                      onComplete={(insight = '') => complete({ ...data, intuition, timeline, probeAns, aarAns, card, insight })}
+                      onSkip={() => complete({ ...data, intuition, timeline, probeAns, aarAns, card, insight: 'Skipped' })}
+                      onAutoFill={handleAutoFill}
+                      disableComplete={!card.cue.trim() || !card.action.trim()}
+                    />
+                  </div>
                 </motion.div>
               )}
 

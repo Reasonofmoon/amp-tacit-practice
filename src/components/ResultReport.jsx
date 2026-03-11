@@ -50,10 +50,13 @@ export default function ResultReport({ state, levelInfo }) {
 
   return (
     <section className="report-shell">
-      <div className="section-heading report-heading">
+      <div className="section-heading report-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <span className="tag" style={{ marginBottom: '8px' }}>FINAL DIAGNOSTIC</span>
           <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>암묵지 프로필 리포트</h2>
+          <button className="btn btn-sm btn-outline print-hide" style={{ marginTop: '12px' }} onClick={() => window.print()}>
+            🖨️ PDF 저장 / 인쇄하기
+          </button>
         </div>
         <div style={{ textAlign: 'right' }}>
           <strong style={{ fontSize: '2rem', color: 'var(--primary)', lineHeight: 1 }}>{state.xp} XP</strong>

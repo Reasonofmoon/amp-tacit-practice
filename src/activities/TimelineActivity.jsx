@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ACTIVITY_MODELS } from '../data/activities';
+import ActivityFooter from '../components/ActivityFooter';
 
 const MONTHS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 const EVENTS = [
@@ -25,7 +26,6 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
   const handleDragStart = (e, eventItem) => {
     setDraggedId(eventItem.id);
     e.dataTransfer.effectAllowed = 'move';
-    // Firefox requires dataTransfer data
     e.dataTransfer.setData('text/plain', eventItem.id);
   };
 
@@ -89,16 +89,20 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
             ))}
           </div>
 
-          <div className="confidence-module" style={{ marginTop: 'auto' }}>
-            <p>기본 사이클이 파악되었습니다. {filledCount}개 배치 완료.</p>
-            <button 
-              className="btn btn-primary" 
-              style={{ width: '100%' }}
-              disabled={filledCount < 3}
-              onClick={() => complete({ activityData: { placedEvents }, bonusXp: filledCount >= 6 ? 15 : 0 })}
-            >
-              타임라인 완료 및 저장하기
-            </button>
+          <div style={{ marginTop: 'auto' }}>
+            <p style={{ fontWeight: 600, color: 'var(--text-main)', marginBottom: '12px', textAlign: 'center' }}>
+              기본 사이클이 파악되었습니다. {filledCount}개 배치 완료.
+            </p>
+            <ActivityFooter 
+              onComplete={(insight) => complete({ activityData: { placedEvents, insight }, bonusXp: filledCount >= 6 ? 15 : 0 })}
+              onSkip={() => complete({ activityData: { placedEvents: {}, insight: 'Skipped' }, bonusXp: 0 })}
+              onAutoFill={() => {
+                const autoFill = { 0: EVENTS[0], 2: EVENTS[2], 5: EVENTS[5] };
+                setPlacedEvents(autoFill);
+                saveData({ placedEvents: autoFill });
+              }}
+              disableComplete={filledCount < 3}
+            />
           </div>
         </div>
 

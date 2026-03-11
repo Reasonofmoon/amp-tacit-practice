@@ -620,3 +620,107 @@ p { color: var(--text-muted); }
   .workspace-content { padding: var(--space-lg); }
   .choice-btn { padding: 16px; font-size: 1rem; }
 }
+
+/* ─── GAMIFICATION & UX OVERHAUL ─── */
+.neon-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+  animation: pulse-glow 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+.neon-btn:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.7), 0 0 30px rgba(59, 130, 246, 0.5);
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+  50% { opacity: 0.9; text-shadow: 0 0 16px rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(59, 130, 246, 0.7), 0 0 25px rgba(59, 130, 246, 0.4); }
+}
+
+/* Custom Opinion Block */
+.custom-opinion-block {
+  margin-top: var(--space-xl);
+  padding: var(--space-md);
+  background: var(--bg-app);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.custom-opinion-block textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 0.875rem;
+  resize: vertical;
+  background: white;
+  outline: none;
+}
+.custom-opinion-block textarea:focus {
+  border-color: var(--primary);
+}
+
+/* Monopoly Board Layout Utilities */
+.monopoly-board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  position: relative;
+  padding: var(--space-xl) 0;
+  justify-content: center;
+}
+.monopoly-board::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 10px, transparent 10px, transparent 20px);
+  z-index: 0;
+  transform: translateY(-50%);
+}
+@media (max-width: 768px) {
+  .monopoly-board::before { display: none; }
+  .monopoly-board { flex-direction: column; align-items: stretch; }
+}
+
+.monopoly-node {
+  position: relative;
+  z-index: 1;
+  width: 250px;
+  flex-shrink: 0;
+}
+.monopoly-node .activity-card {
+  border-radius: 50%;
+  aspect-ratio: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-md);
+  box-shadow: var(--shadow-md);
+  border: 4px solid var(--border);
+}
+.monopoly-node .activity-card:hover {
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+.monopoly-node .activity-card.completed {
+  border-color: var(--success);
+  background: var(--primary-light);
+}
+
+/* ─── PRINT OPTIMIZATION (Result Report) ─── */
+@media print {
+  body { background: white; color: black; }
+  .app-header, .onboarding-overlay, .btn-ghost, .print-hide { display: none !important; }
+  .app-frame { padding: 0; max-width: 100%; box-shadow: none; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+  .radar-container { page-break-inside: avoid; border: none; box-shadow: none; }
+  pre { white-space: pre-wrap; word-break: break-all; border: 1px solid #eee; background: none; color: black; box-shadow: none; text-shadow: none; page-break-inside: avoid; }
+}
+
