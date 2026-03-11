@@ -4,7 +4,7 @@ export default function ActivityCard({ activity, completed, progress = 0, index,
   return (
     <motion.button
       type="button"
-      className="activity-card"
+      className={`activity-card ${completed ? 'completed' : ''}`}
       onClick={onClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -22,11 +22,11 @@ export default function ActivityCard({ activity, completed, progress = 0, index,
         </span>
       </div>
       
-      <h3 style={{ textAlign: 'left', marginTop: '8px' }}>{activity.title}</h3>
-      <p style={{ textAlign: 'left' }}>{activity.subtitle}</p>
+      <h3 className="activity-card-title">{activity.title}</h3>
+      <p className="activity-card-desc">{activity.subtitle}</p>
       
-      <div style={{ marginTop: 'auto', width: '100%' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+      <div className="activity-card-progress">
+        <div className="progress-text">
           <span>진행도</span>
           <span>{Math.round(progress * 100)}%</span>
         </div>

@@ -310,16 +310,32 @@ p { color: var(--text-muted); }
   color: white;
 }
 
-.activity-card h3 {
+.activity-card-title {
   font-size: 1.125rem;
   margin-bottom: 4px;
+  text-align: left;
 }
 
-.activity-card p {
+.activity-card-desc {
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: var(--space-md);
   flex: 1;
+  text-align: left;
+}
+
+.activity-card-progress {
+  margin-top: auto;
+  width: 100%;
+}
+
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .progress-thin {
@@ -692,26 +708,84 @@ p { color: var(--text-muted); }
 .monopoly-node {
   position: relative;
   z-index: 1;
-  width: 250px;
+  width: 280px; /* Increased from 250px to prevent text cut-off */
   flex-shrink: 0;
 }
 .monopoly-node .activity-card {
   border-radius: 50%;
   aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: var(--space-md);
-  box-shadow: var(--shadow-md);
+  padding: 36px 24px; /* Sufficient padding so text stays inside the circle */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer resting shadow */
   border: 4px solid var(--border);
+  background: white;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Bouncy float */
+  position: relative;
 }
 .monopoly-node .activity-card:hover {
   border-color: var(--primary);
-  transform: scale(1.05);
+  transform: translateY(-8px) scale(1.03); /* Floating effect */
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.2); /* Stronger glow */
+  z-index: 10;
 }
 .monopoly-node .activity-card.completed {
   border-color: var(--success);
-  background: var(--primary-light);
+  background: var(--bg-app);
+}
+.monopoly-node .activity-card:hover.completed {
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3), 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+/* Internal Layout Overrides for Circular Fit */
+.monopoly-node .activity-card-header {
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+  position: relative;
+}
+.monopoly-node .activity-icon-wrap {
+  margin: 0 auto;
+}
+.monopoly-node .activity-status {
+  position: absolute;
+  top: -10px;
+  right: 12%; 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+
+.monopoly-node .activity-card-title {
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin-top: 4px;
+  margin-bottom: 6px;
+  word-break: keep-all; /* Keep Korean words intact */
+}
+
+.monopoly-node .activity-card-desc {
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  flex: none; /* remove flex stretch so it vertically centers */
+  word-break: keep-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.monopoly-node .activity-card-progress {
+  width: 85%;
+  margin: 0 auto;
 }
 
 /* ─── PRINT OPTIMIZATION (Result Report) ─── */
