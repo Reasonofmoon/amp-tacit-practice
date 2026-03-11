@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
+import { DEV_ROLEPLAY_SCENARIOS } from '../data/developerScenarios';
 import { calculateRoleplayBonus, calculateRoleplayStyle } from '../utils/scoring';
 
 function getScenarioState(progressMap, scenarioId) {
@@ -11,11 +12,11 @@ function getScenarioState(progressMap, scenarioId) {
   };
 }
 
-function buildProgressSnapshot(progressMap) {
-  const completedScenarioIds = ROLEPLAY_SCENARIOS.filter((scenario) => getScenarioState(progressMap, scenario.id).complete).map((scenario) => scenario.id);
-  const allResponses = ROLEPLAY_SCENARIOS.flatMap((scenario) => getScenarioState(progressMap, scenario.id).responses);
+function buildProgressSnapshot(progressMap, targetScenarios) {
+  const completedScenarioIds = targetScenarios.filter((scenario) => getScenarioState(progressMap, scenario.id).complete).map((scenario) => scenario.id);
+  const allResponses = targetScenarios.flatMap((scenario) => getScenarioState(progressMap, scenario.id).responses);
   const totalScore = allResponses.reduce((sum, response) => sum + response.score, 0);
-  const maxScore = ROLEPLAY_SCENARIOS.reduce((sum, scenario) => sum + scenario.steps.length * 3, 0);
+  const maxScore = targetScenarios.reduce((sum, scenario) => sum + scenario.steps.length * 3, 0);
   const insights = [...new Set(allResponses.map((response) => response.insight).filter(Boolean))];
   const style = calculateRoleplayStyle(totalScore, maxScore);
 
@@ -28,14 +29,17 @@ function buildProgressSnapshot(progressMap) {
   };
 }
 
-export default function RolePlayActivity({ data, saveData, complete, onBack }) {
+export default function RolePlayActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetScenarios = isDev ? DEV_ROLEPLAY_SCENARIOS : ROLEPLAY_SCENARIOS;
+  
   const [scenarioProgress, setScenarioProgress] = useState(data?.scenarioProgress ?? {});
-  const [selectedId, setSelectedId] = useState(data?.completedScenarioIds?.[0] ?? ROLEPLAY_SCENARIOS[0].id);
+  const [selectedId, setSelectedId] = useState(data?.completedScenarioIds?.[0] ?? targetScenarios[0].id);
   const [feedback, setFeedback] = useState(null);
   const chatRef = useRef(null);
 
-  const snapshot = useMemo(() => buildProgressSnapshot(scenarioProgress), [scenarioProgress]);
-  const selectedScenario = ROLEPLAY_SCENARIOS.find((scenario) => scenario.id === selectedId) ?? ROLEPLAY_SCENARIOS[0];
+  const snapshot = useMemo(() => buildProgressSnapshot(scenarioProgress, targetScenarios), [scenarioProgress, targetScenarios]);
+  const selectedScenario = targetScenarios.find((scenario) => scenario.id === selectedId) ?? targetScenarios[0];
   const currentState = getScenarioState(scenarioProgress, selectedId);
   const currentStep = selectedScenario.steps[currentState.stepIndex];
 

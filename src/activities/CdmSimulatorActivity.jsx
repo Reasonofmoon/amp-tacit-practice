@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
+import { DEV_ROLEPLAY_SCENARIOS } from '../data/developerScenarios';
 import ActivityFooter from '../components/ActivityFooter';
 
 const CDM_PROBES = [
@@ -18,7 +19,10 @@ const AAR_QUESTIONS = [
   { label: "개선", q: "다음에 유지할 것과 바꿀 것은 무엇인가요?" },
 ];
 
-export default function CdmSimulatorActivity({ data, saveData, complete, onBack }) {
+export default function CdmSimulatorActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetScenarios = isDev ? DEV_ROLEPLAY_SCENARIOS : ROLEPLAY_SCENARIOS;
+  
   const [phase, setPhase] = useState(0);
   
   const [intuition, setIntuition] = useState({ risk: 3, feeling: "", action: "" });
@@ -27,19 +31,29 @@ export default function CdmSimulatorActivity({ data, saveData, complete, onBack 
   const [aarAns, setAarAns] = useState({});
   const [card, setCard] = useState({ cue: "", interpret: "", action: "", boundary: "", alt: "" });
 
-  const sc = ROLEPLAY_SCENARIOS[2];
+  const sc = targetScenarios[2];
   const stimulus = sc.steps[0].message;
 
   const handleNext = () => setPhase(p => Math.min(p + 1, 5));
 
   const handleAutoFill = () => {
-    setCard({
-      cue: "결강 강사의 카톡 발송 지연 시간",
-      interpret: "단순 지각이 아닌 무단 결근 가능성 사전 인지",
-      action: "대체 강사 1순위 즉시 투입 및 학부모 안심 문자 초안 작성",
-      boundary: "대체 강사의 해당 반 진도 파악이 안 된 경우",
-      alt: "원장 본인 직접 투입 및 환불 규정 검토"
-    });
+    if (isDev) {
+      setCard({
+        cue: "수정된 코드가 다른 스킬과 충돌하며 프롬프트 한계치 도과",
+        interpret: "공통 프롬프트에 구겨넣기보다 RAG/분할 아키텍처로 넘어가야 할 한계점 도달",
+        action: "신규 기능을 워크플로우(.md)로 분리하고 메인 프롬프트에 참조 지시만 남김",
+        boundary: "너무 많은 파일 컨텍스트가 주입된 채로 억지 지시를 강행하려 할 때",
+        alt: "기능 축소 후 MVP부터 다시 안정화"
+      });
+    } else {
+      setCard({
+        cue: "결강 강사의 카톡 발송 지연 시간",
+        interpret: "단순 지각이 아닌 무단 결근 가능성 사전 인지",
+        action: "대체 강사 1순위 즉시 투입 및 학부모 안심 문자 초안 작성",
+        boundary: "대체 강사의 해당 반 진도 파악이 안 된 경우",
+        alt: "원장 본인 직접 투입 및 환불 규정 검토"
+      });
+    }
   };
 
   const variants = {

@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PATTERN_CARDS } from '../data/patternCards';
+import { DEV_PATTERN_CARDS } from '../data/developerPatternCards';
 
-const CARD_SET = PATTERN_CARDS[0];
-
-export default function PatternMatchActivity({ data, saveData, complete, onBack }) {
+export default function PatternMatchActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetCards = isDev ? DEV_PATTERN_CARDS[0] : PATTERN_CARDS[0];
+  
   const [matches, setMatches] = useState(data?.matches ?? {});
   const [selectedSituation, setSelectedSituation] = useState(null);
 
@@ -45,12 +47,12 @@ export default function PatternMatchActivity({ data, saveData, complete, onBack 
         <div className="split-left">
           <h3 style={{ marginBottom: '16px' }}>상황 (Situations)</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {CARD_SET.situations.map((sit) => {
+            {targetCards.situations.map((sit) => {
               const isMatched = matches[sit.id];
               const isSelected = selectedSituation === sit.id;
               
               if (isMatched) {
-                const response = CARD_SET.responses.find(r => r.id === matches[sit.id]);
+                const response = targetCards.responses.find(r => r.id === matches[sit.id]);
                 return (
                   <div key={sit.id} className="card" style={{ borderColor: 'var(--primary)', background: 'var(--primary-light)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -82,7 +84,7 @@ export default function PatternMatchActivity({ data, saveData, complete, onBack 
         <div className="split-right" style={{ paddingLeft: '24px' }}>
           <h3 style={{ marginBottom: '16px' }}>대응 프레임 (Responses)</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {CARD_SET.responses.map((res) => {
+            {targetCards.responses.map((res) => {
               const isAlreadyMatched = Object.values(matches).includes(res.id);
               
               return (
@@ -106,11 +108,11 @@ export default function PatternMatchActivity({ data, saveData, complete, onBack 
           </div>
 
           <div className="confidence-module" style={{ marginTop: 'auto' }}>
-            <p>총 {CARD_SET.situations.length}개 중 {matchedCount}개 매칭 완료</p>
+            <p>총 {targetCards.situations.length}개 중 {matchedCount}개 매칭 완료</p>
             <button 
               className="btn btn-primary" 
               style={{ width: '100%' }}
-              disabled={matchedCount < CARD_SET.situations.length}
+              disabled={matchedCount < targetCards.situations.length}
               onClick={() => complete({ activityData: { matches }, bonusXp: 20 })}
             >
               매칭 완료 및 결과 저장

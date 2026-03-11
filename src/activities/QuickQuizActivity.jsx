@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { QUIZZES } from '../data/quizzes';
+import { DEV_QUIZZES } from '../data/developerQuizzes';
 import { useTimer } from '../hooks/useTimer';
 
-export default function QuickQuizActivity({ data, saveData, complete, onBack }) {
+export default function QuickQuizActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetQuizzes = isDev ? DEV_QUIZZES : QUIZZES;
+  
   const [current, setCurrent] = useState(0);
   const [responses, setResponses] = useState(data?.responses ?? []);
   const [confidence, setConfidence] = useState(50);
   const [strategy, setStrategy] = useState(null); // '직관적 판단' vs '논리적 소거'
   const [phase, setPhase] = useState('strategy'); // 'strategy' -> 'quiz' -> 'feedback' -> 'result'
   
-  const question = QUIZZES[current];
+  const question = targetQuizzes[current];
   const { timeLeft, pause, reset } = useTimer({
     duration: 30,
     autoStart: phase === 'quiz',
@@ -43,7 +47,7 @@ export default function QuickQuizActivity({ data, saveData, complete, onBack }) 
   };
 
   const nextQuestion = () => {
-    if (current >= QUIZZES.length - 1) {
+    if (current >= targetQuizzes.length - 1) {
       setPhase('result');
       return;
     }
@@ -74,9 +78,9 @@ export default function QuickQuizActivity({ data, saveData, complete, onBack }) 
           <div className="radar-container" style={{ flexDirection: 'column', gap: '24px' }}>
             <h3>진단 완료!</h3>
             <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--primary)' }}>
-              {Math.round((correctCount / QUIZZES.length) * 100)}점
+              {Math.round((correctCount / targetQuizzes.length) * 100)}점
             </div>
-            <p style={{ color: 'var(--text-muted)' }}>총 {QUIZZES.length}문제 중 {correctCount}문제 정답</p>
+            <p style={{ color: 'var(--text-muted)' }}>총 {targetQuizzes.length}문제 중 {correctCount}문제 정답</p>
             <button className="btn btn-primary" onClick={finishQuiz} style={{ width: '100%' }}>XP 받고 메인으로</button>
           </div>
         </div>

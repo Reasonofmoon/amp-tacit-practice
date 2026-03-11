@@ -99,7 +99,7 @@ export function extractKeywords(activityData, limit = 6) {
     .map(([token]) => token);
 }
 
-export function buildPromptPack(activityData, profile) {
+export function buildPromptPack(activityData, profile, isDev = false) {
   const keywords = extractKeywords(activityData, 10);
   const coreKeywords = keywords.length > 0 ? keywords.join(', ') : '데이터 기반 상담, 행동 관찰, 신뢰 관계 구축, 강사 피드백, 위기 대응 리더십, 시스템화';
   const coachName = profile?.name?.trim() || '익명의 원장';
@@ -113,6 +113,45 @@ export function buildPromptPack(activityData, profile) {
     }
   });
   const customInsightsText = insights.length > 0 ? insights.join('\n- ') : "특별한 추가 인사이트 없음";
+
+  if (isDev) {
+    const devPrompt = `[역할 부여: 시니어 AI/프롬프트 엔지니어]
+당신은 Agentic 프레임워크와 LLM 파이프라인 설계의 대가입니다.
+아래 제공된 '암묵지 추출 데이터'를 분석하여, 개발 과정의 병목을 해결하고 에이전트 시스템을 스케일업할 수 있는 [AI 개발 역량 진단 및 시스템 아키텍처 처방 리포트]를 작성해주세요.
+
+[분석 대상 데이터]
+- 개발자명: ${coachName}
+- 경력: ${career}
+- 주특기 분야: ${academy}
+- 발견된 핵심 문제해결 키워드: ${coreKeywords}
+- 현장 인사이트(Insights):
+- ${customInsightsText}
+
+[출력 형식 및 필수 포함 내용]
+다음 4가지 섹션을 마크다운 양식으로 상세히 출력하세요.
+
+1. 🔍 Agentic 역량 진단 (Diagnosis)
+- 제공된 키워드를 기반으로 개발자의 현재 'AI 오케스트레이션 레벨' 진단 (1~5단계 중 평가)
+- 강점 자산: 가장 시스템화(스킬화/도구화) 가치가 높은 직관적 디버깅/판단 노하우 2가지 분석
+- 병목 리스크: 휴먼 개입(매뉴얼 프롬프팅) 의존도가 높아 파이프라인 병목이 되는 영역 1가지
+
+2. 💊 맞춤형 AI/시스템 도입 처방 및 플랜 (Prescription & Roadmap)
+- [도구화 전략]: 직관을 코드로 변환하는 구체적 제안 (예: MCP 서버 도구, 자동 분류 에이전트 등)
+- [오류 억제]: 환각이나 무한 루프를 막기 위한 'Safe-guard' 프롬프트/가드레일 설계
+- [로드맵 시각화]: 위 처방을 3단계(즉시 스크립트 / 통합 파이프라인 / 자동화 봇)로 구성해 시각화하세요.
+
+3. 🃏 핵심 암묵지 도구 카드 (Tool/Skill Specification Card)
+발견된 노하우 중 1가지를 선정하여 Agent가 사용할 '도구(Tool/Skill)' 명세서로 변환하세요.
+- [Trigger(단서)]: 언제 이 도구를 호출해야 하는가?
+- [Input(입력)]: 도구가 필요로 하는 컨텍스트와 파라미터는?
+- [Logic(동작)]: 도구가 내부적으로 수행하는 검증 로직은?
+- [Boundary(제약)]: 이 도구가 절대 수정해서는 안 되는 영역은?
+
+4. 🧪 단서 라이브러리 및 현장 적용 퀘스트 (Cue Library & Field Quest)
+- [단서 라이브러리]: 에러 로그나 코드 리뷰 시 즉시 감지해야 할 위험 징후 패턴 3가지 기록
+- [작은 실험 퀘스트]: 다음 스프린트에 당장 적용해볼 수 있는 '프롬프트 분할/시스템화 실험' 1개 제안`;
+    return [devPrompt];
+  }
 
   const masterPrompt = `[역할 부여: Enterprise AX/DX 컨설턴트 AI]
 당신은 최고 수준의 교육 비즈니스 디지털 전환(DX) 및 AI 전환(AX) 전략 컨설턴트입니다.

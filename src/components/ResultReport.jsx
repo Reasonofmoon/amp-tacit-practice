@@ -1,15 +1,19 @@
 import { useMemo, useState } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { ACTIVITIES, AXES } from '../data/activities';
+import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
 import { buildPromptPack, buildSeciMap, buildTopInsights } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
 
-function buildAxisScores(state) {
-  return AXES.map((axis) => {
+function buildAxisScores(state, isDev = false) {
+  const targetAxes = isDev ? DEV_AXES : AXES;
+  const targetActivities = isDev ? DEV_ACTIVITIES : ACTIVITIES;
+
+  return targetAxes.map((axis) => {
     let weightedScore = 0;
     let maxScore = 0;
 
-    ACTIVITIES.forEach((activity) => {
+    targetActivities.forEach((activity) => {
       const weight = activity.axis[axis.key] ?? 0;
       if (!weight) {
         return;
@@ -26,15 +30,15 @@ function buildAxisScores(state) {
   });
 }
 
-export default function ResultReport({ state, levelInfo }) {
+export default function ResultReport({ state, levelInfo, isDev }) {
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  const axisScores = useMemo(() => buildAxisScores(state), [state]);
-  const promptPack = useMemo(() => buildPromptPack(state.activityData, state.profile), [state.activityData, state.profile]);
+  const axisScores = useMemo(() => buildAxisScores(state, isDev), [state, isDev]);
+  const promptPack = useMemo(() => buildPromptPack(state.activityData, state.profile, isDev), [state.activityData, state.profile, isDev]);
   const topInsights = useMemo(() => buildTopInsights(state.activityData), [state.activityData]);
   const seciMap = useMemo(() => buildSeciMap(state.activityData), [state.activityData]);
 
-  const profileName = state.profile.name?.trim() || '익명 원장';
+  const profileName = state.profile.name?.trim() || (isDev ? '익명 개발자' : '익명 원장');
   const career = state.profile.career?.trim() || '경력 미입력';
   const academy = state.profile.academy?.trim() || '우리 학원';
 
@@ -117,7 +121,7 @@ export default function ResultReport({ state, levelInfo }) {
                 <PolarGrid stroke="var(--border)" />
                 <PolarAngleAxis dataKey="label" tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 600 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar name="원장님" dataKey="score" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} />
+                <Radar name={isDev ? "개발자님" : "원장님"} dataKey="score" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.4} />
               </RadarChart>
             </ResponsiveContainer>
           </div>

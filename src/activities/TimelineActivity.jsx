@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ACTIVITY_MODELS } from '../data/activities';
 import ActivityFooter from '../components/ActivityFooter';
 
 const MONTHS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
@@ -16,11 +15,26 @@ const EVENTS = [
   { id: 'ev9', text: '졸업생 환송 및 성취도 평가' },
 ];
 
-export default function TimelineActivity({ data, saveData, complete, onBack }) {
+const DEV_EVENTS = [
+  { id: 'ev1', text: '프로젝트 스캐폴딩 및 초기 세팅' },
+  { id: 'ev2', text: '아키텍처 설계 및 Tech Stack 선정' },
+  { id: 'ev3', text: '코어 비즈니스 로직 MVP 빌드' },
+  { id: 'ev4', text: '컴포넌트 단위 테스트 및 디버깅' },
+  { id: 'ev5', text: 'CI/CD 자동 배포 파이프라인 구축' },
+  { id: 'ev6', text: '프롬프트 컴파일 파이프라인 연동' },
+  { id: 'ev7', text: '기술 부채(Linter, 렌더링 최적화) 해결' },
+  { id: 'ev8', text: 'Vercel 프로덕션 런칭 및 모니터링' },
+  { id: 'ev9', text: '사용자 피드백 기반 1차 마이너 리팩토링' },
+];
+
+export default function TimelineActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetEvents = isDev ? DEV_EVENTS : EVENTS;
+  
   const [placedEvents, setPlacedEvents] = useState(data?.placedEvents ?? {});
   const [draggedId, setDraggedId] = useState(null);
 
-  const availableEvents = EVENTS.filter(ev => !Object.values(placedEvents).some(placed => placed.id === ev.id));
+  const availableEvents = targetEvents.filter(ev => !Object.values(placedEvents).some(placed => placed.id === ev.id));
   const filledCount = Object.keys(placedEvents).length;
 
   const handleDragStart = (e, eventItem) => {
@@ -33,7 +47,7 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
     e.preventDefault();
     if (!draggedId) return;
 
-    const eventToDrop = EVENTS.find(ev => ev.id === draggedId);
+    const eventToDrop = targetEvents.find(ev => ev.id === draggedId);
     if (eventToDrop) {
       const nextPlaced = { ...placedEvents, [monthIndex]: eventToDrop };
       setPlacedEvents(nextPlaced);
@@ -59,8 +73,13 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
       <header className="workspace-header">
         <div>
           <span className="tag" style={{ marginBottom: '8px' }}>Layer A: Foundation</span>
-          <h2 className="question-title" style={{ marginBottom: 0 }}>나의 1년 타임라인</h2>
-          <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>오른쪽의 주요 사건을 해당하는 월(Month) 슬롯으로 <strong>드래그 앤 드랍</strong> 해보세요. 학원의 운영 리듬이 시각화됩니다.</p>
+          <h2 className="question-title" style={{ marginBottom: 0 }}>
+            {isDev ? '나의 개발 파이프라인 타임라인' : '나의 1년 타임라인'}
+          </h2>
+          <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
+            오른쪽의 주요 사건을 해당하는 월(Month) 슬롯으로 <strong>드래그 앤 드랍</strong> 해보세요. 
+            {isDev ? '개발의 전체 리듬이 시각화됩니다.' : '학원의 운영 리듬이 시각화됩니다.'}
+          </p>
         </div>
         <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
       </header>
@@ -97,7 +116,7 @@ export default function TimelineActivity({ data, saveData, complete, onBack }) {
               onComplete={(insight) => complete({ activityData: { placedEvents, insight }, bonusXp: filledCount >= 6 ? 15 : 0 })}
               onSkip={() => complete({ activityData: { placedEvents: {}, insight: 'Skipped' }, bonusXp: 0 })}
               onAutoFill={() => {
-                const autoFill = { 0: EVENTS[0], 2: EVENTS[2], 5: EVENTS[5] };
+                const autoFill = { 0: targetEvents[0], 2: targetEvents[2], 5: targetEvents[5] };
                 setPlacedEvents(autoFill);
                 saveData({ placedEvents: autoFill });
               }}

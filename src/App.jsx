@@ -3,6 +3,7 @@ import './index.css';
 import confetti from 'canvas-confetti';
 import { useGameState } from './hooks/useGameState';
 import { ACTIVITIES } from './data/activities';
+import { DEV_ACTIVITIES } from './data/developerActivities';
 import { getActivityProgress } from './utils/scoring';
 import { playSuccessSound, playFanfareSound } from './utils/sound';
 import Layout from './components/Layout';
@@ -22,6 +23,7 @@ import NoticingDrillActivity from './activities/NoticingDrillActivity';
 import CdmSimulatorActivity from './activities/CdmSimulatorActivity';
 
 const ACTIVITY_COMPONENTS = {
+  // Director Journey
   timeline: TimelineActivity,
   autopilot: AutopilotActivity,
   crisis: CrisisActivity,
@@ -33,10 +35,23 @@ const ACTIVITY_COMPONENTS = {
   pattern: PatternMatchActivity,
   noticing: NoticingDrillActivity,
   cdm: CdmSimulatorActivity,
+  // Developer Journey
+  dev_timeline: TimelineActivity,
+  dev_autopilot: AutopilotActivity,
+  dev_crisis: CrisisActivity,
+  dev_transfer: TransferActivity,
+  dev_seci: SeciActivity,
+  dev_gallery: GalleryActivity,
+  dev_quiz: QuickQuizActivity,
+  dev_roleplay: RolePlayActivity,
+  dev_pattern: PatternMatchActivity,
+  dev_noticing: NoticingDrillActivity,
+  dev_cdm: CdmSimulatorActivity,
 };
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
+  const [activeJourney, setActiveJourney] = useState('director'); // 'director' | 'developer'
   const game = useGameState();
 
   const goHome = () => setCurrentView('home');
@@ -70,9 +85,28 @@ export default function App() {
         {currentView === 'home' && (
           <div style={{ textAlign: 'center' }}>
             <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '2rem' }}>탁월함의 발자취 (Monopoly Path)</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-xl)' }}>각 노드를 클릭해 암묵지 발굴 여정을 진행하세요.</p>
+            <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-lg)' }}>
+              각 노드를 클릭해 암묵지 발굴 여정을 진행하세요.
+            </p>
+            
+            {/* Journey Toggle */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: 'var(--space-xl)' }}>
+              <button 
+                className={`btn ${activeJourney === 'director' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setActiveJourney('director')}
+              >
+                🎓 원장 여정
+              </button>
+              <button 
+                className={`btn ${activeJourney === 'developer' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => setActiveJourney('developer')}
+              >
+                💻 개발자 여정
+              </button>
+            </div>
+
             <div className="monopoly-board">
-              {ACTIVITIES.map((activity, index) => {
+              {(activeJourney === 'director' ? ACTIVITIES : DEV_ACTIVITIES).map((activity, index) => {
                 const isCompleted = game.state.completed.includes(activity.id);
                 return (
                   <div key={activity.id} className="monopoly-node">
@@ -99,11 +133,12 @@ export default function App() {
         )}
 
         {currentView === 'report' && (
-          <ResultReport state={game.state} levelInfo={game.levelInfo} unlockedBadges={game.unlockedBadges} />
+          <ResultReport state={game.state} levelInfo={game.levelInfo} unlockedBadges={game.unlockedBadges} isDev={activeJourney === 'developer'} />
         )}
 
         {ActivityComponent && (
           <ActivityComponent
+            id={currentView} // pass active view to the component explicitly for data conditional checks
             state={game.state}
             data={game.state.activityData[currentView]}
             saveData={(next) => game.saveActivityData(currentView, next)}

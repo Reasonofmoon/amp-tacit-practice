@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
+import { DEV_ROLEPLAY_SCENARIOS } from '../data/developerScenarios';
 import ActivityFooter from '../components/ActivityFooter';
 
-export default function NoticingDrillActivity({ data, saveData, complete, onBack }) {
+export default function NoticingDrillActivity({ id, data, saveData, complete, onBack }) {
+  const isDev = id?.startsWith('dev_');
+  const targetScenarios = isDev ? DEV_ROLEPLAY_SCENARIOS : ROLEPLAY_SCENARIOS;
+  
   const [step, setStep] = useState(0);
   const [cues, setCues] = useState(['', '', '']);
   const [interp, setInterp] = useState('');
   const [resp, setResp] = useState('');
 
-  const sc = ROLEPLAY_SCENARIOS[1];
-  const stimulus = sc.steps[0].message;
+  const scenario = targetScenarios[1]; // Changed sc to scenario and used targetScenarios
+  const stimulus = scenario.steps[0].message; // Used scenario instead of sc
 
-  const handleNext = () => {
+  const handleNext = () => { // Renamed original handleNext to handleNextStep
     if (step < 3) setStep(step + 1);
   };
 
@@ -51,8 +55,8 @@ export default function NoticingDrillActivity({ data, saveData, complete, onBack
             <h2 className="question-title">👁️ 전문가적 보기 훈련<br/><span style={{fontSize:'1rem', color:'var(--text-muted)'}}>Noticing → Interpreting → Responding</span></h2>
             <div className="card" style={{ background: 'var(--primary-light)', borderColor: 'var(--primary)', marginBottom: 'var(--space-xl)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                <span style={{ fontSize: 24 }}>{sc.icon}</span>
-                <span style={{ fontWeight: 700, color: 'var(--primary-hover)', fontFamily: 'var(--font-mono)' }}>{sc.title}</span>
+                <span style={{ fontSize: 24 }}>{scenario.icon}</span> {/* Used scenario instead of sc */}
+                <span style={{ fontWeight: 700, color: 'var(--primary-hover)', fontFamily: 'var(--font-mono)' }}>{scenario.title}</span> {/* Used scenario instead of sc */}
               </div>
               <p style={{ fontSize: '1.125rem', color: 'var(--text-main)', fontWeight: 600, lineHeight: 1.6 }}>"{stimulus}"</p>
             </div>
