@@ -4,8 +4,12 @@ import { ACTIVITIES, AXES } from '../data/activities';
 import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
 import { buildPromptPack, buildSeciMap, buildTopInsights, buildVibeCodingPrompts } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
-import AIChatPanel from './AIChatPanel';
+import { PROVIDERS, getStoredApiKey } from '../utils/llmClient';
+import GlobalAIToolbar from './GlobalAIToolbar';
+import AITaskRunner from './AITaskRunner';
 import KnowledgeGraph from './KnowledgeGraph';
+
+const PROVIDER_ORDER = ['gemini', 'openai', 'claude'];
 
 function buildAxisScores(state, isDev = false) {
   const targetAxes = isDev ? DEV_AXES : AXES;
@@ -35,6 +39,19 @@ function buildAxisScores(state, isDev = false) {
 export default function ResultReport({ state, levelInfo, isDev }) {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [vibeCopied, setVibeCopied] = useState(null);
+
+  // Global AI State
+  const [activeProvider, setActiveProvider] = useState('gemini');
+  const [apiKeys, setApiKeys] = useState(() => {
+    const keys = {};
+    PROVIDER_ORDER.forEach((id) => { keys[id] = getStoredApiKey(id); });
+    return keys;
+  });
+  const [selectedModels, setSelectedModels] = useState(() => {
+    const models = {};
+    PROVIDER_ORDER.forEach((id) => { models[id] = PROVIDERS[id].defaultModel; });
+    return models;
+  });
 
   const axisScores = useMemo(() => buildAxisScores(state, isDev), [state, isDev]);
   const promptPack = useMemo(() => buildPromptPack(state.activityData, state.profile, isDev), [state.activityData, state.profile, isDev]);
@@ -161,6 +178,15 @@ export default function ResultReport({ state, levelInfo, isDev }) {
       </article>
 
       <div className="report-grid">
+        <GlobalAIToolbar
+          activeProvider={activeProvider}
+          setActiveProvider={setActiveProvider}
+          apiKeys={apiKeys}
+          setApiKeys={setApiKeys}
+          selectedModels={selectedModels}
+          setSelectedModels={setSelectedModels}
+        />
+
         <article className="glass-panel report-card">
           <div className="section-heading">
             <div>
@@ -193,7 +219,12 @@ export default function ResultReport({ state, levelInfo, isDev }) {
                 >
                   {copiedIndex === index ? '✅ 클립보드에 복사됨' : '📋 전체 프롬프트 복사하기'}
                 </button>
-                <AIChatPanel prompt={prompt} />
+                <AITaskRunner 
+                  prompt={prompt} 
+                  activeProvider={activeProvider}
+                  currentKey={apiKeys[activeProvider]}
+                  currentModel={selectedModels[activeProvider]}
+                />
               </article>
             ))}
           </div>
@@ -243,7 +274,12 @@ export default function ResultReport({ state, levelInfo, isDev }) {
                 >
                   {vibeCopied === index ? '✅ 복사됨!' : `📋 ${vp.icon} 프롬프트 복사`}
                 </button>
-                <AIChatPanel prompt={vp.prompt} />
+                <AITaskRunner 
+                  prompt={vp.prompt} 
+                  activeProvider={activeProvider}
+                  currentKey={apiKeys[activeProvider]}
+                  currentModel={selectedModels[activeProvider]}
+                />
               </article>
             ))}
           </div>
