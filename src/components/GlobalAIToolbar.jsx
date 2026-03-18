@@ -9,6 +9,7 @@ export default function GlobalAIToolbar({
   selectedModels, setSelectedModels 
 }) {
   const [showKey, setShowKey] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const provider = PROVIDERS[activeProvider] || Object.values(PROVIDERS)[0];
   const currentKey = apiKeys[activeProvider] || '';
   const currentModel = selectedModels[activeProvider];
@@ -37,18 +38,60 @@ export default function GlobalAIToolbar({
       background: 'rgba(15, 23, 42, 0.95)', 
       backdropFilter: 'blur(16px)',
       borderRadius: 'var(--radius-lg)',
-      padding: '24px'
+      padding: '24px',
+      transition: 'all 0.3s ease-in-out'
     }}>
-      <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px', marginBottom: '20px' }}>
-        <h3 style={{ fontSize: '1.2rem', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>⚙️</span> 글로벌 AI 설정
-        </h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
-          여기서 설정한 API 키와 모델이 모든 프롬프트 실행기(Vibe Coding, 솔루션 설계 등)에 공통으로 적용됩니다.
-        </p>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        borderBottom: isExpanded ? '1px solid var(--border)' : 'none', 
+        paddingBottom: isExpanded ? '16px' : '0', 
+        marginBottom: isExpanded ? '20px' : '0',
+        transition: 'all 0.3s'
+      }}>
+        <div>
+          <h3 style={{ fontSize: '1.2rem', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>⚙️</span> 글로벌 AI 설정
+          </h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
+            {isExpanded 
+              ? '여기서 설정한 API 키와 모델이 모든 프롬프트 실행기에 공통으로 적용됩니다.'
+              : `${provider.name} 모델 선택됨 — 프롬프트 실행 준비 완료`}
+          </p>
+        </div>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          style={{ 
+            background: 'var(--bg-card)', 
+            border: '1px solid var(--border)', 
+            color: 'var(--text-main)', 
+            cursor: 'pointer', 
+            borderRadius: '50%', 
+            width: '36px',
+            height: '36px',
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            transition: 'all 0.2s',
+            flexShrink: 0
+          }}
+          aria-label={isExpanded ? "설정 접기" : "설정 펼치기"}
+          title={isExpanded ? "설정 패널 숨기기" : "설정 패널 열기"}
+          onMouseOver={(e) => e.currentTarget.style.borderColor = 'var(--primary-light)'}
+          onMouseOut={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
+        >
+          {isExpanded ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          )}
+        </button>
       </div>
 
-      {/* Provider Tabs */}
+      {isExpanded && (
+        <div style={{ animation: 'fadeIn 0.3s ease-in-out' }}>
+          {/* Provider Tabs */}
       <div className="ai-provider-tabs">
         {PROVIDER_ORDER.map((id) => {
           const p = PROVIDERS[id];
@@ -127,6 +170,9 @@ export default function GlobalAIToolbar({
           ))}
         </div>
       </div>
+      
+        </div>
+      )}
     </div>
   );
 }
