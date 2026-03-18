@@ -27,12 +27,23 @@ export default function GlobalAIToolbar({
   }, [activeProvider, setApiKeys]);
 
   return (
-    <div className="ai-chat-panel global-ai-toolbar" style={{ marginBottom: '24px', position: 'sticky', top: '16px', zIndex: 100, boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '1px solid var(--border)', background: 'rgba(15, 23, 42, 0.95)', backdropFilter: 'blur(12px)' }}>
-      <div style={{ padding: '0 20px 16px', borderBottom: '1px solid var(--border)', marginBottom: '16px' }}>
-        <h3 style={{ fontSize: '1.1rem', margin: '16px 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div className="ai-chat-panel global-ai-toolbar" style={{ 
+      marginBottom: '32px', 
+      position: 'sticky', 
+      top: '16px', 
+      zIndex: 100, 
+      boxShadow: 'var(--shadow-xl)', 
+      border: '1px solid var(--border-focus)', 
+      background: 'rgba(15, 23, 42, 0.95)', 
+      backdropFilter: 'blur(16px)',
+      borderRadius: 'var(--radius-lg)',
+      padding: '24px'
+    }}>
+      <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px', marginBottom: '20px' }}>
+        <h3 style={{ fontSize: '1.2rem', margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>⚙️</span> 글로벌 AI 설정
         </h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
           여기서 설정한 API 키와 모델이 모든 프롬프트 실행기(Vibe Coding, 솔루션 설계 등)에 공통으로 적용됩니다.
         </p>
       </div>

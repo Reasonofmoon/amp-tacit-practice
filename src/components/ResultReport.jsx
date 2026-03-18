@@ -292,22 +292,50 @@ export default function ResultReport({ state, levelInfo, isDev }) {
               <h3>지식 전환 흐름</h3>
             </div>
           </div>
-          <div className="seci-grid">
-            <div>
-              <h4>S · 공유화</h4>
-              <ul>{seciMap.socialization.length ? seciMap.socialization.map((item) => <li key={item}>{item}</li>) : <li>갤러리 공유가 여기에 모입니다.</li>}</ul>
+          <div className="seci-grid" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
+            gap: '24px', 
+            marginTop: '24px' 
+          }}>
+            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+                <span style={{ fontSize: '1.3rem' }}>🌱</span>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>S · 공유화</h4>
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
+                {seciMap.socialization.length ? seciMap.socialization.map((item) => <li key={item}>{item}</li>) : <li>갤러리 공유가 여기에 모입니다.</li>}
+              </ul>
             </div>
-            <div>
-              <h4>E · 표출화</h4>
-              <ul>{seciMap.externalization.length ? seciMap.externalization.map((item) => <li key={item}>{item}</li>) : <li>위기/전수 답변이 여기에 모입니다.</li>}</ul>
+            
+            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+                <span style={{ fontSize: '1.3rem' }}>🗣️</span>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>E · 표출화</h4>
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
+                {seciMap.externalization.length ? seciMap.externalization.map((item) => <li key={item}>{item}</li>) : <li>위기/전수 답변이 여기에 모입니다.</li>}
+              </ul>
             </div>
-            <div>
-              <h4>C · 연결화</h4>
-              <ul>{seciMap.combination.length ? seciMap.combination.map((item) => <li key={item}>{item}</li>) : <li>SECI 활동의 프롬프트가 여기에 표시됩니다.</li>}</ul>
+
+            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+                <span style={{ fontSize: '1.3rem' }}>🔗</span>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>C · 연결화</h4>
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
+                {seciMap.combination.length ? seciMap.combination.map((item) => <li key={item}>{item}</li>) : <li>SECI 활동의 프롬프트가 여기에 표시됩니다.</li>}
+              </ul>
             </div>
-            <div>
-              <h4>I · 내면화</h4>
-              <ul>{seciMap.internalization.length ? seciMap.internalization.map((item) => <li key={item}>{item}</li>) : <li>퀴즈와 역할극 인사이트가 여기에 축적됩니다.</li>}</ul>
+
+            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+                <span style={{ fontSize: '1.3rem' }}>🧠</span>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>I · 내면화</h4>
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
+                {seciMap.internalization.length ? seciMap.internalization.map((item) => <li key={item}>{item}</li>) : <li>퀴즈와 역할극 인사이트가 여기에 축적됩니다.</li>}
+              </ul>
             </div>
           </div>
         </article>
