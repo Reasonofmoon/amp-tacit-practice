@@ -626,16 +626,8 @@ p { color: var(--text-muted); }
   justify-content: center;
 }
 
-/* ─── RESPONSIVE ─────────────────── */
-@media (max-width: 768px) {
-  .app-frame { padding: var(--space-md); }
-  .grid-3 { grid-template-columns: 1fr; }
-  .split-view { flex-direction: column; gap: var(--space-lg); }
-  .split-left { padding-right: 0; border-right: none; border-bottom: 1px dashed var(--border); padding-bottom: var(--space-lg); }
-  .strategy-cards { grid-template-columns: 1fr; }
-  .workspace-content { padding: var(--space-lg); }
-  .choice-btn { padding: 16px; font-size: 1rem; }
-}
+
+
 
 /* ─── GAMIFICATION & UX OVERHAUL ─── */
 .neon-btn {
@@ -1390,13 +1382,240 @@ p { color: var(--text-muted); }
 /* Responsive */
 @media (max-width: 640px) {
   .ai-provider-tabs {
-    flex-direction: column;
+    flex-wrap: wrap;
   }
   .ai-provider-tab {
+    flex: 1;
+    min-width: 0;
     justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.8rem;
   }
   .ai-tab-name {
     display: inline;
+  }
+  .ai-model-options {
+    flex-direction: column;
+  }
+  .ai-model-option {
+    padding: 8px 10px;
+  }
+  .ai-send-btn {
+    font-size: 0.875rem;
+    padding: 12px 16px;
+  }
+  .ai-key-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ai-key-clear {
+    align-self: flex-end;
+  }
+  .ai-followup {
+    flex-direction: column;
+  }
+  .ai-followup-btn {
+    width: 100%;
+    height: 40px;
+  }
+  .ai-user-bubble {
+    margin: var(--space-sm) var(--space-md);
+    padding: 10px 12px;
+  }
+  .ai-response-body {
+    padding: var(--space-md);
+    font-size: 0.875rem;
+  }
+}
+
+/* ─── COMPREHENSIVE MOBILE RESPONSIVE ─── */
+@media (max-width: 768px) {
+  /* Base layout */
+  .app-frame {
+    padding: var(--space-md);
+  }
+
+  /* Header */
+  .app-header {
+    padding: var(--space-sm) var(--space-md);
+    gap: 8px;
+  }
+  .logo-wrap span {
+    font-size: 1rem;
+  }
+  .app-header nav {
+    gap: 4px;
+  }
+  .app-header nav .btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* Typography */
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.1rem; }
+  .question-title {
+    font-size: 1.25rem;
+  }
+
+  /* Dashboard grid */
+  .grid-3 { grid-template-columns: 1fr; }
+
+  /* Activity workspace */
+  .workspace-content {
+    padding: var(--space-lg);
+  }
+  .workspace-header {
+    padding: var(--space-sm) var(--space-md);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .workspace-progress {
+    max-width: none;
+    width: 100%;
+  }
+
+  /* Split view (drag & drop) */
+  .split-view {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  .split-left {
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: var(--space-lg);
+  }
+
+  /* Strategy cards */
+  .strategy-cards { grid-template-columns: 1fr; }
+  .strategy-overlay {
+    padding: var(--space-lg);
+  }
+
+  /* Choice buttons */
+  .choice-btn {
+    padding: 16px;
+    font-size: 1rem;
+    gap: 12px;
+  }
+
+  /* Monopoly board */
+  .monopoly-board {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) 0;
+  }
+  .monopoly-board::before { display: none; }
+  .monopoly-node {
+    width: 200px;
+  }
+  .monopoly-node .activity-card {
+    padding: 20px 12px;
+    border-width: 3px;
+  }
+  .monopoly-node .activity-card-title {
+    font-size: 0.95rem;
+  }
+  .monopoly-node .activity-card-desc {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* Report section */
+  .report-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+  .report-heading {
+    flex-direction: column !important;
+    gap: var(--space-md);
+  }
+  .report-heading h2 {
+    font-size: 1.5rem !important;
+  }
+
+  /* Radar container */
+  .radar-container {
+    max-width: 100%;
+    padding: var(--space-md);
+  }
+
+  /* Overlay modal */
+  .overlay-card {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    max-height: 95vh;
+  }
+  .overlay-card h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Vibe Coding section */
+  .vibe-prompt-card {
+    padding: var(--space-md);
+  }
+  .vibe-prompt-icon {
+    font-size: 1.5rem;
+  }
+  .vibe-prompt-label {
+    font-size: 1rem;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  /* SECI grid */
+  .seci-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+}
+
+/* Extra small screens (iPhone SE and similar) */
+@media (max-width: 400px) {
+  .app-frame {
+    padding: var(--space-sm);
+  }
+  .app-header {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  .logo-wrap span {
+    font-size: 0.9rem;
+  }
+  .app-header nav .btn {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+  h1 { font-size: 1.25rem; }
+  .monopoly-node {
+    width: 170px;
+  }
+  .monopoly-node .activity-card {
+    padding: 16px 10px;
+  }
+  .activity-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .vibe-prompt-card {
+    padding: var(--space-sm);
+  }
+  .workspace-content {
+    padding: var(--space-md);
+  }
+  .choice-btn {
+    padding: 12px;
+    font-size: 0.9rem;
   }
 }
 
