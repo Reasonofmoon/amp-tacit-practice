@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { ACTIVITIES, AXES } from '../data/activities';
 import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
-import { buildPromptPack, buildSeciMap, buildTopInsights } from '../utils/promptGenerator';
+import { buildPromptPack, buildSeciMap, buildTopInsights, buildVibeCodingPrompts } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
+import AIChatPanel from './AIChatPanel';
 
 function buildAxisScores(state, isDev = false) {
   const targetAxes = isDev ? DEV_AXES : AXES;
@@ -32,9 +33,11 @@ function buildAxisScores(state, isDev = false) {
 
 export default function ResultReport({ state, levelInfo, isDev }) {
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const [vibeCopied, setVibeCopied] = useState(null);
 
   const axisScores = useMemo(() => buildAxisScores(state, isDev), [state, isDev]);
   const promptPack = useMemo(() => buildPromptPack(state.activityData, state.profile, isDev), [state.activityData, state.profile, isDev]);
+  const vibeCodingPrompts = useMemo(() => buildVibeCodingPrompts(state.activityData, state.profile, isDev, axisScores), [state.activityData, state.profile, isDev, axisScores]);
   const topInsights = useMemo(() => buildTopInsights(state.activityData), [state.activityData]);
   const seciMap = useMemo(() => buildSeciMap(state.activityData), [state.activityData]);
 
@@ -49,6 +52,16 @@ export default function ResultReport({ state, levelInfo, isDev }) {
       window.setTimeout(() => setCopiedIndex(null), 1400);
     } catch {
       setCopiedIndex(index);
+    }
+  };
+
+  const handleVibeCopy = async (text, index) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setVibeCopied(index);
+      window.setTimeout(() => setVibeCopied(null), 1400);
+    } catch {
+      setVibeCopied(index);
     }
   };
 
@@ -169,6 +182,57 @@ export default function ResultReport({ state, levelInfo, isDev }) {
                 >
                   {copiedIndex === index ? '✅ 클립보드에 복사됨' : '📋 전체 프롬프트 복사하기'}
                 </button>
+                <AIChatPanel prompt={prompt} />
+              </article>
+            ))}
+          </div>
+        </article>
+
+        {/* ─── VIBE CODING SECTION ─── */}
+        <article className="glass-panel report-card vibe-coding-section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">VIBE CODING</p>
+              <h3>🎯 맞춤형 바이브코딩 프롬프트</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '4px' }}>
+                레이더맵 분석 결과 기반 — 약한 영역을 보완하는 앱/솔루션을 AI 코딩 도구로 즉시 개발하세요
+              </p>
+            </div>
+          </div>
+          <div className="vibe-prompt-grid">
+            {vibeCodingPrompts.map((vp, index) => (
+              <article key={index} className="vibe-prompt-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="vibe-prompt-header">
+                  <span className="vibe-prompt-icon">{vp.icon}</span>
+                  <div>
+                    <strong className="vibe-prompt-label">{vp.label}</strong>
+                    <p className="vibe-prompt-desc">{vp.desc}</p>
+                  </div>
+                </div>
+                <div style={{
+                  background: '#1E293B',
+                  color: '#F8FAFC',
+                  padding: '20px',
+                  borderRadius: '10px',
+                  fontSize: '0.85rem',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap',
+                  fontFamily: 'monospace',
+                  maxHeight: '300px',
+                  overflow: 'auto',
+                }}>
+                  {vp.prompt}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', fontSize: '0.9rem' }}
+                  onClick={() => handleVibeCopy(vp.prompt, index)}
+                  aria-label="바이브코딩 프롬프트 복사"
+                >
+                  {vibeCopied === index ? '✅ 복사됨!' : `📋 ${vp.icon} 프롬프트 복사`}
+                </button>
+                <AIChatPanel prompt={vp.prompt} />
               </article>
             ))}
           </div>
