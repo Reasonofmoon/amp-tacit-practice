@@ -626,6 +626,76 @@ p { color: var(--text-muted); }
   justify-content: center;
 }
 
+/* ─── KNOWLEDGE GRAPH ────────────── */
+.kg-container {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.kg-tooltip {
+  position: absolute;
+  max-width: 220px;
+  padding: 10px 14px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-md);
+  border-left: 3px solid;
+  color: #E2E8F0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 10;
+  animation: fadeIn 0.15s ease;
+}
+
+.kg-tooltip strong {
+  display: block;
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kg-tooltip p {
+  margin: 0;
+  color: #CBD5E1;
+}
+
+.kg-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(15, 23, 42, 0.8);
+  justify-content: center;
+}
+
+.kg-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94A3B8;
+}
+
+.kg-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.kg-empty {
+  padding: var(--space-2xl);
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-app);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--border);
+}
 
 
 

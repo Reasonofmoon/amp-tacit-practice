@@ -5,6 +5,7 @@ import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
 import { buildPromptPack, buildSeciMap, buildTopInsights, buildVibeCodingPrompts } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
 import AIChatPanel from './AIChatPanel';
+import KnowledgeGraph from './KnowledgeGraph';
 
 function buildAxisScores(state, isDev = false) {
   const targetAxes = isDev ? DEV_AXES : AXES;
@@ -148,6 +149,16 @@ export default function ResultReport({ state, levelInfo, isDev }) {
           </div>
         </article>
       </div>
+
+      {/* ─── KNOWLEDGE GRAPH ─── */}
+      <article className="card" style={{ marginTop: 'var(--space-lg)' }}>
+        <div style={{ marginBottom: '16px' }}>
+          <p className="eyebrow" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px' }}>KNOWLEDGE GRAPH</p>
+          <h3 style={{ fontSize: '1.25rem' }}>🕸️ 암묵지 지식그래프</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>인사이트 간 연결을 시각적으로 탐색하세요 — 노드를 드래그하거나 호버하면 상세 정보가 표시됩니다</p>
+        </div>
+        <KnowledgeGraph axisScores={axisScores} activityData={state.activityData} isDev={isDev} />
+      </article>
 
       <div className="report-grid">
         <article className="glass-panel report-card">
