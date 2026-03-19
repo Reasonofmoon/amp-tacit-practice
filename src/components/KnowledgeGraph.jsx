@@ -157,6 +157,13 @@ function simulate(nodes, edges, iterations = 120) {
 /* ───────────────────────────────────────────────
  *  Canvas Renderer Component
  * ─────────────────────────────────────────────── */
+const STARFIELD = Array.from({ length: 120 }).map(() => ({
+  x: Math.random(),
+  y: Math.random(),
+  size: Math.random() * 1.5 + 0.3,
+  opacity: Math.random() * 0.5 + 0.1
+}));
+
 export default function KnowledgeGraph({ axisScores, activityData, isDev }) {
   const canvasRef = useRef(null);
   const [tooltip, setTooltip] = useState(null);
@@ -205,8 +212,20 @@ export default function KnowledgeGraph({ axisScores, activityData, isDev }) {
     canvas.style.height = h + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // Clear
-    ctx.clearRect(0, 0, w, h);
+    // Deep Space Background
+    const bgGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w, h));
+    bgGrad.addColorStop(0, '#1E1B4B'); // center glow (indigo-950)
+    bgGrad.addColorStop(1, '#020617'); // edge (slate-950)
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Draw Stars
+    STARFIELD.forEach(s => {
+      ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
+      ctx.beginPath();
+      ctx.arc(s.x * w, s.y * h, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
     // Draw edges
     const nodeMap = {};
@@ -370,7 +389,7 @@ export default function KnowledgeGraph({ axisScores, activityData, isDev }) {
         onTouchMove={handlePointerMove}
         onTouchStart={handlePointerDown}
         onTouchEnd={handlePointerUp}
-        style={{ display: 'block', width: '100%', borderRadius: '16px', background: '#0F172A' }}
+        style={{ display: 'block', width: '100%', borderRadius: '16px', background: '#020617' }}
       />
       {tooltip && (
         <div

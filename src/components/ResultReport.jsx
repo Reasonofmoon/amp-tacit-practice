@@ -198,15 +198,16 @@ export default function ResultReport({ state, levelInfo, isDev }) {
             {promptPack.map((prompt, index) => (
               <article key={index} className="prompt-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', border: 'none', padding: 0 }}>
                 <div style={{ 
-                  background: '#1E293B', // Tailwind Slate-800
-                  color: '#F8FAFC', // Tailwind Slate-50
+                  background: 'var(--bg-app)', 
+                  color: 'var(--text-main)', 
                   padding: '24px', 
                   borderRadius: '12px', 
                   fontSize: '0.9rem', 
                   lineHeight: '1.6', 
                   whiteSpace: 'pre-wrap',
                   border: '1px solid var(--border)',
-                  fontFamily: 'monospace'
+                  fontFamily: 'var(--font-mono, monospace)',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
                 }}>
                   {prompt}
                 </div>
@@ -252,16 +253,18 @@ export default function ResultReport({ state, levelInfo, isDev }) {
                   </div>
                 </div>
                 <div style={{
-                  background: '#1E293B',
-                  color: '#F8FAFC',
+                  background: 'var(--bg-app)',
+                  color: 'var(--text-main)',
                   padding: '20px',
                   borderRadius: '10px',
                   fontSize: '0.85rem',
                   lineHeight: '1.6',
                   whiteSpace: 'pre-wrap',
-                  fontFamily: 'monospace',
+                  fontFamily: 'var(--font-mono, monospace)',
                   maxHeight: '300px',
                   overflow: 'auto',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
                 }}>
                   {vp.prompt}
                 </div>

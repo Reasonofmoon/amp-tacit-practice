@@ -742,63 +742,76 @@ p { color: var(--text-muted); }
   border-color: var(--primary);
 }
 
-/* Monopoly Board Layout Utilities */
+/* Monopoly Board Layout Utilities (Mandala Aesthetic) */
 .monopoly-board {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
   position: relative;
-  padding: var(--space-xl) 0;
+  padding: 60px 20px;
   justify-content: center;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 120px;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.08) 0%, transparent 75%);
 }
 .monopoly-board::before {
   content: "";
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 10px, transparent 10px, transparent 20px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 60%);
+  border-radius: 50%;
   z-index: 0;
-  transform: translateY(-50%);
+  pointer-events: none;
 }
 @media (max-width: 768px) {
-  .monopoly-board::before { display: none; }
-  .monopoly-board { flex-direction: column; align-items: center; }
+  .monopoly-board {
+    padding: 30px 10px;
+    border-radius: 40px;
+  }
 }
 
 .monopoly-node {
   position: relative;
   z-index: 1;
-  width: 240px;
+  width: 210px;
   flex-shrink: 0;
 }
 .monopoly-node .activity-card {
-  border-radius: 50%;
+  border-radius: 32px; /* Squircle (모서리가 둥근 직사각형) */
   aspect-ratio: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 24px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer resting shadow */
-  border: 4px solid var(--border);
-  background: white;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); /* Bouncy float */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
   position: relative;
+  text-align: center;
 }
 .monopoly-node .activity-card:hover {
-  border-color: var(--primary);
-  transform: translateY(-8px) scale(1.03); /* Floating effect */
-  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3), 0 0 20px rgba(59, 130, 246, 0.2); /* Stronger glow */
+  border-color: var(--primary-light);
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.1);
   z-index: 10;
+  background: #ffffff;
 }
 .monopoly-node .activity-card.completed {
   border-color: var(--success);
-  background: var(--bg-app);
+  background: rgba(248, 250, 252, 0.95);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
 }
 .monopoly-node .activity-card:hover.completed {
-  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.3), 0 0 20px rgba(16, 185, 129, 0.2);
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
 }
 
 /* Internal Layout Overrides for Circular Fit */
@@ -1686,6 +1699,76 @@ p { color: var(--text-muted); }
   .choice-btn {
     padding: 12px;
     font-size: 0.9rem;
+  }
+}
+
+/* ───────────────────────────────────────────────
+ *  MOBILE RESPONSIVE DESIGN FOR GAMIFIED TIMELINE
+ * ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Layout Adjustments */
+  .layout-main {
+    padding: 8px;
+    padding-bottom: 80px; 
+  }
+
+  /* Monopoly Board (Home) */
+  .monopoly-board {
+    display: flex;
+    flex-direction: column !important;
+    gap: 16px;
+    background: transparent;
+    padding: 0;
+    align-items: center;
+  }
+  .monopoly-board::after, .monopoly-board::before {
+    display: none; 
+  }
+  .monopoly-node {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  /* Fix squircle height issue */
+  .monopoly-node .activity-card {
+    height: auto !important;
+    aspect-ratio: auto !important;
+    padding: 24px 16px;
+  }
+
+  /* Split View (Activities) */
+  .split-view {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+    gap: 24px;
+    padding: 16px;
+  }
+  .split-left, .split-right {
+    width: 100%;
+    border-right: none;
+    padding: 0 !important;
+  }
+  .split-right {
+    min-height: 400px;
+  }
+
+  /* Gamified Elements Stack */
+  .drag-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)) !important;
+  }
+  .gamified-node span {
+    font-size: 2rem !important;
+  }
+
+  /* Report Grid */
+  .report-grid, .seci-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .report-heading {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
   }
 }
 

@@ -1,0 +1,42 @@
+export const AUTOMATION_ACTIVITIES = [
+  {
+    id: "auto_setup",
+    title: "1단계: 뇌(AI) 준비하기",
+    subtitle: "Gemini API 키를 발급받아 인공지능 비서의 뇌를 준비합니다.",
+    icon: "🧠",
+    color: "#8B5CF6",
+    time: "3분",
+  },
+  {
+    id: "auto_script",
+    title: "2단계: 몸통(서버) 만들기",
+    subtitle: "Google Apps Script를 열어 자동화 코드가 실행될 무료 서버를 생성합니다.",
+    icon: "⚙️",
+    color: "#10B981",
+    time: "2분",
+  },
+  {
+    id: "auto_property",
+    title: "3단계: 비밀 금고 설정",
+    subtitle: "프로젝트 설정에 API 키를 안전하게 숨겨 보안을 강화합니다.",
+    icon: "🔒",
+    color: "#EC4899",
+    time: "3분",
+  },
+  {
+    id: "auto_code",
+    title: "4단계: 영혼(코드) 불어넣기",
+    subtitle: "복사+붙여넣기만으로 나만의 아침 편지 AI 코드를 심고 권한을 승인합니다.",
+    icon: "💻",
+    color: "#3B82F6",
+    time: "5분",
+  },
+  {
+    id: "auto_trigger",
+    title: "5단계: 알람 맞추기 & 배포",
+    subtitle: "매일 아침 7시, 내가 자는 동안에도 알아서 실행되도록 트리거 시계를 설정합니다.",
+    icon: "⏰",
+    color: "#F59E0B",
+    time: "3분",
+  },
+];

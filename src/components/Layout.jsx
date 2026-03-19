@@ -10,15 +10,22 @@ export default function Layout({
   onGoHome,
   onGoReport,
   showReportButton,
-  isDev,
+  activeJourney,
   onToggleJourney,
   children,
 }) {
   const isHome = currentView === 'home';
 
-  const title = isDev ? "AI 개발자의 1년" : "학원 원장의 1년";
-  const subtitle = isDev 
+  const title = activeJourney === 'developer' ? "AI 개발자의 1년" : 
+                activeJourney === 'automation' ? "나만의 AI 서기 만들기" : 
+                activeJourney === 'showcase' ? "키노트 쇼케이스: 암묵지에서 AI로" : 
+                "학원 원장의 1년";
+  const subtitle = activeJourney === 'developer' 
     ? "소프트웨어 개발 과정에서 발생하는 암묵지 패턴을 추출하여 시스템 프롬프트로 변환합니다."
+    : activeJourney === 'automation'
+    ? "코딩을 몰라도 괜찮습니다. 복사+붙여넣기로 나만의 24시간 AI 비서를 완성해보세요!"
+    : activeJourney === 'showcase'
+    ? "나만의 교육 암묵지가 7개의 탁월한 웹앱 솔루션으로 변모하는 마법 같은 과정을 체감하세요."
     : "무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.";
 
   return (
@@ -64,16 +71,30 @@ export default function Layout({
             {/* Journey Toggle */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: 'var(--space-lg)' }}>
               <button 
-                className={`btn ${!isDev ? 'btn-primary' : 'btn-secondary'}`}
+                className={`btn ${activeJourney === 'director' ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => onToggleJourney('director')}
               >
                 🎓 원장 여정
               </button>
               <button 
-                className={`btn ${isDev ? 'btn-primary' : 'btn-secondary'}`}
+                className={`btn ${activeJourney === 'developer' ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => onToggleJourney('developer')}
               >
                 💻 개발자 여정
+              </button>
+              <button 
+                className={`btn ${activeJourney === 'automation' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => onToggleJourney('automation')}
+                style={{ background: activeJourney === 'automation' ? '#10B981' : undefined, borderColor: activeJourney === 'automation' ? '#059669' : undefined, color: activeJourney === 'automation' ? 'white' : undefined }}
+              >
+                🚀 자동화 실습
+              </button>
+              <button 
+                className={`btn ${activeJourney === 'showcase' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => onToggleJourney('showcase')}
+                style={{ background: activeJourney === 'showcase' ? '#8B5CF6' : undefined, borderColor: activeJourney === 'showcase' ? '#7C3AED' : undefined, color: activeJourney === 'showcase' ? 'white' : undefined }}
+              >
+                ✨ 7대 도구 시연
               </button>
             </div>
             

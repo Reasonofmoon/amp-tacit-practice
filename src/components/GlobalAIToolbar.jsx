@@ -35,7 +35,7 @@ export default function GlobalAIToolbar({
       zIndex: 100, 
       boxShadow: 'var(--shadow-xl)', 
       border: '1px solid var(--border-focus)', 
-      background: 'rgba(15, 23, 42, 0.95)', 
+      background: 'rgba(255, 255, 255, 0.95)', 
       backdropFilter: 'blur(16px)',
       borderRadius: 'var(--radius-lg)',
       padding: '24px',

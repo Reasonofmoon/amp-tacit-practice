@@ -4,6 +4,8 @@ import confetti from 'canvas-confetti';
 import { useGameState } from './hooks/useGameState';
 import { ACTIVITIES } from './data/activities';
 import { DEV_ACTIVITIES } from './data/developerActivities';
+import { AUTOMATION_ACTIVITIES } from './data/automationActivities';
+import { SHOWCASE_ACTIVITIES } from './data/showcaseActivities';
 import { getActivityProgress } from './utils/scoring';
 import { playSuccessSound, playFanfareSound } from './utils/sound';
 import Layout from './components/Layout';
@@ -21,6 +23,14 @@ import RolePlayActivity from './activities/RolePlayActivity';
 import PatternMatchActivity from './activities/PatternMatchActivity';
 import NoticingDrillActivity from './activities/NoticingDrillActivity';
 import CdmSimulatorActivity from './activities/CdmSimulatorActivity';
+import AutoSetupActivity from './activities/AutoSetupActivity';
+import AutoScriptActivity from './activities/AutoScriptActivity';
+import AutoPropertyActivity from './activities/AutoPropertyActivity';
+import AutoCodeActivity from './activities/AutoCodeActivity';
+import AutoTriggerActivity from './activities/AutoTriggerActivity';
+
+// Showcase Journey (Live URLs)
+import DemoLiveAppTemplate from './activities/DemoLiveAppTemplate';
 
 const ACTIVITY_COMPONENTS = {
   // Director Journey
@@ -47,6 +57,22 @@ const ACTIVITY_COMPONENTS = {
   dev_pattern: PatternMatchActivity,
   dev_noticing: NoticingDrillActivity,
   dev_cdm: CdmSimulatorActivity,
+  // Automation Journey
+  auto_setup: AutoSetupActivity,
+  auto_script: AutoScriptActivity,
+  auto_property: AutoPropertyActivity,
+  auto_code: AutoCodeActivity,
+  auto_trigger: AutoTriggerActivity,
+
+  // Showcase Journey (Live URLs)
+  demo_readmaster: DemoLiveAppTemplate,
+  demo_pettrip: DemoLiveAppTemplate,
+  demo_smartstart: DemoLiveAppTemplate,
+  demo_ontology: DemoLiveAppTemplate,
+  demo_knot: DemoLiveAppTemplate,
+  demo_bluel: DemoLiveAppTemplate,
+  demo_librainy: DemoLiveAppTemplate,
+  demo_moonlang: DemoLiveAppTemplate,
 };
 
 export default function App() {
@@ -81,7 +107,7 @@ export default function App() {
         onGoHome={goHome}
         onGoReport={goReport}
         showReportButton={true}
-        isDev={activeJourney === 'developer'}
+        activeJourney={activeJourney}
         onToggleJourney={setActiveJourney}
       >
         {currentView === 'home' && (
@@ -92,7 +118,10 @@ export default function App() {
             </p>
             
             <div className="monopoly-board">
-              {(activeJourney === 'director' ? ACTIVITIES : DEV_ACTIVITIES).map((activity, index) => {
+              {(activeJourney === 'director' ? ACTIVITIES : 
+                activeJourney === 'developer' ? DEV_ACTIVITIES : 
+                activeJourney === 'automation' ? AUTOMATION_ACTIVITIES : 
+                SHOWCASE_ACTIVITIES).map((activity, index) => {
                 const isCompleted = game.state.completed.includes(activity.id);
                 return (
                   <div key={activity.id} className="monopoly-node">
@@ -123,7 +152,7 @@ export default function App() {
         )}
 
         {currentView === 'report' && (
-          <ResultReport state={game.state} levelInfo={game.levelInfo} unlockedBadges={game.unlockedBadges} isDev={activeJourney === 'developer'} />
+          <ResultReport state={game.state} levelInfo={game.levelInfo} unlockedBadges={game.unlockedBadges} activeJourney={activeJourney} />
         )}
 
         {ActivityComponent && (

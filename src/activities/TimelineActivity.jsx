@@ -4,27 +4,27 @@ import ActivityFooter from '../components/ActivityFooter';
 
 const MONTHS = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 const EVENTS = [
-  { id: 'ev1', text: '신규생 집중 상담 주간' },
-  { id: 'ev2', text: '학부모 간담회 (상반기)' },
-  { id: 'ev3', text: '1학기 중간고사 리포트 발송' },
-  { id: 'ev4', text: '여름방학 특강 기획' },
-  { id: 'ev5', text: '강사 워크샵 및 재교육' },
-  { id: 'ev6', text: '2학기 기말고사 대비반 편성' },
-  { id: 'ev7', text: '학부모 간담회 (하반기)' },
-  { id: 'ev8', text: '겨울방학 특강 설명회' },
-  { id: 'ev9', text: '졸업생 환송 및 성취도 평가' },
+  { id: 'ev1', text: '신규생 집중 상담 주간', char: '👩‍🏫' },
+  { id: 'ev2', text: '학부모 간담회 (상반기)', char: '🧑‍🤝‍🧑' },
+  { id: 'ev3', text: '1학기 중간고사 리포트 발송', char: '📝' },
+  { id: 'ev4', text: '여름방학 특강 기획', char: '🏖️' },
+  { id: 'ev5', text: '강사 워크샵 및 재교육', char: '🧑‍🏫' },
+  { id: 'ev6', text: '2학기 기말고사 대비반 편성', char: '🎯' },
+  { id: 'ev7', text: '학부모 간담회 (하반기)', char: '🤝' },
+  { id: 'ev8', text: '겨울방학 특강 설명회', char: '⛄' },
+  { id: 'ev9', text: '졸업생 환송 및 성취도 평가', char: '🎓' },
 ];
 
 const DEV_EVENTS = [
-  { id: 'ev1', text: '프로젝트 스캐폴딩 및 초기 세팅' },
-  { id: 'ev2', text: '아키텍처 설계 및 Tech Stack 선정' },
-  { id: 'ev3', text: '코어 비즈니스 로직 MVP 빌드' },
-  { id: 'ev4', text: '컴포넌트 단위 테스트 및 디버깅' },
-  { id: 'ev5', text: 'CI/CD 자동 배포 파이프라인 구축' },
-  { id: 'ev6', text: '프롬프트 컴파일 파이프라인 연동' },
-  { id: 'ev7', text: '기술 부채(Linter, 렌더링 최적화) 해결' },
-  { id: 'ev8', text: 'Vercel 프로덕션 런칭 및 모니터링' },
-  { id: 'ev9', text: '사용자 피드백 기반 1차 마이너 리팩토링' },
+  { id: 'ev1', text: '프로젝트 스캐폴딩 및 초기 세팅', char: '🏗️' },
+  { id: 'ev2', text: '아키텍처 설계/Tech Stack', char: '🧠' },
+  { id: 'ev3', text: '코어 비즈니스 로직 MVP 빌드', char: '⚙️' },
+  { id: 'ev4', text: '컴포넌트 단위 테스트 및 디버깅', char: '🐛' },
+  { id: 'ev5', text: 'CI/CD 자동 배포 인프라', char: '🚀' },
+  { id: 'ev6', text: '프롬프트 컴파일 연동', char: '🔗' },
+  { id: 'ev7', text: '기술 부채(Linter, 최적화)', char: '🧹' },
+  { id: 'ev8', text: 'Vercel 프로덕션 런칭', char: '🌐' },
+  { id: 'ev9', text: '사용자 피드백 기반 리팩토링', char: '🔄' },
 ];
 
 export default function TimelineActivity({ id, data, saveData, complete, onBack }) {
@@ -93,19 +93,33 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
                 모든 이벤트를 배치했습니다! 🎉
               </div>
             )}
-            {availableEvents.map(ev => (
-              <motion.div
-                key={ev.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, ev)}
-                className="drag-item"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+            {availableEvents.length > 0 && (
+              <motion.div 
+                initial={{ y: 0 }}
+                animate={{ y: [0, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                style={{ background: 'var(--primary)', color: 'white', padding: '8px 16px', borderRadius: '20px', display: 'inline-block', alignSelf: 'center', marginBottom: '8px', fontWeight: 'bold', fontSize: '0.9rem', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.4)' }}
               >
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary)' }} />
-                {ev.text}
+                👇 아이콘을 달에 드래그!
               </motion.div>
-            ))}
+            )}
+            <div className="drag-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px' }}>
+              {availableEvents.map(ev => (
+                <motion.div
+                  key={ev.id}
+                  draggable
+                  layout
+                  onDragStart={(e) => handleDragStart(e, ev)}
+                  className="drag-item gamified-node"
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', borderRadius: '16px', background: 'var(--bg-app)', border: '2px solid var(--border)', cursor: 'grab', boxShadow: '0 4px 8px rgba(0,0,0,0.05)' }}
+                  whileHover={{ scale: 1.05, borderColor: 'var(--primary)', y: -4, boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}
+                  whileTap={{ scale: 0.95, cursor: 'grabbing' }}
+                >
+                  <span style={{ fontSize: '2.5rem', filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.1))' }}>{ev.char}</span>
+                  <strong style={{ fontSize: '0.85rem', textAlign: 'center', lineHeight: 1.3, wordBreak: 'keep-all' }}>{ev.text}</strong>
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           <div style={{ marginTop: 'auto' }}>
@@ -136,16 +150,27 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
                 onDrop={(e) => handleDrop(e, idx)}
               >
                 {placedEvents[idx] ? (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary)', position: 'absolute', top: '8px', left: '12px' }}>{month}</span>
-                    <strong style={{ fontSize: '0.875rem', textAlign: 'center', padding: '16px 20px', wordBreak: 'keep-all' }}>{placedEvents[idx].text}</strong>
+                  <motion.div 
+                    layoutId={placedEvents[idx].id}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', bounce: 0.6 }}
+                    className="gamified-placed-node"
+                    style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', background: 'white', borderRadius: '12px', border: '2px solid var(--primary)', boxShadow: '0 8px 20px rgba(99, 102, 241, 0.15)' }}
+                  >
+                    <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--primary)', position: 'absolute', top: '8px', left: '12px', background: 'var(--primary-light)', padding: '2px 8px', borderRadius: '12px' }}>{month}</span>
+                    <span style={{ fontSize: '2rem', marginTop: '16px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}>{placedEvents[idx].char}</span>
+                    <strong style={{ fontSize: '0.8rem', textAlign: 'center', padding: '8px', wordBreak: 'keep-all', lineHeight: 1.2 }}>{placedEvents[idx].text}</strong>
                     <button 
                       onClick={() => handleRemove(idx)}
-                      style={{ position: 'absolute', top: '4px', right: '4px', width: '24px', height: '24px', borderRadius: '50%', background: 'var(--bg-app)', color: 'var(--text-muted)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', zIndex: 10 }}
+                      style={{ position: 'absolute', top: '-8px', right: '-8px', width: '28px', height: '28px', borderRadius: '50%', background: 'var(--danger)', color: 'white', border: '2px solid white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', zIndex: 10, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
                     >✕</button>
-                  </div>
+                  </motion.div>
                 ) : (
-                  <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-light)' }}>{month} Drop</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', opacity: 0.4 }}>
+                    <span style={{ fontSize: '1.5rem' }}>🎯</span>
+                    <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-light)' }}>{month} 에 드랍</span>
+                  </div>
                 )}
               </div>
             ))}
