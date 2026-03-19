@@ -15,6 +15,7 @@ export default function DemoLiveAppTemplate(props) {
       title={activity.title} 
       subtitle={activity.subtitle} 
       storyText={activity.storyText} 
+      speakerNotes={activity.speakerNotes}
       actionText="라이브 웹앱 접속하기" 
       actionColor={activity.color} 
       {...props}
