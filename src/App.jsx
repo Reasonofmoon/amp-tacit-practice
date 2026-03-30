@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useRef, useState } from 'react';
 import './index.css';
 import confetti from 'canvas-confetti';
 import { useGameState } from './hooks/useGameState';
@@ -11,26 +11,26 @@ import { playSuccessSound, playFanfareSound } from './utils/sound';
 import Layout from './components/Layout';
 import ActivityCard from './components/ActivityCard';
 import OnboardingOverlay from './components/OnboardingOverlay';
-import ResultReport from './components/ResultReport';
-import TimelineActivity from './activities/TimelineActivity';
-import AutopilotActivity from './activities/AutopilotActivity';
-import CrisisActivity from './activities/CrisisActivity';
-import TransferActivity from './activities/TransferActivity';
-import SeciActivity from './activities/SeciActivity';
-import GalleryActivity from './activities/GalleryActivity';
-import QuickQuizActivity from './activities/QuickQuizActivity';
-import RolePlayActivity from './activities/RolePlayActivity';
-import PatternMatchActivity from './activities/PatternMatchActivity';
-import NoticingDrillActivity from './activities/NoticingDrillActivity';
-import CdmSimulatorActivity from './activities/CdmSimulatorActivity';
-import AutoSetupActivity from './activities/AutoSetupActivity';
-import AutoScriptActivity from './activities/AutoScriptActivity';
-import AutoPropertyActivity from './activities/AutoPropertyActivity';
-import AutoCodeActivity from './activities/AutoCodeActivity';
-import AutoTriggerActivity from './activities/AutoTriggerActivity';
-
-// Showcase Journey (Live URLs)
-import DemoLiveAppTemplate from './activities/DemoLiveAppTemplate';
+import ModalOverlay from './components/ModalOverlay';
+const ResultReport = lazy(() => import('./components/ResultReport'));
+const ReportAIWorkbench = lazy(() => import('./components/ReportAIWorkbench'));
+const TimelineActivity = lazy(() => import('./activities/TimelineActivity'));
+const AutopilotActivity = lazy(() => import('./activities/AutopilotActivity'));
+const CrisisActivity = lazy(() => import('./activities/CrisisActivity'));
+const TransferActivity = lazy(() => import('./activities/TransferActivity'));
+const SeciActivity = lazy(() => import('./activities/SeciActivity'));
+const GalleryActivity = lazy(() => import('./activities/GalleryActivity'));
+const QuickQuizActivity = lazy(() => import('./activities/QuickQuizActivity'));
+const RolePlayActivity = lazy(() => import('./activities/RolePlayActivity'));
+const PatternMatchActivity = lazy(() => import('./activities/PatternMatchActivity'));
+const NoticingDrillActivity = lazy(() => import('./activities/NoticingDrillActivity'));
+const CdmSimulatorActivity = lazy(() => import('./activities/CdmSimulatorActivity'));
+const AutoSetupActivity = lazy(() => import('./activities/AutoSetupActivity'));
+const AutoScriptActivity = lazy(() => import('./activities/AutoScriptActivity'));
+const AutoPropertyActivity = lazy(() => import('./activities/AutoPropertyActivity'));
+const AutoCodeActivity = lazy(() => import('./activities/AutoCodeActivity'));
+const AutoTriggerActivity = lazy(() => import('./activities/AutoTriggerActivity'));
+const DemoLiveAppTemplate = lazy(() => import('./activities/DemoLiveAppTemplate'));
 
 const ACTIVITY_COMPONENTS = {
   // Director Journey
@@ -75,9 +75,22 @@ const ACTIVITY_COMPONENTS = {
   demo_moonlang: DemoLiveAppTemplate,
 };
 
+function LoadingPanel() {
+  return (
+    <div className="card" style={{ minHeight: '240px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', textAlign: 'center' }}>
+      <div style={{ width: '44px', height: '44px', borderRadius: '999px', border: '3px solid rgba(99, 102, 241, 0.15)', borderTopColor: 'var(--primary)', animation: 'spin 0.9s linear infinite' }} />
+      <strong style={{ fontSize: '1rem', color: 'var(--text-main)' }}>화면을 불러오는 중입니다</strong>
+      <p style={{ margin: 0, color: 'var(--text-muted)' }}>필요한 활동 청크만 동적으로 로드합니다.</p>
+    </div>
+  );
+}
+
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
   const [activeJourney, setActiveJourney] = useState('director'); // 'director' | 'developer'
+  const [aiWorkbenchOpen, setAIWorkbenchOpen] = useState(false);
+  const [qrInterstitialOpen, setQrInterstitialOpen] = useState(false);
+  const appContentRef = useRef(null);
   const game = useGameState();
 
   const goHome = () => setCurrentView('home');
@@ -96,8 +109,10 @@ export default function App() {
         profile={game.state.profile}
         onChangeProfile={game.updateProfile}
         onClose={game.setOnboardingSeen}
+        appRootRef={appContentRef}
       />
 
+      <div ref={appContentRef}>
       <Layout
         currentView={currentView}
         state={game.state}
@@ -184,7 +199,7 @@ export default function App() {
               {activeJourney === 'showcase' && (
                 <button
                   className="btn btn-ghost"
-                  onClick={() => setCurrentView('qr_interstitial')}
+                  onClick={() => setQrInterstitialOpen(true)}
                   style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
                   📱 청중 참여 QR코드 보기
@@ -203,44 +218,75 @@ export default function App() {
         )}
 
         {currentView === 'report' && (
-          <ResultReport state={game.state} levelInfo={game.levelInfo} unlockedBadges={game.unlockedBadges} activeJourney={activeJourney} />
+          <Suspense fallback={<LoadingPanel />}>
+            <ResultReport
+              state={game.state}
+              levelInfo={game.levelInfo}
+              unlockedBadges={game.unlockedBadges}
+              activeJourney={activeJourney}
+              onOpenAIWorkbench={() => setAIWorkbenchOpen(true)}
+            />
+          </Suspense>
         )}
 
         {ActivityComponent && (
-          <ActivityComponent
-            id={currentView} // pass active view to the component explicitly for data conditional checks
-            state={game.state}
-            data={game.state.activityData[currentView]}
-            saveData={(next) => game.saveActivityData(currentView, next)}
-            complete={(options) => {
-              playSuccessSound();
-              confetti({ particleCount: 50, spread: 60 });
-              game.completeActivity(currentView, options);
-              goHome();
-            }}
-            onBack={goHome}
-          />
+          <Suspense fallback={<LoadingPanel />}>
+            <ActivityComponent
+              id={currentView}
+              state={game.state}
+              data={game.state.activityData[currentView]}
+              saveData={(next) => game.saveActivityData(currentView, next)}
+              complete={(options) => {
+                playSuccessSound();
+                confetti({ particleCount: 50, spread: 60 });
+                game.completeActivity(currentView, options);
+                goHome();
+              }}
+              onBack={goHome}
+            />
+          </Suspense>
         )}
 
-        {/* QR Code Interstitial */}
-        {currentView === 'qr_interstitial' && (
-          <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: '#020617', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '32px', color: 'white' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-1px' }}>📱 지금 바로 체험해보세요!</h2>
-            <p style={{ fontSize: '1.25rem', color: '#94a3b8', maxWidth: '500px', textAlign: 'center' }}>아래 URL을 핸드폰 브라우저에 입력하시면 방금 보신 앱들을 직접 체험하실 수 있습니다.</p>
-            <div style={{ padding: '32px 48px', borderRadius: '16px', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(99, 102, 241, 0.3)', textAlign: 'center' }}>
-              <p style={{ fontSize: '2rem', fontWeight: 800, color: '#a855f7', fontFamily: 'monospace', letterSpacing: '2px', margin: 0 }}>amp-tacit-practice.vercel.app</p>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', maxWidth: '600px' }}>
-              {SHOWCASE_ACTIVITIES.map(a => (
-                <a key={a.id} href={a.url} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', background: `${a.color}15`, border: `1px solid ${a.color}40`, color: a.color, fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
-                  {a.icon} {a.title.split('. ')[1]}
-                </a>
-              ))}
-            </div>
-            <button className="btn btn-ghost" onClick={goHome} style={{ marginTop: '16px', color: '#94a3b8', fontSize: '1rem' }}>← 보드로 돌아가기</button>
-          </div>
-        )}
       </Layout>
+      </div>
+
+      <ModalOverlay
+        open={qrInterstitialOpen}
+        onClose={() => setQrInterstitialOpen(false)}
+        appRootRef={appContentRef}
+        ariaLabel="청중 참여 QR 코드"
+        panelClassName="modal-panel-dark"
+        panelStyle={{ maxWidth: '960px', textAlign: 'center', color: 'white', gap: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-1px' }}>📱 지금 바로 체험해보세요!</h2>
+        <p style={{ fontSize: '1.25rem', color: '#94a3b8', maxWidth: '500px', textAlign: 'center' }}>아래 URL을 핸드폰 브라우저에 입력하시면 방금 보신 앱들을 직접 체험하실 수 있습니다.</p>
+        <div style={{ padding: '32px 48px', borderRadius: '16px', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(99, 102, 241, 0.3)', textAlign: 'center' }}>
+          <p style={{ fontSize: '2rem', fontWeight: 800, color: '#a855f7', fontFamily: 'monospace', letterSpacing: '2px', margin: 0 }}>amp-tacit-practice.vercel.app</p>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', maxWidth: '600px' }}>
+          {SHOWCASE_ACTIVITIES.map(a => (
+            <a key={a.id} href={a.url} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', background: `${a.color}15`, border: `1px solid ${a.color}40`, color: a.color, fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
+              {a.icon} {a.title.split('. ')[1]}
+            </a>
+          ))}
+        </div>
+        <button className="btn btn-ghost" onClick={() => setQrInterstitialOpen(false)} style={{ marginTop: '16px', color: '#94a3b8', fontSize: '1rem' }}>← 닫기</button>
+      </ModalOverlay>
+
+      <ModalOverlay
+        open={aiWorkbenchOpen}
+        onClose={() => setAIWorkbenchOpen(false)}
+        appRootRef={appContentRef}
+        ariaLabel="AI 실행 워크벤치"
+      >
+        <Suspense fallback={<LoadingPanel />}>
+          <ReportAIWorkbench
+            state={game.state}
+            activeJourney={activeJourney}
+            onClose={() => setAIWorkbenchOpen(false)}
+          />
+        </Suspense>
+      </ModalOverlay>
     </>
   );
 }

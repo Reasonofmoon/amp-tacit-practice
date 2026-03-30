@@ -21,6 +21,32 @@ export const ACTIVITY_XP = {
   quiz: 80,
   roleplay: 100,
   pattern: 60,
+  noticing: 60,
+  cdm: 110,
+  dev_timeline: 40,
+  dev_autopilot: 50,
+  dev_crisis: 60,
+  dev_transfer: 50,
+  dev_seci: 70,
+  dev_gallery: 30,
+  dev_quiz: 80,
+  dev_roleplay: 100,
+  dev_pattern: 60,
+  dev_noticing: 60,
+  dev_cdm: 110,
+  auto_setup: 40,
+  auto_script: 50,
+  auto_property: 50,
+  auto_code: 60,
+  auto_trigger: 60,
+  demo_readmaster: 20,
+  demo_pettrip: 20,
+  demo_smartstart: 25,
+  demo_ontology: 25,
+  demo_knot: 30,
+  demo_bluel: 30,
+  demo_librainy: 35,
+  demo_moonlang: 35,
 };
 
 export function clamp(value, min, max) {
@@ -95,26 +121,64 @@ function countFilledValues(record = {}) {
 }
 
 export function getActivityProgress(activityId, activityData) {
+  const normalizedActivityId = activityId?.replace(/^dev_/, '');
+
   switch (activityId) {
     case 'timeline':
-      return clamp(countFilledValues(activityData?.entries) / 6, 0, 1);
+    case 'dev_timeline':
+      return clamp(Object.keys(activityData?.placedEvents ?? activityData?.entries ?? {}).length / 6, 0, 1);
     case 'autopilot':
+    case 'dev_autopilot':
       return clamp(countFilledValues(activityData?.answers) / 6, 0, 1);
     case 'crisis':
+    case 'dev_crisis':
       return clamp((activityData?.completedScenarios ?? 0) / 3, 0, 1);
     case 'transfer':
+    case 'dev_transfer':
       return clamp(countFilledValues(activityData?.answers) / 6, 0, 1);
     case 'seci':
+    case 'dev_seci':
       return activityData?.completed ? 1 : 0;
     case 'gallery':
+    case 'dev_gallery':
       return clamp((activityData?.posts?.length ?? 0) / 3, 0, 1);
     case 'quiz':
+    case 'dev_quiz':
       return clamp((activityData?.responses?.length ?? 0) / QUIZZES.length, 0, 1);
     case 'roleplay':
+    case 'dev_roleplay':
       return clamp((activityData?.completedScenarioIds?.length ?? 0) / ROLEPLAY_SCENARIOS.length, 0, 1);
     case 'pattern':
+    case 'dev_pattern':
       return clamp((Object.keys(activityData?.reflections ?? {}).length || 0) / PATTERN_CARDS[0].situations.length, 0, 1);
+    case 'noticing':
+    case 'dev_noticing':
+      return clamp(
+        [
+          ...(activityData?.cues ?? []),
+          activityData?.interp,
+          activityData?.resp,
+        ].filter((value) => typeof value === 'string' && value.trim()).length / 5,
+        0,
+        1,
+      );
+    case 'cdm':
+    case 'dev_cdm':
+      return clamp(
+        (
+          (activityData?.intuition?.action?.trim() ? 1 : 0) +
+          (activityData?.timeline?.filter((value) => value?.trim()).length ?? 0) / 4 +
+          Object.keys(activityData?.probeAns ?? {}).length / 5 +
+          Object.keys(activityData?.aarAns ?? {}).length / 4 +
+          Object.values(activityData?.card ?? {}).filter((value) => value?.trim()).length / 5
+        ) / 5,
+        0,
+        1,
+      );
     default:
+      if (normalizedActivityId?.startsWith('auto_') || activityId?.startsWith('demo_')) {
+        return activityData && Object.keys(activityData).length > 0 ? 1 : 0;
+      }
       return 0;
   }
 }

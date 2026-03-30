@@ -4,14 +4,14 @@ import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
 import { DEV_ROLEPLAY_SCENARIOS } from '../data/developerScenarios';
 import ActivityFooter from '../components/ActivityFooter';
 
-export default function NoticingDrillActivity({ id, data, saveData, complete, onBack }) {
+export default function NoticingDrillActivity({ id, data, complete, onBack }) {
   const isDev = id?.startsWith('dev_');
   const targetScenarios = isDev ? DEV_ROLEPLAY_SCENARIOS : ROLEPLAY_SCENARIOS;
   
   const [step, setStep] = useState(0);
-  const [cues, setCues] = useState(['', '', '']);
-  const [interp, setInterp] = useState('');
-  const [resp, setResp] = useState('');
+  const [cues, setCues] = useState(data?.cues ?? ['', '', '']);
+  const [interp, setInterp] = useState(data?.interp ?? '');
+  const [resp, setResp] = useState(data?.resp ?? '');
 
   const scenario = targetScenarios[1]; // Changed sc to scenario and used targetScenarios
   const stimulus = scenario.steps[0].message; // Used scenario instead of sc
@@ -21,7 +21,7 @@ export default function NoticingDrillActivity({ id, data, saveData, complete, on
   };
 
   const handleComplete = (insight = '') => {
-    complete({ ...data, cues, interp, resp, insight });
+    complete({ activityData: { cues, interp, resp, insight }, bonusXp: 20 });
   };
 
   const handleAutoFill = () => {
@@ -163,7 +163,7 @@ export default function NoticingDrillActivity({ id, data, saveData, complete, on
                   <div style={{ marginTop: 'auto' }}>
                     <ActivityFooter 
                       onComplete={handleComplete}
-                      onSkip={() => complete({ ...data, cues, interp, resp, insight: 'Skipped' })}
+                      onSkip={() => complete({ activityData: { cues, interp, resp, insight: 'Skipped' } })}
                     />
                   </div>
                 </motion.div>

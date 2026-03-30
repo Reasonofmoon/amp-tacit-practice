@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ActivityFooter from '../components/ActivityFooter';
 
-export default function AutoPropertyActivity({ id, data, saveData, complete, onBack }) {
+export default function AutoPropertyActivity({ data, saveData, complete, onBack }) {
   const [isChecked, setIsChecked] = useState(data?.isChecked ?? false);
 
   const handleCheck = () => {

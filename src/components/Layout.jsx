@@ -25,7 +25,7 @@ export default function Layout({
     : activeJourney === 'automation'
     ? "코딩을 몰라도 괜찮습니다. 복사+붙여넣기로 나만의 24시간 AI 비서를 완성해보세요!"
     : activeJourney === 'showcase'
-    ? "나만의 교육 암묵지가 7개의 탁월한 웹앱 솔루션으로 변모하는 마법 같은 과정을 체감하세요."
+    ? "나만의 교육 암묵지가 8개의 탁월한 웹앱 솔루션으로 변모하는 과정을 체감하세요."
     : "무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.";
 
   return (
@@ -94,7 +94,7 @@ export default function Layout({
                 onClick={() => onToggleJourney('showcase')}
                 style={{ background: activeJourney === 'showcase' ? '#8B5CF6' : undefined, borderColor: activeJourney === 'showcase' ? '#7C3AED' : undefined, color: activeJourney === 'showcase' ? 'white' : undefined }}
               >
-                ✨ 7대 도구 시연
+                ✨ 8대 도구 시연
               </button>
             </div>
             

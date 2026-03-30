@@ -41,7 +41,7 @@ function sendMorningLetter() {
   );
 }`;
 
-export default function AutoCodeActivity({ id, data, saveData, complete, onBack }) {
+export default function AutoCodeActivity({ data, saveData, complete, onBack }) {
   const [isCopied, setIsCopied] = useState(false);
   const [isChecked, setIsChecked] = useState(data?.isChecked ?? false);
 

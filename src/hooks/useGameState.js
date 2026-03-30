@@ -31,7 +31,7 @@ function createDefaultState() {
       lastCompletedId: null,
     },
     activityData: {
-      timeline: { entries: {} },
+      timeline: { placedEvents: {}, insight: '' },
       autopilot: { answers: {} },
       crisis: { answers: {}, completedScenarios: 0 },
       transfer: { answers: {} },
@@ -40,10 +40,17 @@ function createDefaultState() {
       quiz: { responses: [], correctCount: 0, totalTime: null, bestCombo: 0, insights: [], finished: false },
       roleplay: { scenarioProgress: {}, completedScenarioIds: [], totalScore: 0, maxScore: 0, style: null, insights: [] },
       pattern: { matches: {}, reflections: {} },
-      noticing: { answers: {} },
-      cdm: { answers: {} },
+      noticing: { cues: ['', '', ''], interp: '', resp: '', insight: '' },
+      cdm: {
+        intuition: { risk: 3, feeling: '', action: '' },
+        timeline: ['', '', '', ''],
+        probeAns: {},
+        aarAns: {},
+        card: { cue: '', interpret: '', action: '', boundary: '', alt: '' },
+        insight: '',
+      },
       // Developer Journey
-      dev_timeline: { entries: {} },
+      dev_timeline: { placedEvents: {}, insight: '' },
       dev_autopilot: { answers: {} },
       dev_crisis: { answers: {}, completedScenarios: 0 },
       dev_transfer: { answers: {} },
@@ -52,8 +59,15 @@ function createDefaultState() {
       dev_quiz: { responses: [], correctCount: 0, totalTime: null, bestCombo: 0, insights: [], finished: false },
       dev_roleplay: { scenarioProgress: {}, completedScenarioIds: [], totalScore: 0, maxScore: 0, style: null, insights: [] },
       dev_pattern: { matches: {}, reflections: {} },
-      dev_noticing: { answers: {} },
-      dev_cdm: { answers: {} },
+      dev_noticing: { cues: ['', '', ''], interp: '', resp: '', insight: '' },
+      dev_cdm: {
+        intuition: { risk: 3, feeling: '', action: '' },
+        timeline: ['', '', '', ''],
+        probeAns: {},
+        aarAns: {},
+        card: { cue: '', interpret: '', action: '', boundary: '', alt: '' },
+        insight: '',
+      },
     },
   };
 }
@@ -76,7 +90,15 @@ function mergeState(savedState) {
     activityData: {
       ...base.activityData,
       ...savedState.activityData,
-      timeline: { ...base.activityData.timeline, ...savedState.activityData?.timeline, entries: mergeRecord(base.activityData.timeline.entries, savedState.activityData?.timeline?.entries) },
+      timeline: {
+        ...base.activityData.timeline,
+        ...savedState.activityData?.timeline,
+        placedEvents: mergeRecord(
+          base.activityData.timeline.placedEvents,
+          savedState.activityData?.timeline?.placedEvents
+            ?? savedState.activityData?.timeline?.entries,
+        ),
+      },
       autopilot: { ...base.activityData.autopilot, ...savedState.activityData?.autopilot, answers: mergeRecord(base.activityData.autopilot.answers, savedState.activityData?.autopilot?.answers) },
       crisis: { ...base.activityData.crisis, ...savedState.activityData?.crisis, answers: mergeRecord(base.activityData.crisis.answers, savedState.activityData?.crisis?.answers) },
       transfer: { ...base.activityData.transfer, ...savedState.activityData?.transfer, answers: mergeRecord(base.activityData.transfer.answers, savedState.activityData?.transfer?.answers) },
@@ -96,11 +118,27 @@ function mergeState(savedState) {
         matches: mergeRecord(base.activityData.pattern.matches, savedState.activityData?.pattern?.matches),
         reflections: mergeRecord(base.activityData.pattern.reflections, savedState.activityData?.pattern?.reflections),
       },
-      noticing: { ...base.activityData.noticing, ...savedState.activityData?.noticing, answers: mergeRecord(base.activityData.noticing.answers, savedState.activityData?.noticing?.answers) },
-      cdm: { ...base.activityData.cdm, ...savedState.activityData?.cdm, answers: mergeRecord(base.activityData.cdm.answers, savedState.activityData?.cdm?.answers) },
+      noticing: mergeRecord(base.activityData.noticing, savedState.activityData?.noticing),
+      cdm: {
+        ...base.activityData.cdm,
+        ...savedState.activityData?.cdm,
+        intuition: mergeRecord(base.activityData.cdm.intuition, savedState.activityData?.cdm?.intuition),
+        probeAns: mergeRecord(base.activityData.cdm.probeAns, savedState.activityData?.cdm?.probeAns),
+        aarAns: mergeRecord(base.activityData.cdm.aarAns, savedState.activityData?.cdm?.aarAns),
+        card: mergeRecord(base.activityData.cdm.card, savedState.activityData?.cdm?.card),
+        timeline: [...(savedState.activityData?.cdm?.timeline ?? base.activityData.cdm.timeline)],
+      },
       
       // Developer Journey Merges
-      dev_timeline: { ...base.activityData.dev_timeline, ...savedState.activityData?.dev_timeline, entries: mergeRecord(base.activityData.dev_timeline.entries, savedState.activityData?.dev_timeline?.entries) },
+      dev_timeline: {
+        ...base.activityData.dev_timeline,
+        ...savedState.activityData?.dev_timeline,
+        placedEvents: mergeRecord(
+          base.activityData.dev_timeline.placedEvents,
+          savedState.activityData?.dev_timeline?.placedEvents
+            ?? savedState.activityData?.dev_timeline?.entries,
+        ),
+      },
       dev_autopilot: { ...base.activityData.dev_autopilot, ...savedState.activityData?.dev_autopilot, answers: mergeRecord(base.activityData.dev_autopilot.answers, savedState.activityData?.dev_autopilot?.answers) },
       dev_crisis: { ...base.activityData.dev_crisis, ...savedState.activityData?.dev_crisis, answers: mergeRecord(base.activityData.dev_crisis.answers, savedState.activityData?.dev_crisis?.answers) },
       dev_transfer: { ...base.activityData.dev_transfer, ...savedState.activityData?.dev_transfer, answers: mergeRecord(base.activityData.dev_transfer.answers, savedState.activityData?.dev_transfer?.answers) },
@@ -120,8 +158,16 @@ function mergeState(savedState) {
         matches: mergeRecord(base.activityData.dev_pattern.matches, savedState.activityData?.dev_pattern?.matches),
         reflections: mergeRecord(base.activityData.dev_pattern.reflections, savedState.activityData?.dev_pattern?.reflections),
       },
-      dev_noticing: { ...base.activityData.dev_noticing, ...savedState.activityData?.dev_noticing, answers: mergeRecord(base.activityData.dev_noticing.answers, savedState.activityData?.dev_noticing?.answers) },
-      dev_cdm: { ...base.activityData.dev_cdm, ...savedState.activityData?.dev_cdm, answers: mergeRecord(base.activityData.dev_cdm.answers, savedState.activityData?.dev_cdm?.answers) },
+      dev_noticing: mergeRecord(base.activityData.dev_noticing, savedState.activityData?.dev_noticing),
+      dev_cdm: {
+        ...base.activityData.dev_cdm,
+        ...savedState.activityData?.dev_cdm,
+        intuition: mergeRecord(base.activityData.dev_cdm.intuition, savedState.activityData?.dev_cdm?.intuition),
+        probeAns: mergeRecord(base.activityData.dev_cdm.probeAns, savedState.activityData?.dev_cdm?.probeAns),
+        aarAns: mergeRecord(base.activityData.dev_cdm.aarAns, savedState.activityData?.dev_cdm?.aarAns),
+        card: mergeRecord(base.activityData.dev_cdm.card, savedState.activityData?.dev_cdm?.card),
+        timeline: [...(savedState.activityData?.dev_cdm?.timeline ?? base.activityData.dev_cdm.timeline)],
+      },
     },
     completed: [...new Set(savedState.completed ?? base.completed)],
     badges: [...new Set(savedState.badges ?? base.badges)],

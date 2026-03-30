@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { PATTERN_CARDS } from '../data/patternCards';
 import { DEV_PATTERN_CARDS } from '../data/developerPatternCards';
 

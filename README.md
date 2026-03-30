@@ -10,8 +10,10 @@
 [![Gemini](https://img.shields.io/badge/Gemini-AI-22d3ee?style=for-the-badge&logo=google)](https://ai.google.dev)
 [![License](https://img.shields.io/badge/License-MIT-a78bfa?style=for-the-badge)](LICENSE)
 
-> **"10년 경험의 학원장 노하우를 AI가 구조화한다"**
-> 학원 운영 암묵지를 체계적으로 진단하고 매뉴얼로 변환
+> **"당신의 학원이 원장님 없이도 완벽하게 돌아갈 수 있나요?"**
+> 10년 경험의 학원장 노하우를 AI가 구조화합니다. 단순한 텍스트 입력의 한계를 넘어서, 11가지 인터랙션 활동으로 운영 암묵지를 체계적으로 진단하고 매뉴얼 자산으로 변환합니다.
+
+[🚀 라이브 데모 (Vercel)](https://amp-tacit-practice.vercel.app/) · [🐛 이슈 리포트](../../issues)
 
 </div>
 

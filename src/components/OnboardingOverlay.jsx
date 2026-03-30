@@ -1,7 +1,9 @@
+import ModalOverlay from './ModalOverlay';
+
 const STEPS = [
   {
     title: '암묵지를 플레이처럼 수집합니다',
-    desc: '9개의 활동을 돌며 원장님만의 직관을 말로 꺼내고, XP와 뱃지로 진행도를 추적합니다.',
+    desc: '11개의 활동을 돌며 원장님만의 직관을 말로 꺼내고, XP와 뱃지로 진행도를 추적합니다.',
   },
   {
     title: '경험이 바로 프롬프트 자산이 됩니다',
@@ -13,14 +15,21 @@ const STEPS = [
   },
 ];
 
-export default function OnboardingOverlay({ open, profile, onChangeProfile, onClose }) {
+export default function OnboardingOverlay({ open, profile, onChangeProfile, onClose, appRootRef }) {
   if (!open) {
     return null;
   }
 
   return (
-    <div className="overlay-backdrop" role="dialog" aria-modal="true" aria-label="첫 진입 안내">
-      <div className="overlay-card glass-panel">
+    <ModalOverlay
+      open={open}
+      onClose={onClose}
+      appRootRef={appRootRef}
+      ariaLabel="첫 진입 안내"
+      closeOnBackdrop={false}
+      panelClassName="overlay-card glass-panel"
+      panelStyle={{ maxWidth: '600px', maxHeight: '90vh' }}
+    >
         <p style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '1px', marginBottom: '8px' }}>ONBOARDING</p>
         <h2>암묵지 발굴 워크숍에 오신 것을 환영합니다</h2>
         <div className="overlay-steps">
@@ -66,7 +75,6 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
         <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }} onClick={onClose} aria-label="온보딩 시작하기">
           시작하기
         </button>
-      </div>
-    </div>
+    </ModalOverlay>
   );
 }

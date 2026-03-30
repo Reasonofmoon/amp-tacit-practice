@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PresentationShell from '../components/PresentationShell';
 import { Send, Map, Sparkles, BrainCircuit } from 'lucide-react';
