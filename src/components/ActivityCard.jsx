@@ -29,7 +29,8 @@ export default function ActivityCard({ activity, completed, progress = 0, index,
 
       {/* Difficulty Stars Badge */}
       {stars > 0 && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', marginBottom: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2px', marginBottom: '8px' }}
+          role="img" aria-label={`난이도 ${stars}점 (4점 만점)`}>
           {Array.from({ length: stars }).map((_, i) => (
             <span key={i} style={{ fontSize: '0.75rem', color: '#f59e0b' }}>⭐</span>
           ))}
@@ -59,7 +60,12 @@ export default function ActivityCard({ activity, completed, progress = 0, index,
           <span>진행도</span>
           <span>{completed ? 100 : Math.round(progress * 100)}%</span>
         </div>
-        <div className="progress-thin">
+        <div className="progress-thin"
+          role="progressbar"
+          aria-valuenow={completed ? 100 : Math.round(progress * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="활동 진행도">
           <div className="progress-thin-fill" style={{ width: `${completed ? 100 : Math.round(progress * 100)}%` }} />
         </div>
       </div>

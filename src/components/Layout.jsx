@@ -32,7 +32,8 @@ export default function Layout({
     <div className="app-shell">
       {/* SaaS Style Header */}
       <header className="app-header">
-        <div className="logo-wrap" onClick={onGoHome} role="button" tabIndex={0}>
+        <div className="logo-wrap" onClick={onGoHome} role="button" tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onGoHome(); } }}>
           <Brain size={24} strokeWidth={2.5} />
           <span>Tacit KnowledgeLab</span>
         </div>

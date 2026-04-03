@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import ActivityCard from './components/ActivityCard';
 import OnboardingOverlay from './components/OnboardingOverlay';
 import ModalOverlay from './components/ModalOverlay';
+import ErrorBoundary from './components/ErrorBoundary';
 const ResultReport = lazy(() => import('./components/ResultReport'));
 const ReportAIWorkbench = lazy(() => import('./components/ReportAIWorkbench'));
 const TimelineActivity = lazy(() => import('./activities/TimelineActivity'));
@@ -103,7 +104,7 @@ export default function App() {
   const ActivityComponent = ACTIVITY_COMPONENTS[currentView] ?? null;
 
   return (
-    <>
+    <ErrorBoundary>
       <OnboardingOverlay
         open={!game.state.onboardingSeen}
         profile={game.state.profile}
@@ -287,6 +288,6 @@ export default function App() {
           />
         </Suspense>
       </ModalOverlay>
-    </>
+    </ErrorBoundary>
   );
 }

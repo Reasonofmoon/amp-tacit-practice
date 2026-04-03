@@ -4,7 +4,7 @@ export const BADGES = [
     name: '관찰자',
     icon: '🔍',
     desc: '자동조종 탐지기 완료',
-    condition: (state) => state.completed.has('autopilot'),
+    condition: (state) => state.completed.includes('autopilot'),
   },
   {
     id: 'crisis_manager',
@@ -25,7 +25,7 @@ export const BADGES = [
     name: '변환자',
     icon: '🔮',
     desc: 'SECI 변환 완료',
-    condition: (state) => state.completed.has('seci'),
+    condition: (state) => state.completed.includes('seci'),
   },
   {
     id: 'speedster',
@@ -39,20 +39,20 @@ export const BADGES = [
     name: '공감자',
     icon: '💬',
     desc: '역할극 시나리오 완료',
-    condition: (state) => state.completed.has('roleplay'),
+    condition: (state) => state.completed.includes('roleplay'),
   },
   {
     id: 'pattern_finder',
     name: '패턴 파인더',
     icon: '🧩',
     desc: '패턴 매칭 전체 완료',
-    condition: (state) => state.completed.has('pattern'),
+    condition: (state) => state.completed.includes('pattern'),
   },
   {
     id: 'master',
     name: '통찰가',
     icon: '🎯',
     desc: '모든 활동 완료',
-    condition: (state) => state.completed.size >= 9,
+    condition: (state) => state.completed.length >= 9,
   },
 ];

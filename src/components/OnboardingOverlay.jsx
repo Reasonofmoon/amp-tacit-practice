@@ -51,6 +51,7 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
               onChange={(event) => onChangeProfile({ name: event.target.value })}
               placeholder="예: 김원장"
               aria-label="이름 입력"
+              maxLength={50}
             />
           </label>
           <label>
@@ -60,6 +61,7 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
               onChange={(event) => onChangeProfile({ career: event.target.value })}
               placeholder="예: 12년차 영어학원 원장"
               aria-label="경력 입력"
+              maxLength={50}
             />
           </label>
           <label>
@@ -69,10 +71,18 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
               onChange={(event) => onChangeProfile({ academy: event.target.value })}
               placeholder="예: 더라이트영어학원"
               aria-label="기관명 입력"
+              maxLength={50}
             />
           </label>
         </div>
-        <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }} onClick={onClose} aria-label="온보딩 시작하기">
+        <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }} onClick={() => {
+          onChangeProfile({
+            name: profile.name?.trim(),
+            career: profile.career?.trim(),
+            academy: profile.academy?.trim(),
+          });
+          onClose();
+        }} aria-label="온보딩 시작하기">
           시작하기
         </button>
     </ModalOverlay>

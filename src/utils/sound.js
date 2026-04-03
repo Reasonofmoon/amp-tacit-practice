@@ -1,7 +1,13 @@
 // Simple Web Audio API sound generator for game UI interactions
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx = null;
+try {
+  audioCtx = new AudioContext();
+} catch {
+  // AudioContext not available; sounds will be silently skipped
+}
 
 function playTone(freq, type, duration, vol = 0.1) {
+  if (!audioCtx) return;
   if (audioCtx.state === 'suspended') audioCtx.resume();
   
   const osc = audioCtx.createOscillator();

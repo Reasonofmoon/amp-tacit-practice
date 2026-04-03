@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import DOMPurify from 'dompurify';
 import { callLLM, PROVIDERS } from '../utils/llmClient';
 
 /**
@@ -67,7 +68,7 @@ function renderMarkdown(text) {
     html.push(`<pre class="ai-code-block"><code>${codeBuffer.join('\n')}</code></pre>`);
   }
 
-  return html.join('');
+  return DOMPurify.sanitize(html.join(''));
 }
 
 function escapeHtml(str) {

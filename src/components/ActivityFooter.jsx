@@ -47,6 +47,7 @@ export default function ActivityFooter({
         onChange={(e) => setInsight(e.target.value)}
         placeholder={placeholder}
         rows={3}
+        aria-label="나만의 인사이트 기록"
       />
       <button 
         className="btn btn-primary neon-btn" 

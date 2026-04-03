@@ -189,7 +189,7 @@ function readStoredState() {
 }
 
 function normalizeBadgeState(state) {
-  const completed = new Set(state.completed);
+  const completed = state.completed;
   const crisisAll = state.metrics.crisisAll || (state.activityData.crisis.completedScenarios ?? 0) >= 3;
   const transferAll = state.metrics.transferAll || Object.keys(state.activityData.transfer.answers ?? {}).length >= 6;
 
