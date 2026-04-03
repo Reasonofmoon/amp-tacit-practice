@@ -74,6 +74,7 @@ const ACTIVITY_COMPONENTS = {
   demo_bluel: DemoLiveAppTemplate,
   demo_librainy: DemoLiveAppTemplate,
   demo_moonlang: DemoLiveAppTemplate,
+  demo_gidoboard: DemoLiveAppTemplate,
 };
 
 function LoadingPanel() {

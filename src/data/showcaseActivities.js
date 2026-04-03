@@ -103,6 +103,19 @@ export const SHOWCASE_ACTIVITIES = [
     storyText: "단순한 정보 제공을 넘어, 유용한 AI 툴 정보와 레퍼럴 코드 사이의 중개를 통해 실제 비즈니스 수익 창출이 가능한지 검증하는 실험 모델",
     speakerNotes: "어떤 AI 도구가 진짜 쓸모있는지 아는 안목도 암묵지. 이 안목 자체를 비즈니스로. 교재 추천 사이트 + 제휴 링크 = 암묵지가 월 수입이 됨."
   },
+  {
+    id: "demo_gidoboard",
+    title: "9. 碁Vibe 코딩 설계",
+    subtitle: "바둑 수순 기반 개발 로드맵 (Lv.5)",
+    icon: "⚫",
+    color: "#22D3EE",
+    time: "5분",
+    difficulty: 4,
+    techTags: ["React", "TypeScript", "Tailwind", "Go Metaphor"],
+    url: "https://gido-board.vercel.app/",
+    storyText: "바둑의 포석·정석·선수 개념으로 소프트웨어 개발 수순을 설계하고, 목표에 맞는 기술 스택을 자동 추천하는 바이브 코딩 워크벤치",
+    speakerNotes: "개발을 어디서부터 시작할지 모르겠다 → 바둑처럼 첫 수(포석)부터 끝내기까지 순서가 있다. 목표를 말하면 언어·라이브러리·수순이 자동 설계된다. 개발 경험이 곧 기보(棋譜)."
+  },
 ];
 
 // Level grouping for bridge slides
@@ -111,4 +124,5 @@ export const SHOWCASE_LEVELS = [
   { level: 2, label: "Level 2", title: "AI API를 내 앱에 연결하기",    color: "#3B82F6", icon: "🔵", ids: ["demo_smartstart", "demo_ontology"] },
   { level: 3, label: "Level 3", title: "나만의 지식 도구 만들기",      color: "#A855F7", icon: "🟣", ids: ["demo_knot", "demo_bluel"] },
   { level: 4, label: "Level 4", title: "교육 생태계를 통째로 만들기",   color: "#EF4444", icon: "🔴", ids: ["demo_librainy", "demo_moonlang"] },
+  { level: 5, label: "Level 5", title: "바둑 수순으로 개발을 설계하기", color: "#22D3EE", icon: "⚫", ids: ["demo_gidoboard"] },
 ];
