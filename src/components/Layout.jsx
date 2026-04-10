@@ -16,16 +16,19 @@ export default function Layout({
 }) {
   const isHome = currentView === 'home';
 
-  const title = activeJourney === 'developer' ? "AI 개발자의 1년" : 
-                activeJourney === 'automation' ? "나만의 AI 서기 만들기" : 
-                activeJourney === 'showcase' ? "키노트 쇼케이스: 암묵지에서 AI로" : 
+  const title = activeJourney === 'developer' ? "AI 개발자의 1년" :
+                activeJourney === 'automation' ? "나만의 AI 서기 만들기" :
+                activeJourney === 'showcase' ? "키노트 쇼케이스: 암묵지에서 AI로" :
+                activeJourney === 'promo' ? "키노트 모션 그래픽 갤러리" :
                 "학원 원장의 1년";
-  const subtitle = activeJourney === 'developer' 
+  const subtitle = activeJourney === 'developer'
     ? "소프트웨어 개발 과정에서 발생하는 암묵지 패턴을 추출하여 시스템 프롬프트로 변환합니다."
     : activeJourney === 'automation'
     ? "코딩을 몰라도 괜찮습니다. 복사+붙여넣기로 나만의 24시간 AI 비서를 완성해보세요!"
     : activeJourney === 'showcase'
     ? "나만의 교육 암묵지가 8개의 탁월한 웹앱 솔루션으로 변모하는 과정을 체감하세요."
+    : activeJourney === 'promo'
+    ? "Remotion으로 제작한 키네틱 타이포그래피 모션 그래픽 세트. 발표에 바로 활용 가능한 14개 영상."
     : "무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.";
 
   return (
@@ -90,12 +93,19 @@ export default function Layout({
               >
                 🚀 자동화 실습
               </button>
-              <button 
+              <button
                 className={`btn ${activeJourney === 'showcase' ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => onToggleJourney('showcase')}
                 style={{ background: activeJourney === 'showcase' ? '#8B5CF6' : undefined, borderColor: activeJourney === 'showcase' ? '#7C3AED' : undefined, color: activeJourney === 'showcase' ? 'white' : undefined }}
               >
                 ✨ 8대 도구 시연
+              </button>
+              <button
+                className={`btn ${activeJourney === 'promo' ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => onToggleJourney('promo')}
+                style={{ background: activeJourney === 'promo' ? '#F59E0B' : undefined, borderColor: activeJourney === 'promo' ? '#D97706' : undefined, color: activeJourney === 'promo' ? 'white' : undefined }}
+              >
+                🎬 모션 갤러리
               </button>
             </div>
             

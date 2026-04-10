@@ -13,6 +13,7 @@ import ActivityCard from './components/ActivityCard';
 import OnboardingOverlay from './components/OnboardingOverlay';
 import ModalOverlay from './components/ModalOverlay';
 import ErrorBoundary from './components/ErrorBoundary';
+const PromoGallery = lazy(() => import('./components/PromoGallery'));
 const ResultReport = lazy(() => import('./components/ResultReport'));
 const ReportAIWorkbench = lazy(() => import('./components/ReportAIWorkbench'));
 const TimelineActivity = lazy(() => import('./activities/TimelineActivity'));
@@ -127,7 +128,13 @@ export default function App() {
         activeJourney={activeJourney}
         onToggleJourney={setActiveJourney}
       >
-        {currentView === 'home' && (
+        {currentView === 'home' && activeJourney === 'promo' && (
+          <Suspense fallback={<LoadingPanel />}>
+            <PromoGallery />
+          </Suspense>
+        )}
+
+        {currentView === 'home' && activeJourney !== 'promo' && (
           <div style={{ textAlign: 'center' }}>
             <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '2rem' }}>탁월함의 발자취 (Monopoly Path)</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-md)' }}>
