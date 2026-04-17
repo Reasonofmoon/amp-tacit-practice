@@ -23,6 +23,9 @@ export default function HomeJourneyView({
   const darkCardTitle = '#F8FAFC';
   const darkCardText = '#CBD5E1';
   const darkCardMeta = '#94A3B8';
+  const lightCardTitle = 'var(--text-main)';
+  const lightCardText = 'var(--text-muted)';
+  const lightCardMeta = '#64748B';
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -118,14 +121,14 @@ export default function HomeJourneyView({
             maxWidth: '920px',
             margin: '0 auto var(--space-lg)',
             textAlign: 'left',
-            color: darkCardTitle,
+            color: lightCardTitle,
             borderColor: 'rgba(99,102,241,0.18)',
             background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(15,23,42,0.08))',
           }}
         >
           <span className="tag" style={{ marginBottom: '12px' }}>GUIDED DEMO</span>
-          <h3 style={{ margin: '0 0 8px', color: darkCardTitle }}>발표용 진행 순서</h3>
-          <p style={{ margin: '0 0 16px', color: darkCardText, lineHeight: 1.6 }}>
+          <h3 style={{ margin: '0 0 8px', color: lightCardTitle }}>발표용 진행 순서</h3>
+          <p style={{ margin: '0 0 16px', color: lightCardText, lineHeight: 1.6 }}>
             시연 흐름과 발표 멘트를 한 번에 정리했습니다. 추천 순서대로 보여주면 설명 부담이 줄어듭니다.
           </p>
 
@@ -141,10 +144,10 @@ export default function HomeJourneyView({
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                  <strong style={{ color: darkCardTitle }}>{index + 1}. {step.label}</strong>
-                  <span style={{ color: darkCardMeta, fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
+                  <strong style={{ color: lightCardTitle }}>{index + 1}. {step.label}</strong>
+                  <span style={{ color: lightCardMeta, fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
                 </div>
-                <p style={{ margin: 0, color: darkCardText, lineHeight: 1.7 }}>{step.presenterLine}</p>
+                <p style={{ margin: 0, color: lightCardText, lineHeight: 1.7 }}>{step.presenterLine}</p>
               </div>
             ))}
           </div>
