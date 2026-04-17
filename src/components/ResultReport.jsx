@@ -1,11 +1,12 @@
-import { Suspense, lazy, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { ACTIVITIES, AXES } from '../data/activities';
 import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
 import { buildSeciMap, buildTopInsights } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
+import { lazyWithRetry } from '../utils/lazyWithRetry';
 
-const ReportRadarCard = lazy(() => import('./ReportRadarCard'));
-const KnowledgeGraph = lazy(() => import('./KnowledgeGraph'));
+const ReportRadarCard = lazyWithRetry(() => import('./ReportRadarCard'), 'ReportRadarCard');
+const KnowledgeGraph = lazyWithRetry(() => import('./KnowledgeGraph'), 'KnowledgeGraph');
 
 function buildAxisScores(state, isDev = false) {
   const targetAxes = isDev ? DEV_AXES : AXES;
