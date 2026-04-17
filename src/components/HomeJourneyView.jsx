@@ -20,6 +20,9 @@ export default function HomeJourneyView({
     lastCompletedActivity,
     lastCompletedPreview,
   } = homeView;
+  const darkCardTitle = '#F8FAFC';
+  const darkCardText = '#CBD5E1';
+  const darkCardMeta = '#94A3B8';
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -29,6 +32,7 @@ export default function HomeJourneyView({
           maxWidth: '920px',
           margin: '0 auto var(--space-lg)',
           textAlign: 'left',
+          color: darkCardTitle,
           background: 'linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.86))',
           borderColor: 'rgba(148,163,184,0.18)',
         }}
@@ -36,10 +40,10 @@ export default function HomeJourneyView({
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ flex: '1 1 360px' }}>
             <span className="tag" style={{ marginBottom: '10px' }}>RECOMMENDED FLOW</span>
-            <h2 style={{ margin: '0 0 8px', fontSize: '1.55rem' }}>
+            <h2 style={{ margin: '0 0 8px', fontSize: '1.55rem', color: darkCardTitle }}>
               {recommendedActivity ? `${recommendedActivity.title}부터 시작하세요` : '지금 보고 싶은 여정을 선택하세요'}
             </h2>
-            <p style={{ color: 'var(--text-muted)', margin: 0, lineHeight: 1.7 }}>
+            <p style={{ color: darkCardText, margin: 0, lineHeight: 1.7 }}>
               {recommendedActivity
                 ? `${recommendedActivity.subtitle} 활동을 첫 진입점으로 추천합니다. 첫 성공 직후에는 실제 추출 문장을 홈에서 바로 확인할 수 있습니다.`
                 : '현재 여정은 둘러보기 모드입니다. 직접 탐색하거나 다른 여정을 선택해 첫 데모를 시작하세요.'}
@@ -79,7 +83,7 @@ export default function HomeJourneyView({
               }}
             >
               <strong style={{ display: 'block', marginBottom: '4px', color: '#F8FAFC' }}>{index + 1}. {step.title}</strong>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{step.detail}</span>
+              <span style={{ fontSize: '0.85rem', color: darkCardMeta }}>{step.detail}</span>
             </div>
           ))}
         </div>
@@ -96,7 +100,7 @@ export default function HomeJourneyView({
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <strong style={{ color: '#FCD34D' }}>첫 완료 후 실제 문장 미리보기</strong>
             {lastCompletedActivity && (
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.82rem', color: darkCardMeta }}>
                 마지막 반영 활동: {lastCompletedActivity.title}
               </span>
             )}
@@ -114,13 +118,14 @@ export default function HomeJourneyView({
             maxWidth: '920px',
             margin: '0 auto var(--space-lg)',
             textAlign: 'left',
+            color: darkCardTitle,
             borderColor: 'rgba(99,102,241,0.18)',
             background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(15,23,42,0.08))',
           }}
         >
           <span className="tag" style={{ marginBottom: '12px' }}>GUIDED DEMO</span>
-          <h3 style={{ margin: '0 0 8px' }}>발표용 진행 순서</h3>
-          <p style={{ margin: '0 0 16px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          <h3 style={{ margin: '0 0 8px', color: darkCardTitle }}>발표용 진행 순서</h3>
+          <p style={{ margin: '0 0 16px', color: darkCardText, lineHeight: 1.6 }}>
             시연 흐름과 발표 멘트를 한 번에 정리했습니다. 추천 순서대로 보여주면 설명 부담이 줄어듭니다.
           </p>
 
@@ -136,10 +141,10 @@ export default function HomeJourneyView({
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                  <strong>{index + 1}. {step.label}</strong>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
+                  <strong style={{ color: darkCardTitle }}>{index + 1}. {step.label}</strong>
+                  <span style={{ color: darkCardMeta, fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
                 </div>
-                <p style={{ margin: 0, color: 'var(--text-muted)', lineHeight: 1.7 }}>{step.presenterLine}</p>
+                <p style={{ margin: 0, color: darkCardText, lineHeight: 1.7 }}>{step.presenterLine}</p>
               </div>
             ))}
           </div>
