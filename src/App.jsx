@@ -2,14 +2,12 @@ import React, { Suspense, lazy, useRef, useState } from 'react';
 import './index.css';
 import confetti from 'canvas-confetti';
 import { useGameState } from './hooks/useGameState';
-import { ACTIVITIES } from './data/activities';
-import { DEV_ACTIVITIES } from './data/developerActivities';
-import { AUTOMATION_ACTIVITIES } from './data/automationActivities';
-import { SHOWCASE_ACTIVITIES, SHOWCASE_LEVELS } from './data/showcaseActivities';
-import { getActivityProgress } from './utils/scoring';
+import { SHOWCASE_ACTIVITIES } from './data/showcaseActivities';
+import { getJourneyGuide } from './data/journeyGuides';
+import { buildHomeViewModel } from './utils/homeFlow';
 import { playSuccessSound, playFanfareSound } from './utils/sound';
+import HomeJourneyView from './components/HomeJourneyView';
 import Layout from './components/Layout';
-import ActivityCard from './components/ActivityCard';
 import OnboardingOverlay from './components/OnboardingOverlay';
 import ModalOverlay from './components/ModalOverlay';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -90,7 +88,8 @@ function LoadingPanel() {
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
-  const [activeJourney, setActiveJourney] = useState('director'); // 'director' | 'developer'
+  const [activeJourney, setActiveJourney] = useState('showcase');
+  const [showJourneyPicker, setShowJourneyPicker] = useState(false);
   const [aiWorkbenchOpen, setAIWorkbenchOpen] = useState(false);
   const [qrInterstitialOpen, setQrInterstitialOpen] = useState(false);
   const appContentRef = useRef(null);
@@ -104,6 +103,28 @@ export default function App() {
   };
 
   const ActivityComponent = ACTIVITY_COMPONENTS[currentView] ?? null;
+  const homeView = buildHomeViewModel(activeJourney, game.state);
+  const recommendedJourney = homeView.journeyGuide;
+
+  const handleToggleJourney = (journey) => {
+    setActiveJourney(journey);
+  };
+
+  const handleStartRecommendedDemo = (journey = activeJourney) => {
+    const recommendedId = getJourneyGuide(journey).recommendedActivityId;
+    if (!recommendedId) {
+      setCurrentView('home');
+      return;
+    }
+    setActiveJourney(journey);
+    setCurrentView(recommendedId);
+  };
+
+  const handleQuickStart = (journey) => {
+    game.setOnboardingSeen();
+    setShowJourneyPicker(false);
+    handleStartRecommendedDemo(journey);
+  };
 
   return (
     <ErrorBoundary>
@@ -112,6 +133,7 @@ export default function App() {
         profile={game.state.profile}
         onChangeProfile={game.updateProfile}
         onClose={game.setOnboardingSeen}
+        onQuickStart={handleQuickStart}
         appRootRef={appContentRef}
       />
 
@@ -126,7 +148,11 @@ export default function App() {
         onGoReport={goReport}
         showReportButton={true}
         activeJourney={activeJourney}
-        onToggleJourney={setActiveJourney}
+        onToggleJourney={handleToggleJourney}
+        onStartRecommendedDemo={() => handleStartRecommendedDemo(activeJourney)}
+        onToggleJourneyPicker={() => setShowJourneyPicker((previous) => !previous)}
+        showJourneyPicker={showJourneyPicker}
+        recommendedJourney={recommendedJourney}
       >
         {currentView === 'home' && activeJourney === 'promo' && (
           <Suspense fallback={<LoadingPanel />}>
@@ -135,95 +161,15 @@ export default function App() {
         )}
 
         {currentView === 'home' && activeJourney !== 'promo' && (
-          <div style={{ textAlign: 'center' }}>
-            <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '2rem' }}>탁월함의 발자취 (Monopoly Path)</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-md)' }}>
-              각 노드를 클릭해 암묵지 발굴 여정을 진행하세요.
-            </p>
-
-            {/* Showcase Progress Bar */}
-            {activeJourney === 'showcase' && (() => {
-              const total = SHOWCASE_ACTIVITIES.length;
-              const done = SHOWCASE_ACTIVITIES.filter(a => game.state.completed.includes(a.id)).length;
-              return (
-                <div style={{ maxWidth: '600px', margin: '0 auto var(--space-lg)', padding: '16px 24px', borderRadius: '16px', background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.15)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)' }}>🎯 시연 진행률</span>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)' }}>{done} / {total} 완료</span>
-                  </div>
-                  <div style={{ height: '8px', borderRadius: '4px', background: 'var(--border)', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${(done / total) * 100}%`, borderRadius: '4px', background: 'linear-gradient(90deg, #6366f1, #a855f7)', transition: 'width 0.5s ease' }} />
-                  </div>
-                </div>
-              );
-            })()}
-            
-            <div className="monopoly-board">
-              {(activeJourney === 'director' ? ACTIVITIES : 
-                activeJourney === 'developer' ? DEV_ACTIVITIES : 
-                activeJourney === 'automation' ? AUTOMATION_ACTIVITIES : 
-                SHOWCASE_ACTIVITIES).map((activity, index) => {
-                const isCompleted = game.state.completed.includes(activity.id);
-
-                // Bridge slide logic for showcase journey
-                let bridgeSlide = null;
-                if (activeJourney === 'showcase') {
-                  const level = SHOWCASE_LEVELS.find(l => l.ids[0] === activity.id);
-                  if (level) {
-                    bridgeSlide = (
-                      <div key={`bridge-${level.level}`} style={{
-                        width: '100%', flexBasis: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        gap: '12px', padding: '12px 24px', margin: '8px 0',
-                        borderRadius: '12px', background: `${level.color}10`, border: `1px dashed ${level.color}40`,
-                      }}>
-                        <span style={{ fontSize: '1.5rem' }}>{level.icon}</span>
-                        <div style={{ textAlign: 'left' }}>
-                          <strong style={{ fontSize: '0.85rem', color: level.color, letterSpacing: '1px' }}>{level.label}</strong>
-                          <p style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-main)', margin: 0 }}>{level.title}</p>
-                        </div>
-                      </div>
-                    );
-                  }
-                }
-
-                return (
-                  <React.Fragment key={activity.id}>
-                    {bridgeSlide}
-                    <div className="monopoly-node">
-                      <ActivityCard
-                        activity={activity}
-                        index={index}
-                        completed={isCompleted}
-                        progress={getActivityProgress(activity.id, game.state.activityData[activity.id])}
-                        onClick={() => setCurrentView(activity.id)}
-                      />
-                    </div>
-                  </React.Fragment>
-                );
-              })}
-            </div>
-
-            {/* QR Code Interstitial + Report Button */}
-            <div style={{ marginTop: 'var(--space-xl)', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-              {activeJourney === 'showcase' && (
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => setQrInterstitialOpen(true)}
-                  style={{ fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}
-                >
-                  📱 청중 참여 QR코드 보기
-                </button>
-              )}
-              <button 
-                className="btn btn-primary neon-btn" 
-                onClick={goReport} 
-                disabled={game.state.completed.length === 0}
-                style={{ padding: '16px 32px', fontSize: '1.25rem', opacity: game.state.completed.length === 0 ? 0.5 : 1 }}
-              >
-                {game.state.completed.length > 0 ? "최종 진단 리포트 & 프롬프트 발급받기 →" : "활동을 1개 이상 완료해야 리포트를 볼 수 있습니다"}
-              </button>
-            </div>
-          </div>
+          <HomeJourneyView
+            activeJourney={activeJourney}
+            state={game.state}
+            homeView={homeView}
+            onStartRecommendedDemo={() => handleStartRecommendedDemo(activeJourney)}
+            onGoReport={goReport}
+            onOpenQr={() => setQrInterstitialOpen(true)}
+            onSelectActivity={setCurrentView}
+          />
         )}
 
         {currentView === 'report' && (

@@ -12,6 +12,10 @@ export default function Layout({
   showReportButton,
   activeJourney,
   onToggleJourney,
+  onStartRecommendedDemo,
+  onToggleJourneyPicker,
+  showJourneyPicker,
+  recommendedJourney,
   children,
 }) {
   const isHome = currentView === 'home';
@@ -28,7 +32,7 @@ export default function Layout({
     : activeJourney === 'showcase'
     ? "나만의 교육 암묵지가 8개의 탁월한 웹앱 솔루션으로 변모하는 과정을 체감하세요."
     : activeJourney === 'promo'
-    ? "Remotion으로 제작한 키네틱 타이포그래피 모션 그래픽 세트. 발표에 바로 활용 가능한 14개 영상."
+    ? "Remotion으로 제작한 키네틱 타이포그래피 모션 그래픽 세트. 발표에 바로 활용 가능한 12개 영상."
     : "무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.";
 
   return (
@@ -71,44 +75,106 @@ export default function Layout({
             <p style={{ marginTop: '12px', fontSize: '1.1rem', maxWidth: '600px', margin: '12px auto 0' }}>
               {subtitle}
             </p>
-            
-            {/* Journey Toggle */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: 'var(--space-lg)' }}>
-              <button 
-                className={`btn ${activeJourney === 'director' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => onToggleJourney('director')}
-              >
-                🎓 원장 여정
-              </button>
-              <button 
-                className={`btn ${activeJourney === 'developer' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => onToggleJourney('developer')}
-              >
-                💻 개발자 여정
-              </button>
-              <button 
-                className={`btn ${activeJourney === 'automation' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => onToggleJourney('automation')}
-                style={{ background: activeJourney === 'automation' ? '#10B981' : undefined, borderColor: activeJourney === 'automation' ? '#059669' : undefined, color: activeJourney === 'automation' ? 'white' : undefined }}
-              >
-                🚀 자동화 실습
-              </button>
-              <button
-                className={`btn ${activeJourney === 'showcase' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => onToggleJourney('showcase')}
-                style={{ background: activeJourney === 'showcase' ? '#8B5CF6' : undefined, borderColor: activeJourney === 'showcase' ? '#7C3AED' : undefined, color: activeJourney === 'showcase' ? 'white' : undefined }}
-              >
-                ✨ 8대 도구 시연
-              </button>
-              <button
-                className={`btn ${activeJourney === 'promo' ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => onToggleJourney('promo')}
-                style={{ background: activeJourney === 'promo' ? '#F59E0B' : undefined, borderColor: activeJourney === 'promo' ? '#D97706' : undefined, color: activeJourney === 'promo' ? 'white' : undefined }}
-              >
-                🎬 모션 갤러리
-              </button>
+
+            <div
+              className="card"
+              style={{
+                marginTop: 'var(--space-lg)',
+                maxWidth: '760px',
+                marginInline: 'auto',
+                textAlign: 'left',
+                background: 'linear-gradient(135deg, rgba(245,158,11,0.16), rgba(14,165,233,0.08))',
+                borderColor: 'rgba(245,158,11,0.28)',
+              }}
+            >
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ flex: '1 1 320px' }}>
+                  <span className="tag" style={{ marginBottom: '12px', background: 'rgba(245,158,11,0.16)', color: '#F59E0B' }}>
+                    1분 안에 첫 가치 체험
+                  </span>
+                  <h2 style={{ margin: '0 0 8px', fontSize: '1.35rem' }}>{recommendedJourney?.headline}</h2>
+                  <p style={{ margin: 0, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                    {recommendedJourney?.summary}
+                  </p>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '220px' }}>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ padding: '14px 18px', fontSize: '1rem', boxShadow: '0 12px 28px rgba(245,158,11,0.25)' }}
+                    onClick={onStartRecommendedDemo}
+                  >
+                    {recommendedJourney?.ctaLabel ?? '맞춤 데모 시작'}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    style={{ padding: '12px 18px', fontSize: '0.95rem' }}
+                    onClick={onToggleJourneyPicker}
+                  >
+                    {showJourneyPicker ? '간단 모드로 접기' : '직접 둘러보기'}
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginTop: '18px' }}>
+                {recommendedJourney.quickSteps.map((step, index) => (
+                  <div
+                    key={step.title}
+                    style={{
+                      padding: '14px 16px',
+                      borderRadius: '12px',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(148,163,184,0.14)',
+                    }}
+                  >
+                    <strong style={{ display: 'block', marginBottom: '4px', color: '#F8FAFC' }}>{index + 1}. {step.title}</strong>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                      {step.detail}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            
+
+            {showJourneyPicker && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: 'var(--space-lg)', flexWrap: 'wrap' }}>
+                <button
+                  className={`btn ${activeJourney === 'director' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => onToggleJourney('director')}
+                >
+                  🎓 원장 여정
+                </button>
+                <button
+                  className={`btn ${activeJourney === 'developer' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => onToggleJourney('developer')}
+                >
+                  💻 개발자 여정
+                </button>
+                <button
+                  className={`btn ${activeJourney === 'automation' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => onToggleJourney('automation')}
+                  style={{ background: activeJourney === 'automation' ? '#10B981' : undefined, borderColor: activeJourney === 'automation' ? '#059669' : undefined, color: activeJourney === 'automation' ? 'white' : undefined }}
+                >
+                  🚀 자동화 실습
+                </button>
+                <button
+                  className={`btn ${activeJourney === 'showcase' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => onToggleJourney('showcase')}
+                  style={{ background: activeJourney === 'showcase' ? '#8B5CF6' : undefined, borderColor: activeJourney === 'showcase' ? '#7C3AED' : undefined, color: activeJourney === 'showcase' ? 'white' : undefined }}
+                >
+                  ✨ 8대 도구 시연
+                </button>
+                <button
+                  className={`btn ${activeJourney === 'promo' ? 'btn-primary' : 'btn-secondary'}`}
+                  onClick={() => onToggleJourney('promo')}
+                  style={{ background: activeJourney === 'promo' ? '#F59E0B' : undefined, borderColor: activeJourney === 'promo' ? '#D97706' : undefined, color: activeJourney === 'promo' ? 'white' : undefined }}
+                >
+                  🎬 모션 갤러리
+                </button>
+              </div>
+            )}
+
             <div style={{ marginTop: '32px', maxWidth: '400px', margin: '32px auto 0' }}>
               <XPBar xp={state.xp} levelInfo={levelInfo} nextLevel={nextLevel} xpGain={celebration.xpGain} />
             </div>

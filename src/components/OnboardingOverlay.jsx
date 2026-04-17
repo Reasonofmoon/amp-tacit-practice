@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import ModalOverlay from './ModalOverlay';
 
 const STEPS = [
@@ -15,7 +16,9 @@ const STEPS = [
   },
 ];
 
-export default function OnboardingOverlay({ open, profile, onChangeProfile, onClose, appRootRef }) {
+export default function OnboardingOverlay({ open, profile, onChangeProfile, onClose, onQuickStart, appRootRef }) {
+  const [showProfileForm, setShowProfileForm] = useState(false);
+
   if (!open) {
     return null;
   }
@@ -26,12 +29,15 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
       onClose={onClose}
       appRootRef={appRootRef}
       ariaLabel="첫 진입 안내"
-      closeOnBackdrop={false}
+      closeOnBackdrop={true}
       panelClassName="overlay-card glass-panel"
       panelStyle={{ maxWidth: '600px', maxHeight: '90vh' }}
     >
         <p style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '1px', marginBottom: '8px' }}>ONBOARDING</p>
         <h2>암묵지 발굴 워크숍에 오신 것을 환영합니다</h2>
+        <p style={{ color: 'var(--text-muted)', margin: '8px 0 20px', lineHeight: 1.6 }}>
+          1분 안에 추천 데모를 바로 볼 수 있습니다. 프로필 입력은 선택 사항이며, 나중에 언제든 추가할 수 있습니다.
+        </p>
         <div className="overlay-steps">
           {STEPS.map((step, index) => (
             <article key={step.title} className="overlay-step">
@@ -43,48 +49,101 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
             </article>
           ))}
         </div>
-        <div className="overlay-form">
-          <label>
-            이름
-            <input
-              value={profile.name}
-              onChange={(event) => onChangeProfile({ name: event.target.value })}
-              placeholder="예: 김원장"
-              aria-label="이름 입력"
-              maxLength={50}
-            />
-          </label>
-          <label>
-            경력
-            <input
-              value={profile.career}
-              onChange={(event) => onChangeProfile({ career: event.target.value })}
-              placeholder="예: 12년차 영어학원 원장"
-              aria-label="경력 입력"
-              maxLength={50}
-            />
-          </label>
-          <label>
-            기관명
-            <input
-              value={profile.academy}
-              onChange={(event) => onChangeProfile({ academy: event.target.value })}
-              placeholder="예: 더라이트영어학원"
-              aria-label="기관명 입력"
-              maxLength={50}
-            />
-          </label>
+
+        {showProfileForm && (
+          <div className="overlay-form">
+            <label>
+              이름
+              <input
+                value={profile.name}
+                onChange={(event) => onChangeProfile({ name: event.target.value })}
+                placeholder="예: 김원장"
+                aria-label="이름 입력"
+                autoComplete="name"
+                maxLength={50}
+              />
+            </label>
+            <label>
+              경력
+              <input
+                value={profile.career}
+                onChange={(event) => onChangeProfile({ career: event.target.value })}
+                placeholder="예: 12년차 영어학원 원장"
+                aria-label="경력 입력"
+                autoComplete="organization-title"
+                maxLength={50}
+              />
+            </label>
+            <label>
+              기관명
+              <input
+                value={profile.academy}
+                onChange={(event) => onChangeProfile({ academy: event.target.value })}
+                placeholder="예: 더라이트영어학원"
+                aria-label="기관명 입력"
+                autoComplete="organization"
+                maxLength={50}
+              />
+            </label>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }}
+            onClick={() => {
+              onChangeProfile({
+                name: profile.name?.trim(),
+                career: profile.career?.trim(),
+                academy: profile.academy?.trim(),
+              });
+              onQuickStart?.('showcase');
+            }}
+            aria-label="추천 데모 시작하기"
+          >
+            1분 추천 데모 시작하기
+          </button>
+
+          {!showProfileForm && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
+              onClick={() => setShowProfileForm(true)}
+            >
+              프로필 입력 후 시작하기
+            </button>
+          )}
+
+          {showProfileForm && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
+              onClick={() => {
+                onChangeProfile({
+                  name: profile.name?.trim(),
+                  career: profile.career?.trim(),
+                  academy: profile.academy?.trim(),
+                });
+                onClose();
+              }}
+            >
+              프로필 저장 후 둘러보기
+            </button>
+          )}
+
+          <button
+            type="button"
+            className="btn btn-ghost"
+            style={{ width: '100%' }}
+            onClick={onClose}
+          >
+            나중에 입력하고 둘러보기
+          </button>
         </div>
-        <button type="button" className="btn btn-primary" style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }} onClick={() => {
-          onChangeProfile({
-            name: profile.name?.trim(),
-            career: profile.career?.trim(),
-            academy: profile.academy?.trim(),
-          });
-          onClose();
-        }} aria-label="온보딩 시작하기">
-          시작하기
-        </button>
     </ModalOverlay>
   );
 }

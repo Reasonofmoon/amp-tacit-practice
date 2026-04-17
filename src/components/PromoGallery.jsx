@@ -15,7 +15,6 @@ const VIDEO_SETS = [
     duration: '~28초',
     slideCount: 15,
     src: '/videos/amp-opener.mp4',
-    poster: '/videos/posters/opener.jpg',
     color: '#6366F1',
     icon: '🎬',
     tags: ['Opening', 'Hook', 'Tacit Knowledge'],
@@ -28,7 +27,6 @@ const VIDEO_SETS = [
     duration: '~25초',
     slideCount: 15,
     src: '/videos/amp-seci.mp4',
-    poster: '/videos/posters/seci.jpg',
     color: '#10B981',
     icon: '🔄',
     tags: ['Theory', 'SECI', 'Framework'],
@@ -41,7 +39,6 @@ const VIDEO_SETS = [
     duration: '~21초',
     slideCount: 11,
     src: '/videos/amp-pipeline.mp4',
-    poster: '/videos/posters/pipeline.jpg',
     color: '#8B5CF6',
     icon: '⚡',
     tags: ['Pipeline', 'Framework'],
@@ -54,7 +51,6 @@ const VIDEO_SETS = [
     duration: '~52초',
     slideCount: 31,
     src: '/videos/amp-episodes.mp4',
-    poster: '/videos/posters/episodes.jpg',
     color: '#EC4899',
     icon: '🎯',
     tags: ['Episodes', '8 Apps', 'Stories'],
@@ -67,7 +63,6 @@ const VIDEO_SETS = [
     duration: '~17초',
     slideCount: 11,
     src: '/videos/amp-workshop.mp4',
-    poster: '/videos/posters/workshop.jpg',
     color: '#F59E0B',
     icon: '✍️',
     tags: ['Workshop', 'Action'],
@@ -80,7 +75,6 @@ const VIDEO_SETS = [
     duration: '~18초',
     slideCount: 9,
     src: '/videos/amp-closer.mp4',
-    poster: '/videos/posters/closer.jpg',
     color: '#EF4444',
     icon: '🏁',
     tags: ['Closing', 'Thank You'],
@@ -93,7 +87,6 @@ const VIDEO_SETS = [
     duration: '~2분 30초',
     slideCount: 65,
     src: '/videos/amp-tutorial-readmaster.mp4',
-    poster: '/videos/posters/tutorial-readmaster.jpg',
     color: '#06B6D4',
     icon: '🎓',
     tags: ['Tutorial', 'MECE', 'ReadMaster', 'Level 1'],
@@ -107,7 +100,6 @@ const VIDEO_SETS = [
     duration: '~3초',
     slideCount: 2,
     src: '/videos/amp-lv1.mp4',
-    poster: '/videos/posters/lv1.jpg',
     color: '#22C55E',
     icon: '🟢',
     tags: ['Level Card'],
@@ -120,7 +112,6 @@ const VIDEO_SETS = [
     duration: '~5초',
     slideCount: 3,
     src: '/videos/amp-lv2.mp4',
-    poster: '/videos/posters/lv2.jpg',
     color: '#3B82F6',
     icon: '🔵',
     tags: ['Level Card'],
@@ -133,7 +124,6 @@ const VIDEO_SETS = [
     duration: '~4초',
     slideCount: 3,
     src: '/videos/amp-lv3.mp4',
-    poster: '/videos/posters/lv3.jpg',
     color: '#A855F7',
     icon: '🟣',
     tags: ['Level Card'],
@@ -146,7 +136,6 @@ const VIDEO_SETS = [
     duration: '~5초',
     slideCount: 3,
     src: '/videos/amp-lv4.mp4',
-    poster: '/videos/posters/lv4.jpg',
     color: '#EF4444',
     icon: '🔴',
     tags: ['Level Card'],
@@ -159,7 +148,6 @@ const VIDEO_SETS = [
     duration: '~4초',
     slideCount: 2,
     src: '/videos/amp-lv5.mp4',
-    poster: '/videos/posters/lv5.jpg',
     color: '#06B6D4',
     icon: '⚫',
     tags: ['Level Card'],
@@ -186,6 +174,11 @@ const SECTIONS = [
     filter: (v) => v.id.startsWith('lv'),
   },
 ];
+
+const VIDEO_STATS = {
+  totalVideos: VIDEO_SETS.length,
+  totalSlides: VIDEO_SETS.reduce((sum, video) => sum + video.slideCount, 0),
+};
 
 function VideoCard({ video, expanded, onToggle }) {
   const videoRef = useRef(null);
@@ -271,7 +264,6 @@ function VideoCard({ video, expanded, onToggle }) {
           <video
             ref={videoRef}
             src={video.src}
-            poster={video.poster}
             preload="metadata"
             playsInline
             muted
@@ -476,8 +468,8 @@ export default function PromoGallery() {
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', gap: '40px', flexWrap: 'wrap' }}>
-          <Stat label="제작된 영상" value="14" unit="개" color="#F59E0B" />
-          <Stat label="총 슬라이드" value="173" unit="장" color="#6366F1" />
+          <Stat label="제작된 영상" value={VIDEO_STATS.totalVideos} unit="개" color="#F59E0B" />
+          <Stat label="총 슬라이드" value={VIDEO_STATS.totalSlides} unit="장" color="#6366F1" />
           <Stat label="해상도" value="1920×1080" unit="" color="#10B981" />
           <Stat label="프레임레이트" value="30" unit="fps" color="#EC4899" />
         </div>
