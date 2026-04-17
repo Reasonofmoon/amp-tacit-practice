@@ -50,6 +50,80 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
   const profileName = state.profile.name?.trim() || (isDev ? '익명 개발자' : '익명 원장');
   const career = state.profile.career?.trim() || '경력 미입력';
   const academy = state.profile.academy?.trim() || '우리 학원';
+  const seciSections = [
+    {
+      key: 'socialization',
+      icon: '🌱',
+      title: 'S · 공유화',
+      empty: '갤러리 공유가 여기에 모입니다.',
+      accent: '#22C55E',
+      tint: 'rgba(34, 197, 94, 0.12)',
+    },
+    {
+      key: 'externalization',
+      icon: '🗣️',
+      title: 'E · 표출화',
+      empty: '위기/전수 답변이 여기에 모입니다.',
+      accent: '#8B5CF6',
+      tint: 'rgba(139, 92, 246, 0.12)',
+    },
+    {
+      key: 'combination',
+      icon: '🔗',
+      title: 'C · 연결화',
+      empty: 'SECI 활동의 프롬프트가 여기에 표시됩니다.',
+      accent: '#0EA5E9',
+      tint: 'rgba(14, 165, 233, 0.12)',
+    },
+    {
+      key: 'internalization',
+      icon: '🧠',
+      title: 'I · 내면화',
+      empty: '퀴즈와 역할극 인사이트가 여기에 축적됩니다.',
+      accent: '#F59E0B',
+      tint: 'rgba(245, 158, 11, 0.14)',
+    },
+  ];
+
+  const seciCardStyle = {
+    background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
+    padding: '24px',
+    borderRadius: 'var(--radius-lg)',
+    border: '1px solid rgba(148, 163, 184, 0.22)',
+    boxShadow: '0 18px 40px rgba(15, 23, 42, 0.08)',
+  };
+
+  const seciCardHeaderStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '16px',
+    borderBottom: '1px solid rgba(148, 163, 184, 0.24)',
+    paddingBottom: '12px',
+  };
+
+  const seciIconStyle = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '12px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.1rem',
+    flexShrink: 0,
+  };
+
+  const seciListStyle = {
+    margin: 0,
+    paddingLeft: '20px',
+    fontSize: '0.95rem',
+    color: '#334155',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    lineHeight: '1.7',
+    fontWeight: 500,
+  };
 
   return (
     <section className="report-shell">
@@ -157,45 +231,21 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
             gap: '24px',
             marginTop: '24px',
           }}>
-            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-                <span style={{ fontSize: '1.3rem' }}>🌱</span>
-                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>S · 공유화</h4>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
-                {seciMap.socialization.length ? seciMap.socialization.map((item) => <li key={item}>{item}</li>) : <li>갤러리 공유가 여기에 모입니다.</li>}
-              </ul>
-            </div>
+            {seciSections.map((section) => {
+              const items = seciMap[section.key];
 
-            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-                <span style={{ fontSize: '1.3rem' }}>🗣️</span>
-                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>E · 표출화</h4>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
-                {seciMap.externalization.length ? seciMap.externalization.map((item) => <li key={item}>{item}</li>) : <li>위기/전수 답변이 여기에 모입니다.</li>}
-              </ul>
-            </div>
-
-            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-                <span style={{ fontSize: '1.3rem' }}>🔗</span>
-                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>C · 연결화</h4>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
-                {seciMap.combination.length ? seciMap.combination.map((item) => <li key={item}>{item}</li>) : <li>SECI 활동의 프롬프트가 여기에 표시됩니다.</li>}
-              </ul>
-            </div>
-
-            <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-                <span style={{ fontSize: '1.3rem' }}>🧠</span>
-                <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--primary-light)', fontWeight: 600 }}>I · 내면화</h4>
-              </div>
-              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.95rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '10px', lineHeight: '1.5' }}>
-                {seciMap.internalization.length ? seciMap.internalization.map((item) => <li key={item}>{item}</li>) : <li>퀴즈와 역할극 인사이트가 여기에 축적됩니다.</li>}
-              </ul>
-            </div>
+              return (
+                <div key={section.key} style={{ ...seciCardStyle, borderTop: `4px solid ${section.accent}` }}>
+                  <div style={seciCardHeaderStyle}>
+                    <span style={{ ...seciIconStyle, background: section.tint }}>{section.icon}</span>
+                    <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-main)', fontWeight: 700 }}>{section.title}</h4>
+                  </div>
+                  <ul style={seciListStyle}>
+                    {items.length ? items.map((item) => <li key={item}>{item}</li>) : <li>{section.empty}</li>}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
         </article>
       </div>
