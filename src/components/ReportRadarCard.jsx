@@ -23,10 +23,10 @@ export default function ReportRadarCard({ axisScores, isDev }) {
   const gridPolygons = levels.map((level) => buildPolygonPoints(axisScores, () => (level / 100) * gridRadius));
 
   return (
-    <article className="card">
-      <div style={{ marginBottom: '24px' }}>
-        <p className="eyebrow" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '1px' }}>RADAR MAP</p>
-        <h3 style={{ fontSize: '1.25rem' }}>발견된 암묵지 영역</h3>
+    <article className="report-paper-card">
+      <div style={{ marginBottom: '20px' }}>
+        <p className="eyebrow">RADAR MAP</p>
+        <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>발견된 암묵지 영역</h3>
       </div>
 
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -79,11 +79,23 @@ export default function ReportRadarCard({ axisScores, isDev }) {
         </svg>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '18px' }}>
         {axisScores.map((axis) => (
-          <div key={axis.key} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', background: 'var(--bg-app)', borderRadius: '6px', fontSize: '0.875rem' }}>
-            <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>{axis.label}</span>
-            <strong style={{ color: 'var(--text-main)' }}>{axis.score}</strong>
+          <div
+            key={axis.key}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '10px 14px',
+              background: 'var(--paper-100)',
+              border: '1px solid var(--paper-300)',
+              borderRadius: '10px',
+              fontSize: '0.88rem',
+            }}
+          >
+            <span style={{ color: 'var(--ink-700)', fontWeight: 500 }}>{axis.label}</span>
+            <strong style={{ color: 'var(--ink-blue-deep)', fontFamily: 'var(--font-display)', fontSize: '1.05rem' }}>{axis.score}</strong>
           </div>
         ))}
       </div>

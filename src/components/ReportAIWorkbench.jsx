@@ -76,15 +76,19 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
         <div>
-          <p className="eyebrow">AI WORKBENCH</p>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>AI 실행 워크벤치</h2>
-          <p style={{ color: 'var(--text-muted)', marginTop: '6px' }}>
+          <span className="flow-eyebrow-tag" style={{ background: 'var(--blue-wash)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
+            AI WORKBENCH
+          </span>
+          <h2 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '12px' }}>
+            AI 실행 워크벤치
+          </h2>
+          <p style={{ color: 'var(--ink-700)', marginTop: '6px', maxWidth: '540px' }}>
             리포트 본문과 분리된 전용 실행 공간입니다. 프롬프트 복사, 모델 선택, 즉시 실행을 여기서 처리합니다.
           </p>
         </div>
-        <button type="button" className="btn btn-ghost" onClick={onClose}>
+        <button type="button" className="btn-paper-outline" onClick={onClose}>
           닫기
         </button>
       </div>
@@ -99,34 +103,25 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
       />
 
       <div className="report-grid">
-        <article className="glass-panel report-card">
-          <div className="section-heading">
+        <article className="report-paper-card">
+          <div className="section-heading" style={{ marginBottom: '18px' }}>
             <div>
               <p className="eyebrow">PROMPT PACK</p>
-              <h3>AI 프롬프트 팩</h3>
+              <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>
+                AI 프롬프트 팩
+              </h3>
             </div>
           </div>
-          <div className="prompt-list">
+          <div className="prompt-list" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {promptPack.map((prompt, index) => (
-              <article key={index} className="prompt-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px', border: 'none', padding: 0 }}>
-                <div style={{
-                  background: 'var(--bg-app)',
-                  color: 'var(--text-main)',
-                  padding: '24px',
-                  borderRadius: '12px',
-                  fontSize: '0.9rem',
-                  lineHeight: '1.6',
-                  whiteSpace: 'pre-wrap',
-                  border: '1px solid var(--border)',
-                  fontFamily: 'var(--font-mono, monospace)',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
-                }}>
+              <article key={index} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div className="prompt-paper">
                   {prompt}
                 </div>
                 <button
                   type="button"
-                  className="btn btn-primary"
-                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px' }}
+                  className="btn-paper-primary"
+                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px' }}
                   onClick={() => handleCopy(prompt, index)}
                   aria-label="프롬프트 템플릿 복사"
                 >
@@ -143,19 +138,21 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
           </div>
         </article>
 
-        <article className="glass-panel report-card vibe-coding-section">
-          <div className="section-heading">
+        <article className="report-paper-card vibe-coding-section">
+          <div className="section-heading" style={{ marginBottom: '18px' }}>
             <div>
               <p className="eyebrow">VIBE CODING</p>
-              <h3>🎯 맞춤형 바이브코딩 프롬프트</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '4px' }}>
+              <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>
+                🎯 맞춤형 바이브코딩 프롬프트
+              </h3>
+              <p style={{ color: 'var(--ink-500)', fontSize: '0.85rem', marginTop: '4px' }}>
                 레이더맵 분석 결과 기반으로 약한 영역을 보완하는 앱/솔루션을 바로 생성할 수 있습니다.
               </p>
             </div>
           </div>
           <div className="vibe-prompt-grid">
             {vibeCodingPrompts.map((vp, index) => (
-              <article key={index} className="vibe-prompt-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <article key={index} className="vibe-prompt-paper-card">
                 <div className="vibe-prompt-header">
                   <span className="vibe-prompt-icon">{vp.icon}</span>
                   <div>
@@ -163,26 +160,13 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
                     <p className="vibe-prompt-desc">{vp.desc}</p>
                   </div>
                 </div>
-                <div style={{
-                  background: 'var(--bg-app)',
-                  color: 'var(--text-main)',
-                  padding: '20px',
-                  borderRadius: '10px',
-                  fontSize: '0.85rem',
-                  lineHeight: '1.6',
-                  whiteSpace: 'pre-wrap',
-                  fontFamily: 'var(--font-mono, monospace)',
-                  maxHeight: '300px',
-                  overflow: 'auto',
-                  border: '1px solid var(--border)',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
-                }}>
+                <div className="prompt-paper" style={{ maxHeight: '300px', overflow: 'auto' }}>
                   {vp.prompt}
                 </div>
                 <button
                   type="button"
-                  className="btn btn-primary"
-                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', fontSize: '0.9rem' }}
+                  className="btn-paper-primary"
+                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}
                   onClick={() => handleVibeCopy(vp.prompt, index)}
                   aria-label="바이브코딩 프롬프트 복사"
                 >

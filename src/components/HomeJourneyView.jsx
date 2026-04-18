@@ -20,53 +20,35 @@ export default function HomeJourneyView({
     lastCompletedActivity,
     lastCompletedPreview,
   } = homeView;
-  const darkCardTitle = '#F8FAFC';
-  const darkCardText = '#CBD5E1';
-  const darkCardMeta = '#94A3B8';
-  const lightCardTitle = 'var(--text-main)';
-  const lightCardText = 'var(--text-muted)';
-  const lightCardMeta = '#64748B';
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <div
-        className="card"
-        style={{
-          maxWidth: '920px',
-          margin: '0 auto var(--space-lg)',
-          textAlign: 'left',
-          color: darkCardTitle,
-          background: 'linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.86))',
-          borderColor: 'rgba(148,163,184,0.18)',
-        }}
-      >
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="flow-card-paper" style={{ marginBottom: 'var(--space-lg)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: '28px' }}>
           <div style={{ flex: '1 1 360px' }}>
-            <span className="tag" style={{ marginBottom: '10px' }}>RECOMMENDED FLOW</span>
-            <h2 style={{ margin: '0 0 8px', fontSize: '1.55rem', color: darkCardTitle }}>
+            <span className="flow-eyebrow-tag">RECOMMENDED FLOW</span>
+            <h2 className="flow-title" style={{ marginTop: '16px' }}>
               {recommendedActivity ? `${recommendedActivity.title}부터 시작하세요` : '지금 보고 싶은 여정을 선택하세요'}
             </h2>
-            <p style={{ color: darkCardText, margin: 0, lineHeight: 1.7 }}>
+            <p className="flow-subtitle">
               {recommendedActivity
                 ? `${recommendedActivity.subtitle} 활동을 첫 진입점으로 추천합니다. 첫 성공 직후에는 실제 추출 문장을 홈에서 바로 확인할 수 있습니다.`
                 : '현재 여정은 둘러보기 모드입니다. 직접 탐색하거나 다른 여정을 선택해 첫 데모를 시작하세요.'}
             </p>
           </div>
-          <div style={{ flex: '0 0 240px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="flow-actions">
             <button
               type="button"
-              className="btn btn-primary neon-btn"
+              className="btn-paper-primary"
               onClick={onStartRecommendedDemo}
-              style={{ padding: '16px 20px', fontSize: '1.05rem' }}
             >
-              {journeyGuide.ctaLabel}
+              {journeyGuide.ctaLabel} →
             </button>
             {state.completed.length > 0 && (
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn-paper-outline"
                 onClick={onGoReport}
-                style={{ padding: '14px 18px' }}
               >
                 내 결과 미리보기
               </button>
@@ -74,82 +56,62 @@ export default function HomeJourneyView({
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginTop: '18px' }}>
+        <div className="flow-grid" style={{ paddingLeft: '28px' }}>
           {journeyGuide.quickSteps.map((step, index) => (
-            <div
-              key={step.title}
-              style={{
-                padding: '14px 16px',
-                borderRadius: '12px',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(148,163,184,0.14)',
-              }}
-            >
-              <strong style={{ display: 'block', marginBottom: '4px', color: '#F8FAFC' }}>{index + 1}. {step.title}</strong>
-              <span style={{ fontSize: '0.85rem', color: darkCardMeta }}>{step.detail}</span>
+            <div key={step.title} className="flow-step">
+              <span className="flow-step-index">{index + 1}</span>
+              <strong className="flow-step-title">{step.title}</strong>
+              <span className="flow-step-detail">{step.detail}</span>
             </div>
           ))}
         </div>
 
-        <div
-          style={{
-            marginTop: '18px',
-            padding: '16px 18px',
-            borderRadius: '14px',
-            background: 'rgba(245,158,11,0.1)',
-            border: '1px solid rgba(245,158,11,0.22)',
-          }}
-        >
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <strong style={{ color: '#FCD34D' }}>첫 완료 후 실제 문장 미리보기</strong>
+        <div className="preview-memo" style={{ marginLeft: '28px' }}>
+          <div className="preview-memo-title">
+            <span>📝 첫 완료 후 실제 문장 미리보기</span>
             {lastCompletedActivity && (
-              <span style={{ fontSize: '0.82rem', color: darkCardMeta }}>
-                마지막 반영 활동: {lastCompletedActivity.title}
+              <span style={{ fontWeight: 500, color: 'var(--ink-500)', fontSize: '12px' }}>
+                · 마지막 반영: {lastCompletedActivity.title}
               </span>
             )}
           </div>
-          <p style={{ margin: '10px 0 0', color: '#F8FAFC', lineHeight: 1.7, fontSize: '1rem' }}>
-            “{lastCompletedPreview ?? journeyGuide.previewFallback}”
+          <p className="preview-memo-body">
+            {lastCompletedPreview ?? journeyGuide.previewFallback}
           </p>
         </div>
       </div>
 
       {journeyGuide.demoOrder.length > 0 && (
-        <div
-          className="card"
-          style={{
-            maxWidth: '920px',
-            margin: '0 auto var(--space-lg)',
-            textAlign: 'left',
-            color: lightCardTitle,
-            borderColor: 'rgba(99,102,241,0.18)',
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(15,23,42,0.08))',
-          }}
-        >
-          <span className="tag" style={{ marginBottom: '12px' }}>GUIDED DEMO</span>
-          <h3 style={{ margin: '0 0 8px', color: lightCardTitle }}>발표용 진행 순서</h3>
-          <p style={{ margin: '0 0 16px', color: lightCardText, lineHeight: 1.6 }}>
-            시연 흐름과 발표 멘트를 한 번에 정리했습니다. 추천 순서대로 보여주면 설명 부담이 줄어듭니다.
-          </p>
+        <div className="flow-card-paper" style={{ marginBottom: 'var(--space-lg)' }}>
+          <div style={{ paddingLeft: '28px' }}>
+            <span className="flow-eyebrow-tag" style={{ background: 'var(--blue-wash)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
+              GUIDED DEMO
+            </span>
+            <h3 className="flow-title" style={{ marginTop: '16px' }}>발표용 진행 순서</h3>
+            <p className="flow-subtitle">
+              시연 흐름과 발표 멘트를 한 번에 정리했습니다. 추천 순서대로 보여주면 설명 부담이 줄어듭니다.
+            </p>
 
-          <div style={{ display: 'grid', gap: '12px' }}>
-            {journeyGuide.demoOrder.map((step, index) => (
-              <div
-                key={step.activityId}
-                style={{
-                  padding: '14px 16px',
-                  borderRadius: '12px',
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(148,163,184,0.12)',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
-                  <strong style={{ color: lightCardTitle }}>{index + 1}. {step.label}</strong>
-                  <span style={{ color: lightCardMeta, fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
+            <div style={{ display: 'grid', gap: '12px' }}>
+              {journeyGuide.demoOrder.map((step, index) => (
+                <div
+                  key={step.activityId}
+                  style={{
+                    padding: '16px 18px',
+                    borderRadius: '14px',
+                    background: 'var(--paper-100)',
+                    border: '1px solid var(--paper-300)',
+                    borderLeft: '4px solid var(--mustard)',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                    <strong style={{ color: 'var(--ink-900)' }}>{index + 1}. {step.label}</strong>
+                    <span style={{ color: 'var(--ink-500)', fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
+                  </div>
+                  <p style={{ margin: 0, color: 'var(--ink-700)', lineHeight: 1.7 }}>{step.presenterLine}</p>
                 </div>
-                <p style={{ margin: 0, color: lightCardText, lineHeight: 1.7 }}>{step.presenterLine}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -161,30 +123,30 @@ export default function HomeJourneyView({
             maxWidth: '920px',
             margin: '0 auto var(--space-lg)',
             textAlign: 'left',
-            borderColor: 'rgba(16,185,129,0.28)',
-            background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(14,165,233,0.06))',
+            borderColor: 'var(--sage)',
+            background: 'var(--green-wash)',
           }}
         >
-          <span className="tag" style={{ marginBottom: '10px', background: 'rgba(16,185,129,0.18)', color: '#10B981' }}>
+          <span className="tag" style={{ marginBottom: '10px', background: 'var(--sage)', color: '#fff' }}>
             LIVE PREVIEW
           </span>
           <h3 style={{ margin: '0 0 8px' }}>{lastCompletedActivity.title} 결과가 리포트에 반영되었습니다</h3>
-          <p style={{ margin: '0 0 14px', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          <p style={{ margin: '0 0 14px', color: 'var(--ink-700)', lineHeight: 1.6 }}>
             마지막 완료 항목을 기준으로 진행도가 갱신되었습니다. 지금 리포트에서 축적된 XP와 핵심 통찰을 바로 확인할 수 있습니다.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
-            <button type="button" className="btn btn-primary" onClick={onGoReport}>
-              내 결과 자세히 보기
+            <button type="button" className="btn-paper-primary" onClick={onGoReport}>
+              내 결과 자세히 보기 →
             </button>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            <span style={{ color: 'var(--ink-500)', fontSize: '0.9rem' }}>
               현재 여정 진행도 {completedJourneyCount} / {journeyActivities.length || 0}
             </span>
           </div>
         </div>
       )}
 
-      <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '1.8rem' }}>직접 둘러보기</h2>
-      <p style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-md)' }}>
+      <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '1.8rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>직접 둘러보기</h2>
+      <p style={{ color: 'var(--ink-700)', marginBottom: 'var(--space-md)' }}>
         추천 경로 외에도 전체 활동을 자유롭게 열 수 있습니다.
       </p>
 
@@ -192,13 +154,13 @@ export default function HomeJourneyView({
         const total = SHOWCASE_ACTIVITIES.length;
         const done = SHOWCASE_ACTIVITIES.filter((activity) => state.completed.includes(activity.id)).length;
         return (
-          <div style={{ maxWidth: '600px', margin: '0 auto var(--space-lg)', padding: '16px 24px', borderRadius: '16px', background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.15)' }}>
+          <div style={{ maxWidth: '600px', margin: '0 auto var(--space-lg)', padding: '16px 24px', borderRadius: '16px', background: 'var(--lavender-wash)', border: '1px solid var(--lavender)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)' }}>🎯 시연 진행률</span>
-              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)' }}>{done} / {total} 완료</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#5B3EA6' }}>🎯 시연 진행률</span>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--ink-900)' }}>{done} / {total} 완료</span>
             </div>
-            <div style={{ height: '8px', borderRadius: '4px', background: 'var(--border)', overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${(done / total) * 100}%`, borderRadius: '4px', background: 'linear-gradient(90deg, #6366f1, #a855f7)', transition: 'width 0.5s ease' }} />
+            <div style={{ height: '8px', borderRadius: '4px', background: 'var(--paper-300)', overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${(done / total) * 100}%`, borderRadius: '4px', background: 'linear-gradient(90deg, var(--ink-blue), var(--lavender))', transition: 'width 0.5s ease' }} />
             </div>
           </div>
         );
@@ -256,10 +218,10 @@ export default function HomeJourneyView({
           </button>
         )}
         <button
-          className="btn btn-primary neon-btn"
+          className="btn-paper-primary"
           onClick={onGoReport}
           disabled={state.completed.length === 0}
-          style={{ padding: '16px 32px', fontSize: '1.25rem', opacity: state.completed.length === 0 ? 0.5 : 1 }}
+          style={{ padding: '16px 32px', fontSize: '1.15rem', opacity: state.completed.length === 0 ? 0.5 : 1, cursor: state.completed.length === 0 ? 'not-allowed' : 'pointer' }}
         >
           {state.completed.length > 0 ? '최종 진단 리포트 & 프롬프트 발급받기 →' : '추천 데모를 1개 이상 완료하면 리포트를 볼 수 있습니다'}
         </button>
