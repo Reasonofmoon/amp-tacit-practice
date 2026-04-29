@@ -40,16 +40,23 @@
 
   /* Back-compat aliases — existing components read these */
   --bg-app: var(--paper-100);
+  --bg-body: var(--paper-100);          /* legacy alias used by activity inputs/feeds */
   --bg-card: var(--paper-50);
   --bg-card-hover: var(--paper-200);
 
   --primary: var(--ink-blue);
   --primary-hover: var(--ink-blue-deep);
+  --primary-dark: var(--ink-blue-deep);  /* legacy alias for darker primary */
   --primary-light: var(--blue-wash);
+  --secondary: var(--lavender);          /* legacy alias for secondary brand */
+  --secondary-dark: #5B3EA6;             /* deep lavender used for emphasis */
 
   --success: var(--sage);
+  --success-light: var(--green-wash);    /* legacy alias for light success */
   --warning: var(--mustard);
+  --warning-light: var(--yellow-wash);
   --danger: var(--coral);
+  --danger-light: var(--pink-wash);
 
   --text-main: var(--ink-900);
   --text-muted: var(--ink-700);
@@ -4078,4 +4085,142 @@ p { color: var(--text-muted); }
 }
 @media (prefers-reduced-motion: reduce) {
   .next-step-beacon::after { animation: none; }
+}
+
+/* ────────────────────────────────────────────────────────────
+   MOBILE OPTIMIZATIONS — last-loaded so they reliably override
+   ──────────────────────────────────────────────────────────── */
+
+/* New helper classes (replacing inline padding/maxWidth hacks) */
+.flow-card-paper--spaced { margin-bottom: var(--space-lg); }
+.flow-card-paper--hero { margin-top: 40px; }
+
+.flow-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 28px;
+}
+.flow-card-row-text { flex: 1 1 360px; min-width: 0; }
+.flow-title--spaced { margin-top: 16px; }
+
+/* ─── ≤768px: tablet → mobile split point ─── */
+@media (max-width: 768px) {
+  /* App frame: trim outer padding so phones get more content width */
+  .app-frame { padding: 24px 16px; }
+
+  /* Sticky header: compact paddings + tap targets */
+  .nav { padding: 10px 14px !important; gap: 8px; }
+  .nav .btn-sm { min-height: 40px; padding: 8px 12px; }
+
+  /* Hero typography scales down naturally; eyebrow shrink */
+  .eyebrow { font-size: 0.66rem; letter-spacing: 1.6px; }
+
+  /* Mode selector + journey chips stack */
+  .mode-selector { grid-template-columns: 1fr; gap: 10px; }
+  .journey-chip-row { gap: 6px; }
+  .journey-chip { font-size: 0.85rem; padding: 8px 14px; min-height: 40px; }
+
+  /* Flow card row — stack actions below text */
+  .flow-card-row {
+    padding-left: 0;
+    gap: 16px;
+  }
+  .flow-card-row-text { flex: 1 1 100%; }
+  .flow-actions { width: 100%; flex-direction: column; align-items: stretch; gap: 8px; }
+  .flow-actions .btn-paper-primary,
+  .flow-actions .btn-paper-outline { width: 100%; min-height: 48px; }
+
+  .flow-card-paper { padding: 24px 18px 22px; }
+  .flow-card-paper::before { left: 18px; top: 18px; bottom: 18px; }
+
+  .preview-memo { margin-left: 0 !important; }
+
+  /* Activity grid (monopoly board) — single column */
+  .monopoly-board { grid-template-columns: 1fr !important; gap: 12px; }
+
+  /* Touch targets — generous minimums */
+  .btn { min-height: 44px; padding: 12px 18px; }
+  .btn-sm { min-height: 40px; }
+  .btn-paper-primary,
+  .btn-paper-outline { min-height: 48px; padding: 12px 20px; }
+}
+
+/* ─── ≤480px: small phone ─── */
+@media (max-width: 480px) {
+  /* Header: hide button labels, keep icons */
+  .nav .btn-sm > span { display: none; }
+  .nav .btn-sm { padding: 8px; min-width: 40px; justify-content: center; }
+  .logo span { font-size: 1.05rem; }
+
+  /* Hero title clamp tightening */
+  .hero-paper-title { font-size: clamp(1.6rem, 7vw, 2.4rem) !important; }
+  .lead { font-size: 0.95rem; }
+
+  /* Flow / paper cards */
+  .flow-card-paper { padding: 20px 14px 18px; border-radius: 18px; }
+  .flow-card-paper::before { left: 12px; }
+  .flow-grid { grid-template-columns: 1fr !important; gap: 8px; }
+  .flow-step { padding: 14px 14px 12px; }
+
+  /* Manual chapter rows: tighter */
+  .manual-card-paper { padding: 14px 12px 12px !important; }
+  .manual-progress-title { font-size: 1.15rem; }
+  .manual-progress-count-num { font-size: 1.45rem; }
+  .manual-chapter { padding: 8px 8px 8px 4px; gap: 6px; }
+  .manual-chapter-title { font-size: 0.86rem; }
+  .manual-chapter-num { font-size: 0.7rem; }
+  .manual-chapter-icon { font-size: 1.1rem; }
+
+  /* Discovery / benchmark / gift bag — single column already at 600px */
+
+  /* Prompt gift modal: tighter actions, full-width buttons */
+  .prompt-gift-actions { gap: 8px; }
+  .prompt-gift-actions .btn-gift-primary,
+  .prompt-gift-actions .btn-gift-secondary {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+  .prompt-gift-codebox { padding: 14px 16px; max-height: 260px; }
+  .prompt-gift-codebox pre { font-size: 0.78rem; }
+
+  /* Result report headings — wrap stamp under title */
+  .report-heading { flex-direction: column !important; align-items: flex-start !important; }
+  .report-xp-stamp { align-self: stretch; }
+  .report-grid { grid-template-columns: 1fr !important; }
+
+  /* Section headings: stack heading & action */
+  .section-heading { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+  .section-heading > .btn-paper-primary,
+  .section-heading > button { width: 100%; }
+
+  /* QR interstitial modal: kill huge desktop fonts */
+  .modal-panel-dark h2 { font-size: clamp(1.5rem, 6vw, 2rem) !important; }
+  .modal-panel-dark p { font-size: clamp(0.92rem, 3vw, 1.1rem) !important; }
+  .modal-panel-dark > div { padding: 16px 18px !important; }
+
+  /* SECI map / knowledge graph fits */
+  .seci-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+
+  /* Onboarding micro-tightening */
+  .onboarding-card { padding: 26px 18px 22px !important; }
+  .onboarding-title { font-size: 1.55rem; }
+
+  /* Activity workspace: ensure inputs/buttons are tappable */
+  .activity-workspace input,
+  .activity-workspace textarea { min-height: 44px; font-size: 16px; /* prevents iOS zoom */ }
+  .activity-workspace .btn { width: 100%; }
+}
+
+/* iOS zoom prevention — input font-size baseline ≥16px on small */
+@media (max-width: 480px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  input[type="number"],
+  textarea,
+  select { font-size: 16px; }
 }

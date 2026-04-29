@@ -100,11 +100,11 @@ export default function Layout({
             </div>
 
             {recommendedJourney && (
-              <div className="flow-card-paper" style={{ marginTop: '40px' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: '28px' }}>
-                  <div style={{ flex: '1 1 320px' }}>
+              <div className="flow-card-paper flow-card-paper--spaced flow-card-paper--hero">
+                <div className="flow-card-row">
+                  <div className="flow-card-row-text">
                     <span className="flow-eyebrow-tag">1분 안에 첫 가치 체험 ☕</span>
-                    <h2 className="flow-title" style={{ marginTop: '16px' }}>
+                    <h2 className="flow-title flow-title--spaced">
                       <span className="number">1.</span>
                       {recommendedJourney.headline}
                     </h2>
@@ -130,7 +130,7 @@ export default function Layout({
                   </div>
                 </div>
 
-                <div className="flow-grid" style={{ paddingLeft: '28px' }}>
+                <div className="flow-grid">
                   {recommendedJourney.quickSteps.map((step, index) => (
                     <div key={step.title} className="flow-step">
                       <span className="flow-step-index">{index + 1}</span>

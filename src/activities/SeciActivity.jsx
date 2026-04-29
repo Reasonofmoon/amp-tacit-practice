@@ -49,7 +49,7 @@ export default function SeciActivity({ id, data, saveData, complete, onBack }) {
     <div className="activity-workspace">
       <header className="workspace-header">
         <div>
-          <span className="tag" style={{ marginBottom: '8px', background: 'var(--secondary)', color: 'white' }}>{isDev ? 'Low-Code Automation' : 'Final Stage: SECI Master'}</span>
+          <span className="tag" style={{ marginBottom: '8px', background: 'var(--lavender)', color: 'white', borderColor: 'var(--lavender)' }}>{isDev ? 'Low-Code Automation' : 'Final Stage: SECI Master'}</span>
           <h2 className="question-title" style={{ marginBottom: 0 }}>{isDev ? '백오피스 봇 자동화 실습' : '암묵지 AI 자산화 실습'}</h2>
           <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>{isDev ? '반복되는 수기 업무를 AppSheet나 Zapier가 이해할 수 있는 자동화 프롬프트로 전환합니다.' : '머릿속 감각을 AI가 읽을 수 있는 프롬프트로 전환하여 영구적인 자산으로 만듭니다.'}</p>
         </div>
@@ -108,9 +108,9 @@ export default function SeciActivity({ id, data, saveData, complete, onBack }) {
                   onFocus={(e) => e.target.style.borderColor = 'var(--secondary)'}
                   onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
                 />
-                <button 
-                  className="btn btn-primary" 
-                  style={{ marginTop: '24px', background: 'var(--secondary)', width: '100%' }}
+                <button
+                  className="btn btn-primary"
+                  style={{ marginTop: '24px', width: '100%' }}
                   disabled={!tacit.trim()}
                   onClick={() => {
                     const nextStep = 1;
@@ -169,9 +169,9 @@ export default function SeciActivity({ id, data, saveData, complete, onBack }) {
                     '개인의 추상적인 암묵지(Socialization)를 구체적인 문장으로 표출(Externalization)하고, AI 프롬프트로 연결(Combination)하여 새로운 자산으로 내면화(Internalization)했습니다.'
                   )}
                 </p>
-                <button 
-                  className="btn btn-primary" 
-                  style={{ background: 'var(--primary-dark)', padding: '16px 32px', fontSize: '1.1rem' }}
+                <button
+                  className="btn btn-primary"
+                  style={{ padding: '16px 32px', fontSize: '1.1rem' }}
                   onClick={() => complete({ activityData: { step, tacit, prompt, generatedPrompts, completed: true }, bonusXp: 50 })}
                 >
                   {isDev ? '자동화 변환 챕터 닫기 — 매뉴얼에 새기기' : 'SECI 변환 챕터 닫기 — 매뉴얼에 새기기'}

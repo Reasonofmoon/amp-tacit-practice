@@ -70,11 +70,11 @@ export default function HomeJourneyView({
         })}
       </div>
 
-      <div className="flow-card-paper" style={{ marginBottom: 'var(--space-lg)' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: '28px' }}>
-          <div style={{ flex: '1 1 360px' }}>
+      <div className="flow-card-paper flow-card-paper--spaced">
+        <div className="flow-card-row">
+          <div className="flow-card-row-text">
             <span className="flow-eyebrow-tag">RECOMMENDED FLOW</span>
-            <h2 className="flow-title" style={{ marginTop: '16px' }}>
+            <h2 className="flow-title flow-title--spaced">
               {recommendedActivity ? `${recommendedActivity.title}부터 시작하세요` : '지금 보고 싶은 여정을 선택하세요'}
             </h2>
             <p className="flow-subtitle">
@@ -103,7 +103,7 @@ export default function HomeJourneyView({
           </div>
         </div>
 
-        <div className="flow-grid" style={{ paddingLeft: '28px' }}>
+        <div className="flow-grid">
           {journeyGuide.quickSteps.map((step, index) => (
             <div key={step.title} className="flow-step">
               <span className="flow-step-index">{index + 1}</span>
@@ -113,7 +113,7 @@ export default function HomeJourneyView({
           ))}
         </div>
 
-        <div className="preview-memo" style={{ marginLeft: '28px' }}>
+        <div className="preview-memo">
           <div className="preview-memo-title">
             <span>📝 첫 완료 후 실제 문장 미리보기</span>
             {lastCompletedActivity && (

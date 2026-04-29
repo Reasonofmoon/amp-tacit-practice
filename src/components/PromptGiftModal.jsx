@@ -3,10 +3,14 @@ import { Copy, Check, ExternalLink, Gift, Sparkles } from 'lucide-react';
 import ModalOverlay from './ModalOverlay';
 
 // Practical safe budget for URL query params across browsers/services.
-// ChatGPT silently truncates beyond ~6KB; Chrome itself accepts ~32KB but
-// many gateways/CDNs cap at 8KB. We treat 6000 chars (encoded) as the line.
+// ChatGPT/Claude silently truncate beyond ~6KB; many gateways/CDNs cap at 8KB.
 const SAFE_URL_BUDGET = 6000;
 
+// Each "Open in X" click ALWAYS copies the prompt to clipboard first, then opens
+// the service. Deep links are used opportunistically (some services auto-fill the
+// composer when present), but we never rely on them — clipboard fallback is the
+// guaranteed path. This avoids "I clicked but nothing was input" problems caused
+// by auth redirects, parameter changes, or undocumented length limits.
 const TARGETS = {
   chatgpt: {
     label: 'ChatGPT',
@@ -18,9 +22,9 @@ const TARGETS = {
     deepLink: (prompt) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}`,
     homeLink: 'https://claude.ai/new',
   },
-  // Gemini는 안정적인 prompt query 파라미터를 공개하지 않아, 항상 자동 복사 + 홈 열기 흐름.
   gemini: {
     label: 'Gemini',
+    // Gemini는 안정적인 prompt query 파라미터를 공개하지 않음
     deepLink: null,
     homeLink: 'https://gemini.google.com/app',
   },
@@ -44,42 +48,40 @@ async function copyToClipboard(text) {
   }
 }
 
-function isPromptUrlSafe(prompt, target) {
-  if (!target?.deepLink) return false; // 딥링크 미지원 타겟 — 항상 복사+홈 흐름
-  return target.deepLink(prompt).length <= SAFE_URL_BUDGET;
+function pickUrlForTarget(prompt, target) {
+  if (!target) return null;
+  if (target.deepLink) {
+    const url = target.deepLink(prompt);
+    if (url.length <= SAFE_URL_BUDGET) return url;
+  }
+  return target.homeLink;
 }
 
-async function openExternalAI(prompt, targetKey, onCopiedHint) {
+// Always-copy + open. Single click is enough — even if the service drops the
+// deep link, the prompt is already in clipboard ready to paste.
+async function copyAndOpen(prompt, targetKey, onAfter) {
   const target = TARGETS[targetKey];
   if (!target) return;
-  if (target.deepLink && isPromptUrlSafe(prompt, target)) {
-    window.open(target.deepLink(prompt), '_blank', 'noopener,noreferrer');
-    return;
-  }
-  // 딥링크 미지원이거나 프롬프트가 너무 길 때 — 자동 복사 + 홈 열기
   await copyToClipboard(prompt);
-  const reason = !target.deepLink ? 'unsupported' : 'too-long';
-  onCopiedHint?.({ label: target.label, reason });
-  window.open(target.homeLink, '_blank', 'noopener,noreferrer');
+  const url = pickUrlForTarget(prompt, target);
+  window.open(url, '_blank', 'noopener,noreferrer');
+  onAfter?.(target.label);
 }
 
 export default function PromptGiftModal({ open, onClose, gift, activityTitle, appRootRef }) {
   const [copied, setCopied] = useState(false);
-  const [hint, setHint] = useState(null);
+  const [openedLabel, setOpenedLabel] = useState(null);
 
-  const tooLong = useMemo(
-    () => (gift ? !isPromptUrlSafe(gift.prompt, TARGETS.chatgpt) : false),
-    [gift],
-  );
+  const tooLong = useMemo(() => {
+    if (!gift) return false;
+    return gift.prompt.length > SAFE_URL_BUDGET / 1.5; // 인코딩 후 6KB 넘을 가능성 있을 때
+  }, [gift]);
 
   if (!gift) return null;
 
-  const showHint = ({ label, reason } = {}) => {
-    const message = reason === 'unsupported'
-      ? `${label}는 URL로 직접 입력하지 않습니다. 자동으로 복사했으니, 열린 창의 입력창에 붙여넣기(Ctrl+V) 해주세요.`
-      : `${label}는 직접 열리지 않을 만큼 프롬프트가 깁니다. 자동으로 복사했으니, 열린 창의 입력창에 붙여넣기(Ctrl+V) 해주세요.`;
-    setHint(message);
-    window.setTimeout(() => setHint(null), 5200);
+  const announce = (label) => {
+    setOpenedLabel(label);
+    window.setTimeout(() => setOpenedLabel(null), 5200);
   };
 
   const handleCopy = async () => {
@@ -88,9 +90,9 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
     window.setTimeout(() => setCopied(false), 1800);
   };
 
-  const handleOpenChatGPT = () => openExternalAI(gift.prompt, 'chatgpt', showHint);
-  const handleOpenClaude = () => openExternalAI(gift.prompt, 'claude', showHint);
-  const handleOpenGemini = () => openExternalAI(gift.prompt, 'gemini', showHint);
+  const handleOpenChatGPT = () => copyAndOpen(gift.prompt, 'chatgpt', announce);
+  const handleOpenClaude = () => copyAndOpen(gift.prompt, 'claude', announce);
+  const handleOpenGemini = () => copyAndOpen(gift.prompt, 'gemini', announce);
 
   return (
     <ModalOverlay
@@ -125,10 +127,10 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
         <pre>{gift.prompt}</pre>
       </div>
 
-      <ol className="prompt-gift-steps" aria-label="3단계 가이드">
-        <li><strong>STEP 1.</strong> 복사하기 →</li>
-        <li><strong>STEP 2.</strong> ChatGPT/Claude 열기 →</li>
-        <li><strong>STEP 3.</strong> 붙여넣고 결과 받기 ✨</li>
+      <ol className="prompt-gift-steps" aria-label="간단 가이드">
+        <li><strong>한 번 클릭</strong> — 자동으로 복사되고 새 창이 열려요</li>
+        <li><strong>입력창에서 Ctrl+V</strong> — 자동 입력이 안 되면 붙여넣기</li>
+        <li><strong>실행</strong> — 결과를 받아 학원 자료로 사용 ✨</li>
       </ol>
 
       <div className="prompt-gift-actions">
@@ -136,41 +138,51 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
           type="button"
           className="btn-gift-primary"
           onClick={handleCopy}
-          aria-label="프롬프트 복사"
+          aria-label="프롬프트 클립보드 복사"
         >
           {copied ? <Check size={18} /> : <Copy size={18} />}
-          {copied ? '복사됐어요 — 이제 STEP 2로!' : '① 복사하기 (한 번 클릭)'}
+          {copied ? '복사 완료' : '클립보드에 복사만'}
         </button>
         <button
           type="button"
           className="btn-gift-secondary"
           onClick={handleOpenChatGPT}
+          aria-label="복사 후 ChatGPT 새 창 열기"
         >
-          <ExternalLink size={16} /> ② ChatGPT에서 열기
+          <Copy size={14} aria-hidden="true" />
+          <ExternalLink size={16} /> 복사 + ChatGPT 열기
         </button>
         <button
           type="button"
           className="btn-gift-secondary"
           onClick={handleOpenClaude}
+          aria-label="복사 후 Claude 새 창 열기"
         >
-          <ExternalLink size={16} /> ② Claude에서 열기
+          <Copy size={14} aria-hidden="true" />
+          <ExternalLink size={16} /> 복사 + Claude 열기
         </button>
         <button
           type="button"
           className="btn-gift-secondary"
           onClick={handleOpenGemini}
+          aria-label="복사 후 Gemini 새 창 열기"
         >
-          <ExternalLink size={16} /> ② Gemini에서 열기
+          <Copy size={14} aria-hidden="true" />
+          <ExternalLink size={16} /> 복사 + Gemini 열기
         </button>
       </div>
 
-      {tooLong && (
-        <p className="prompt-gift-warn" role="note">
-          ⚠️ 이 프롬프트는 길어서 URL로 직접 전달되지 않습니다. 위 ① 복사 버튼을 먼저 누르고 → 새로 열린 창에 붙여넣어 주세요.
+      {openedLabel && (
+        <p className="prompt-gift-warn" role="status" aria-live="polite">
+          ✅ 프롬프트가 자동으로 클립보드에 복사됐고 {openedLabel} 창이 열렸습니다.
+          입력창이 자동 채워지지 않으면 <strong>Ctrl+V</strong> (Mac은 <strong>⌘+V</strong>) 로 붙여넣어 주세요.
         </p>
       )}
-      {hint && (
-        <p className="prompt-gift-warn" role="status" aria-live="polite">{hint}</p>
+
+      {tooLong && !openedLabel && (
+        <p className="prompt-gift-warn" role="note">
+          ℹ️ 긴 프롬프트라 URL 자동 입력이 안 될 수 있습니다. 클릭하면 자동으로 복사되니, 열린 창에서 Ctrl+V 로 붙여넣어 주세요.
+        </p>
       )}
 
       <div className="prompt-gift-footer">
