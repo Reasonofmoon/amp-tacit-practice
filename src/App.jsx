@@ -17,6 +17,8 @@ import NextStepBeacon from './components/NextStepBeacon';
 import ChapterPrintLayout from './components/ChapterPrintLayout';
 import { getActivityPromptGift } from './data/activityPrompts';
 import { ACTIVITY_TITLES } from './utils/activityTitles';
+import { buildMicroInsight } from './utils/microInsight';
+import { findClosestChapter, findNextActivityForChapter } from './utils/chapterProgress';
 const PromoGallery = lazyWithRetry(() => import('./components/PromoGallery'), 'PromoGallery');
 const ResultReport = lazyWithRetry(() => import('./components/ResultReport'), 'ResultReport');
 const ReportAIWorkbench = lazyWithRetry(() => import('./components/ReportAIWorkbench'), 'ReportAIWorkbench');
@@ -40,7 +42,6 @@ const DemoLiveAppTemplate = lazyWithRetry(() => import('./activities/DemoLiveApp
 const DemoAcademyOsActivity = lazyWithRetry(() => import('./activities/DemoAcademyOsActivity'), 'DemoAcademyOsActivity');
 const DemoSaboPhilosophyActivity = lazyWithRetry(() => import('./activities/DemoSaboPhilosophyActivity'), 'DemoSaboPhilosophyActivity');
 const DemoShowcaseIntroActivity = lazyWithRetry(() => import('./activities/DemoShowcaseIntroActivity'), 'DemoShowcaseIntroActivity');
-const DemoWritingCorrectionActivity = lazyWithRetry(() => import('./activities/DemoWritingCorrectionActivity'), 'DemoWritingCorrectionActivity');
 
 const ACTIVITY_COMPONENTS = {
   // Director Journey
@@ -78,7 +79,7 @@ const ACTIVITY_COMPONENTS = {
   demo_showcase_intro: DemoShowcaseIntroActivity,
   demo_sign_design: DemoLiveAppTemplate,
   demo_readmaster: DemoLiveAppTemplate,
-  demo_writing_correction: DemoWritingCorrectionActivity,
+  demo_writing_correction: DemoLiveAppTemplate,
   demo_level_test_proto: DemoLiveAppTemplate,
   demo_academy_os: DemoAcademyOsActivity,
   demo_ontology: DemoLiveAppTemplate,
@@ -233,10 +234,75 @@ export default function App() {
                   ...(options?.activityData ?? {}),
                 };
                 const gift = getActivityPromptGift(completedId, mergedData, game.state.profile);
+                const microInsight = buildMicroInsight(completedId, mergedData, game.state.profile);
+
+                // 다음 마일스톤 — 가장 가까운 챕터 PDF.
+                // useGameState setState가 비동기라 낙관적 사본으로 계산.
+                const optimisticState = {
+                  ...game.state,
+                  completed: game.state.completed.includes(completedId)
+                    ? game.state.completed
+                    : [...game.state.completed, completedId],
+                  activityData: {
+                    ...game.state.activityData,
+                    [completedId]: mergedData,
+                  },
+                  metrics: { ...(game.state.metrics ?? {}), lastCompletedId: completedId },
+                };
+                const closestChapter = findClosestChapter(optimisticState);
+                let nextStep = null;
+                if (closestChapter) {
+                  if (closestChapter.kind === 'just-completed') {
+                    nextStep = {
+                      line: `🎉 ${closestChapter.title} 챕터가 완성되었습니다. 강사 회의용 PDF를 바로 발급할 수 있어요.`,
+                      cta: '챕터 PDF 받기',
+                      onClick: () => {
+                        setPendingGift(null);
+                        handlePrintChapter(closestChapter.id);
+                      },
+                    };
+                  } else if (closestChapter.kind === 'one-away') {
+                    const nextId = findNextActivityForChapter(closestChapter, optimisticState);
+                    const nextTitle = ACTIVITY_TITLES[nextId] ?? '';
+                    nextStep = nextId ? {
+                      line: `${nextTitle} 1개만 더 풀면 ${closestChapter.title} 챕터 PDF가 발급됩니다.`,
+                      cta: `${nextTitle} 시작`,
+                      onClick: () => {
+                        setPendingGift(null);
+                        setCurrentView(nextId);
+                      },
+                    } : null;
+                  } else if (closestChapter.kind === 'in-progress') {
+                    const nextId = findNextActivityForChapter(closestChapter, optimisticState);
+                    const nextTitle = ACTIVITY_TITLES[nextId] ?? '';
+                    nextStep = nextId ? {
+                      line: `${closestChapter.title} 챕터까지 ${closestChapter.remaining}개 활동 남음 — 다음은 ${nextTitle}.`,
+                      cta: `${nextTitle} 시작`,
+                      onClick: () => {
+                        setPendingGift(null);
+                        setCurrentView(nextId);
+                      },
+                    } : null;
+                  } else if (closestChapter.kind === 'empty') {
+                    const nextId = findNextActivityForChapter(closestChapter, optimisticState);
+                    const nextTitle = ACTIVITY_TITLES[nextId] ?? '';
+                    nextStep = nextId ? {
+                      line: `${closestChapter.title}는 단 ${closestChapter.totalCount}개 활동으로 닫히는 가장 가까운 챕터입니다.`,
+                      cta: `${nextTitle} 시작`,
+                      onClick: () => {
+                        setPendingGift(null);
+                        setCurrentView(nextId);
+                      },
+                    } : null;
+                  }
+                }
+
                 setPendingGift({
                   id: completedId,
                   title: ACTIVITY_TITLES[completedId] ?? '',
                   gift,
+                  microInsight,
+                  nextStep,
                 });
               }}
               onBack={goHome}
@@ -295,6 +361,8 @@ export default function App() {
         open={!!pendingGift}
         gift={pendingGift?.gift ?? null}
         activityTitle={pendingGift?.title ?? ''}
+        microInsight={pendingGift?.microInsight ?? null}
+        nextStep={pendingGift?.nextStep ?? null}
         appRootRef={appContentRef}
         onClose={() => {
           setPendingGift(null);
@@ -309,8 +377,8 @@ export default function App() {
       />
 
       <NextStepBeacon
+        state={game.state}
         currentView={currentView}
-        completedCount={game.state.completed.length}
         hasGiftOpen={!!pendingGift}
         hasModalOpen={qrInterstitialOpen || aiWorkbenchOpen}
         onStartTour={() => {
@@ -318,6 +386,10 @@ export default function App() {
           setCurrentView('demo_readmaster');
         }}
         onGoReport={goReport}
+        onSelectActivity={(id) => {
+          if (id) setCurrentView(id);
+        }}
+        onPrintChapter={handlePrintChapter}
       />
     </ErrorBoundary>
   );

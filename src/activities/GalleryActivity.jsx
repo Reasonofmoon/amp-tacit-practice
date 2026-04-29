@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { DIRECTOR_GALLERY_SEEDS, DEV_GALLERY_SEEDS } from '../data/galleryPosts';
 
 export default function GalleryActivity({ id, data, saveData, complete, onBack }) {
   const isDev = id?.startsWith('dev_');
+  const seeds = useMemo(() => (isDev ? DEV_GALLERY_SEEDS : DIRECTOR_GALLERY_SEEDS), [isDev]);
   const [posts, setPosts] = useState(data?.posts ?? []);
   const [name, setName] = useState('');
   const [draft, setDraft] = useState('');
+
+  // 사용자 게시물 + 시드를 합쳐 표시. 시드는 isSeed: true 로 시각 구분.
+  const displayPosts = useMemo(() => [...posts, ...seeds], [posts, seeds]);
+  const userPostCount = posts.length;
 
   const addPost = () => {
     if (!draft.trim()) {
@@ -89,12 +95,12 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
           </div>
 
           <div className="confidence-module" style={{ marginTop: '24px' }}>
-            <p style={{ marginBottom: '16px' }}><strong>{posts.length}개</strong>의 {isDev ? '스니펫' : '암묵지'} 공유 완료</p>
+            <p style={{ marginBottom: '16px' }}><strong>{userPostCount}개</strong>의 {isDev ? '스니펫' : '한 줄'} 공유 완료 · 베테랑 시드 {seeds.length}개와 함께 묶여 표시됩니다.</p>
             <button
               type="button"
               className="btn btn-primary"
-              style={{ width: '100%', background: posts.length > 0 ? 'var(--primary)' : 'var(--border)', color: posts.length > 0 ? 'white' : 'var(--text-muted)' }}
-              disabled={posts.length === 0}
+              style={{ width: '100%', background: userPostCount > 0 ? 'var(--primary)' : 'var(--border)', color: userPostCount > 0 ? 'white' : 'var(--text-muted)' }}
+              disabled={userPostCount === 0}
               onClick={() => complete({ activityData: { posts }, bonusXp: 15 })}
             >
               갤러리 활동 저장 및 종료
@@ -102,58 +108,84 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
           </div>
         </div>
 
-        {/* Right: Gallery Feed */}
+        {/* Right: Gallery Feed (user posts + veteran seeds) */}
         <div className="split-right" style={{ paddingLeft: '24px', overflowY: 'auto' }}>
-          <h3 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            📡 최신 인사이트 피드
+          <h3 style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            📡 인사이트 피드
           </h3>
-          
-          {posts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', background: 'var(--bg-body)', borderRadius: '16px', border: '2px dashed var(--border)' }}>
-              <span style={{ fontSize: '3rem', opacity: 0.5, display: 'block', marginBottom: '16px' }}>👀</span>
-              <p style={{ color: 'var(--text-muted)', fontWeight: 500 }}>아직 공유된 {isDev ? '스니펫' : '식견'}이 없습니다.<br/>첫 번째 {isDev ? '스니펫' : '암묵지'}를 전시해보세요!</p>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '8px' }}>
-              <AnimatePresence>
-                {posts.map((post) => (
-                  <motion.div 
-                    key={post.id} 
-                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    layout
-                    className="card"
-                    style={{ background: 'white', border: '1px solid var(--border)' }}
-                  >
-                    <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--ink-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '0.75rem', fontWeight: 'bold' }}>
-                          {post.name.charAt(0)}
-                        </div>
-                        <strong style={{ fontSize: '0.9rem', color: 'var(--text-main)' }}>{post.name}</strong>
+          <p style={{ fontSize: '0.85rem', color: 'var(--ink-500)', marginBottom: '20px' }}>
+            아래는 다른 {isDev ? '엔지니어' : '원장'}들이 공유한 한 줄들입니다. 당신의 한 줄을 추가하면 같은 묶음에 보입니다.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '8px' }}>
+            <AnimatePresence>
+              {displayPosts.map((post) => (
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  layout
+                  className="card"
+                  style={{
+                    background: post.isSeed ? 'var(--paper-100)' : 'var(--paper-50)',
+                    border: post.isSeed ? '1px dashed var(--paper-400)' : '1px solid var(--paper-300)',
+                    borderLeft: post.isSeed ? '3px solid var(--sage)' : '3px solid var(--ink-blue)',
+                  }}
+                >
+                  <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '8px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                      <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        background: post.isSeed ? 'var(--sage)' : 'var(--ink-blue)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'white', fontSize: '0.75rem', fontWeight: 'bold',
+                        flexShrink: 0,
+                      }}>
+                        {post.name.charAt(0)}
                       </div>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{post.time}</span>
-                    </header>
-                    <p style={{ fontSize: '1.05rem', lineHeight: 1.5, color: 'var(--text-main)', marginBottom: '16px' }}>
-                      "{post.text}"
-                    </p>
-                    <div style={{ borderTop: '1px solid var(--border)', paddingTop: '12px', display: 'flex', gap: '16px' }}>
-                      <button 
-                        onClick={() => handleLike(post.id)}
-                        className="btn btn-ghost" 
-                        style={{ padding: '4px 12px', fontSize: '0.875rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}
-                      >
-                        👍 공감 {post.likes}
-                      </button>
-                      <button className="btn btn-ghost" style={{ padding: '4px 12px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                        💬 답글달기
-                      </button>
+                      <strong style={{ fontSize: '0.9rem', color: 'var(--ink-900)' }}>{post.name}</strong>
+                      {post.isSeed && (
+                        <span style={{
+                          fontSize: '0.65rem',
+                          fontWeight: 700,
+                          padding: '2px 7px',
+                          borderRadius: '999px',
+                          background: 'var(--green-wash)',
+                          color: '#3F6620',
+                          border: '1px solid var(--sage)',
+                          letterSpacing: '0.4px',
+                        }}>🌱 베테랑 시드</span>
+                      )}
                     </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          )}
+                    <span style={{ fontSize: '0.75rem', color: 'var(--ink-500)' }}>{post.time}</span>
+                  </header>
+                  <p style={{ fontSize: '1.02rem', lineHeight: 1.55, color: 'var(--ink-900)', marginBottom: '12px' }}>
+                    "{post.text}"
+                  </p>
+                  <div style={{ borderTop: '1px dashed var(--paper-300)', paddingTop: '10px', display: 'flex', gap: '12px' }}>
+                    <button
+                      onClick={() => !post.isSeed && handleLike(post.id)}
+                      className="btn btn-ghost"
+                      disabled={post.isSeed}
+                      style={{
+                        padding: '4px 12px',
+                        fontSize: '0.85rem',
+                        color: 'var(--ink-700)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        cursor: post.isSeed ? 'default' : 'pointer',
+                      }}
+                    >
+                      👍 공감 {post.likes}
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>

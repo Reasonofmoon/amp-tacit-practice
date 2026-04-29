@@ -3110,6 +3110,84 @@ p { color: var(--text-muted); }
   line-height: 1.5;
 }
 
+/* W8 — micro-insight panel inside the gift modal */
+.prompt-gift-mirror {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--lavender);
+  background: var(--lavender-wash);
+}
+.prompt-gift-mirror.tone-positive {
+  border-color: var(--sage);
+  background: var(--green-wash);
+}
+.prompt-gift-mirror.tone-caution {
+  border-color: var(--mustard);
+  background: var(--yellow-wash);
+}
+.prompt-gift-mirror.tone-neutral {
+  border-color: var(--paper-300);
+  background: var(--paper-100);
+}
+.prompt-gift-mirror-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--ink-blue-deep);
+  margin-bottom: 4px;
+}
+.prompt-gift-mirror.tone-positive .prompt-gift-mirror-title { color: #3F6620; }
+.prompt-gift-mirror.tone-caution .prompt-gift-mirror-title { color: #8B6914; }
+.prompt-gift-mirror p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-900);
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+/* W8 — next-step panel ("📄 다음 마일스톤") */
+.prompt-gift-nextstep {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--blue-wash);
+  border: 1px solid var(--ink-blue);
+  border-left: 4px solid var(--ink-blue);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.prompt-gift-nextstep-eyebrow {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--ink-blue-deep);
+  font-family: var(--font-mono);
+}
+.prompt-gift-nextstep p {
+  margin: 0;
+  color: var(--ink-900);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.prompt-gift-nextstep-cta {
+  align-self: flex-start;
+  margin-top: 4px;
+  background: var(--ink-blue) !important;
+  color: white !important;
+  border-color: var(--ink-blue) !important;
+}
+.prompt-gift-nextstep-cta:hover {
+  background: var(--ink-blue-deep) !important;
+}
+@media (max-width: 480px) {
+  .prompt-gift-nextstep-cta { align-self: stretch; }
+}
+
 /* 3-step affordance row in gift modal */
 .prompt-gift-steps {
   display: flex;

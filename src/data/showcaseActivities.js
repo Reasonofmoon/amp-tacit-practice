@@ -47,6 +47,8 @@ export const SHOWCASE_ACTIVITIES = [
     time: "3분",
     difficulty: 2,
     techTags: ["React", "AI API", "Prompt"],
+    url: "https://moon-writing-correction.vercel.app/",
+    repoUrl: "https://github.com/Reasonofmoon/moon-writing-correction.git",
     storyText: "틀린 문장을 고치는 것보다 먼저 학생의 자신감을 살리고, 다음에 고칠 한 가지를 골라주는 첨삭 감각",
     speakerNotes: "베테랑 원장님은 빨간펜으로 다 고치지 않습니다. 아이가 다시 쓰고 싶게 만드는 순서, 칭찬의 양, 고칠 포인트의 개수를 몸으로 압니다. 이 첨삭 기준과 톤앤매너를 프롬프트와 피드백 UI로 옮긴 사례입니다."
   },

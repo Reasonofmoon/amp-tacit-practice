@@ -68,7 +68,7 @@ async function copyAndOpen(prompt, targetKey, onAfter) {
   onAfter?.(target.label);
 }
 
-export default function PromptGiftModal({ open, onClose, gift, activityTitle, appRootRef }) {
+export default function PromptGiftModal({ open, onClose, gift, activityTitle, microInsight, nextStep, appRootRef }) {
   const [copied, setCopied] = useState(false);
   const [openedLabel, setOpenedLabel] = useState(null);
 
@@ -117,6 +117,13 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
           {gift.payoff && <p className="prompt-gift-payoff">“{gift.payoff}”</p>}
         </div>
       </div>
+
+      {microInsight && (
+        <div className={`prompt-gift-mirror tone-${microInsight.tone ?? 'neutral'}`}>
+          <span className="prompt-gift-mirror-title">{microInsight.title}</span>
+          <p>{microInsight.line}</p>
+        </div>
+      )}
 
       <div className="prompt-gift-usecase">
         <span className="prompt-gift-usecase-label">📍 어디서 쓰나요</span>
@@ -183,6 +190,18 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
         <p className="prompt-gift-warn" role="note">
           ℹ️ 긴 프롬프트라 URL 자동 입력이 안 될 수 있습니다. 클릭하면 자동으로 복사되니, 열린 창에서 Ctrl+V 로 붙여넣어 주세요.
         </p>
+      )}
+
+      {nextStep && (
+        <div className="prompt-gift-nextstep" role="note">
+          <span className="prompt-gift-nextstep-eyebrow">📄 다음 마일스톤</span>
+          <p>{nextStep.line}</p>
+          {nextStep.cta && (
+            <button type="button" className="btn-gift-secondary prompt-gift-nextstep-cta" onClick={nextStep.onClick}>
+              {nextStep.cta} →
+            </button>
+          )}
+        </div>
       )}
 
       <div className="prompt-gift-footer">
