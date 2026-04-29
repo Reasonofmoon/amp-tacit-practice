@@ -6,7 +6,17 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', 'tacit-knowledge-workshop.jsx']),
+  globalIgnores(['.claude/**', 'dist/**', 'node_modules/**', 'tacit/**', 'tacit-knowledge-workshop.jsx']),
+  {
+    files: ['api/**/*.js', 'playwright.config.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.node,
+      parserOptions: {
+        sourceType: 'module',
+      },
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
     plugins: {

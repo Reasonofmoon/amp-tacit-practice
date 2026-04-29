@@ -5,6 +5,11 @@
  */
 
 const STORAGE_PREFIX = 'tacit-llm-key-';
+const LLM_PROXY_URL = import.meta.env.VITE_LLM_PROXY_URL || '/api/llm';
+
+export function isServerProxyEnabled() {
+  return import.meta.env.VITE_LLM_PROXY_ENABLED === 'true';
+}
 
 export const PROVIDERS = {
   gemini: {
@@ -95,7 +100,7 @@ export function clearApiKey(providerId) {
  * @returns {Promise<{text: string, error: string|null}>}
  */
 export async function callLLM(providerId, apiKey, messages, modelId) {
-  if (!apiKey || !apiKey.trim()) {
+  if ((!apiKey || !apiKey.trim()) && !isServerProxyEnabled()) {
     return { text: '', error: 'API 키를 입력해주세요.' };
   }
 
@@ -104,6 +109,10 @@ export async function callLLM(providerId, apiKey, messages, modelId) {
   const timeout = setTimeout(() => controller.abort(), 90000); // 90s timeout
 
   try {
+    if (!apiKey?.trim() && isServerProxyEnabled()) {
+      return await callServerProxy(providerId, messages, controller.signal, resolvedModel);
+    }
+
     switch (providerId) {
       case 'gemini':
         return await callGemini(apiKey.trim(), messages, controller.signal, resolvedModel);
@@ -122,6 +131,25 @@ export async function callLLM(providerId, apiKey, messages, modelId) {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function callServerProxy(providerId, messages, signal, modelId) {
+  const res = await fetch(LLM_PROXY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ providerId, messages, modelId }),
+    signal,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    return { text: '', error: `서버 AI 프록시 오류 (${res.status}): ${data.error || '알 수 없는 오류'}` };
+  }
+
+  if (!data.text) {
+    return { text: '', error: '서버 AI 프록시 응답이 비어있습니다.' };
+  }
+  return { text: data.text, error: null };
 }
 
 /* ─── Gemini ─── */

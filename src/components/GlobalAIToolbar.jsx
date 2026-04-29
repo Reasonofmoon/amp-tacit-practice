@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { PROVIDERS, saveApiKey, clearApiKey } from '../utils/llmClient';
+import { PROVIDERS, clearApiKey, isServerProxyEnabled, saveApiKey } from '../utils/llmClient';
 
 const PROVIDER_ORDER = ['gemini', 'openai', 'claude'];
 
@@ -13,6 +13,7 @@ export default function GlobalAIToolbar({
   const provider = PROVIDERS[activeProvider] || Object.values(PROVIDERS)[0];
   const currentKey = apiKeys[activeProvider] || '';
   const currentModel = selectedModels[activeProvider];
+  const proxyEnabled = isServerProxyEnabled();
 
   const handleKeyChange = useCallback((value) => {
     setApiKeys((prev) => ({ ...prev, [activeProvider]: value }));
@@ -56,7 +57,7 @@ export default function GlobalAIToolbar({
           </h3>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: 0 }}>
             {isExpanded 
-              ? '여기서 설정한 API 키와 모델이 모든 프롬프트 실행기에 공통으로 적용됩니다.'
+              ? '여기서 설정한 API 키와 모델이 모든 프롬프트 실행기에 공통으로 적용됩니다. 서버 프록시가 켜진 배포에서는 키 입력 없이 실행할 수 있습니다.'
               : `${provider.name} 모델 선택됨 — 프롬프트 실행 준비 완료`}
           </p>
         </div>
@@ -146,7 +147,9 @@ export default function GlobalAIToolbar({
           <a href={provider.helpUrl} target="_blank" rel="noopener noreferrer">
             🔑 {provider.helpText}
           </a>
-          <span className="ai-key-note"> · 키는 브라우저에만 저장됩니다 (서버 전송 없음)</span>
+          <span className="ai-key-note">
+            {proxyEnabled ? ' · 서버 프록시 활성화됨: 배포 환경변수의 키를 우선 사용합니다' : ' · 키는 브라우저에만 저장됩니다'}
+          </span>
         </p>
       </div>
 

@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+playwright-report
+test-results
 *.local
 
 # Editor directories and files
@@ -23,3 +25,6 @@ dist-ssr
 *.sln
 *.sw?
 _vite_scaffold_temp/
+
+# Claude Code agent local state (settings.local.json, worktrees, launch.json)
+.claude/

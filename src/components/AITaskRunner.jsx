@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import DOMPurify from 'dompurify';
-import { callLLM, PROVIDERS } from '../utils/llmClient';
+import { callLLM, isServerProxyEnabled, PROVIDERS } from '../utils/llmClient';
 
 /**
  * Minimal Markdown → HTML renderer for LLM responses.
@@ -90,6 +90,7 @@ export default function AITaskRunner({ prompt, activeProvider, currentKey, curre
 
   const provider = PROVIDERS[activeProvider] || Object.values(PROVIDERS)[0];
   const currentModelInfo = provider.models.find((m) => m.id === currentModel) || provider.models[0];
+  const canSend = !!currentKey || isServerProxyEnabled();
 
   // Scroll to latest response
   useEffect(() => {
@@ -99,7 +100,7 @@ export default function AITaskRunner({ prompt, activeProvider, currentKey, curre
   }, [messages]);
 
   const handleSend = useCallback(async () => {
-    if (loading || !currentKey) return;
+    if (loading || !canSend) return;
     setError('');
     setLoading(true);
 
@@ -131,7 +132,7 @@ export default function AITaskRunner({ prompt, activeProvider, currentKey, curre
     setMessages(newMessages);
     setFollowUp('');
     setLoading(false);
-  }, [loading, prompt, messages, followUp, activeProvider, currentKey, currentModel]);
+  }, [loading, canSend, prompt, messages, followUp, activeProvider, currentKey, currentModel]);
 
   const handleFollowUpKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -152,7 +153,7 @@ export default function AITaskRunner({ prompt, activeProvider, currentKey, curre
         type="button"
         className="ai-send-btn"
         style={{ '--provider-color': provider.color }}
-        disabled={loading || !currentKey}
+        disabled={loading || !canSend}
         onClick={handleSend}
         aria-label="AI에게 프롬프트 보내기"
       >
@@ -161,10 +162,10 @@ export default function AITaskRunner({ prompt, activeProvider, currentKey, curre
             <span className="ai-spinner" />
             <span>{currentModelInfo?.label || 'AI'}로 전송 중...</span>
           </>
-        ) : !currentKey ? (
+        ) : !canSend ? (
           <>
             <span>⚠️</span>
-            <span>상단의 Global API Key를 입력해주세요</span>
+            <span>상단의 Global API Key를 입력하거나 서버 프록시를 활성화해주세요</span>
           </>
         ) : (
           <>
