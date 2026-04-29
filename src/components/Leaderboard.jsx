@@ -21,7 +21,7 @@ export default function Leaderboard({ entries }) {
                   {entry.academy} · {entry.level} · 활동 {entry.completedCount}개
                 </div>
               </div>
-              <div className="leaderboard-score">{entry.xp} XP</div>
+              <div className="leaderboard-score">{entry.xp} 페이지</div>
             </article>
           ))}
         </div>

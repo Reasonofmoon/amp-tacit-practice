@@ -50,7 +50,7 @@ export default function RolePlayActivity({ id, data, saveData, complete, onBack 
   }, [currentState.responses, feedback]);
 
   const persist = (nextProgress) => {
-    const nextSnapshot = buildProgressSnapshot(nextProgress);
+    const nextSnapshot = buildProgressSnapshot(nextProgress, targetScenarios);
     saveData({
       scenarioProgress: nextProgress,
       ...nextSnapshot,
@@ -121,7 +121,7 @@ export default function RolePlayActivity({ id, data, saveData, complete, onBack 
           <div>
             <h3 style={{ marginBottom: '16px' }}>시뮬레이션 케이스</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {ROLEPLAY_SCENARIOS.map((scenario) => {
+              {targetScenarios.map((scenario) => {
                 const isComplete = snapshot.completedScenarioIds.includes(scenario.id);
                 const isSelected = selectedId === scenario.id;
 
@@ -246,7 +246,7 @@ export default function RolePlayActivity({ id, data, saveData, complete, onBack 
                 <span style={{ fontSize: '3rem', display: 'block', marginBottom: '16px' }}>✅</span>
                 <strong style={{ fontSize: '1.25rem', color: 'var(--success-dark)' }}>시나리오 클리어!</strong>
                 <p style={{ color: 'var(--text-main)', marginTop: '8px' }}>왼쪽 메뉴에서 다른 시나리오를 선택해주세요.</p>
-                {snapshot.completedScenarioIds.length === ROLEPLAY_SCENARIOS.length && (
+                {snapshot.completedScenarioIds.length === targetScenarios.length && (
                   <button 
                     className="btn btn-primary" 
                     style={{ marginTop: '24px', background: 'var(--success)' }}

@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PresentationShell from '../components/PresentationShell';
 import { KeyRound, Sparkles, AlertCircle, ArrowRight } from 'lucide-react';
+import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoWritingCorrectionActivity(props) {
+  const activity = SHOWCASE_ACTIVITIES.find((item) => item.id === props.id);
+  const stepNumber = activity?.title?.split('.')[0] ?? '3';
   const [apiKey, setApiKey] = useState('');
   const [hasKey, setHasKey] = useState(false);
   const [inputText, setInputText] = useState('');
@@ -29,12 +32,13 @@ export default function DemoWritingCorrectionActivity(props) {
 
   return (
     <PresentationShell 
-      step="2" 
-      title="2. 영어 작문 첨삭 앱"
-      subtitle="API 지능 연동"
-      storyText="학생들의 영작을 나만의 깐깐한 기준과 따뜻한 톤앤매너로 꼼꼼하게 첨삭해주는 노하우"
+      step={stepNumber}
+      title={activity?.title ?? "3. 영어 작문 첨삭"}
+      subtitle={activity?.subtitle ?? "API 지능 연동"}
+      storyText={activity?.storyText ?? "학생들의 영작을 나만의 깐깐한 기준과 따뜻한 톤앤매너로 꼼꼼하게 첨삭해주는 노하우"}
+      speakerNotes={activity?.speakerNotes}
       actionText="프롬프트 구조화 및 API 연동"
-      actionColor="#3B82F6"
+      actionColor={activity?.color ?? "#3B82F6"}
       {...props}
     >
       <div className="flex flex-col bg-slate-50 w-full max-w-4xl rounded-xl overflow-hidden shadow-2xl border border-slate-200" style={{ height: '500px' }}>

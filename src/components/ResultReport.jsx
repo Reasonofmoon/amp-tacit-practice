@@ -1,9 +1,15 @@
-import { Suspense, useMemo } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { ACTIVITIES, AXES } from '../data/activities';
 import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
+import { AUTOMATION_ACTIVITIES } from '../data/automationActivities';
+import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
+import { getActivityPromptGift } from '../data/activityPrompts';
 import { buildSeciMap, buildTopInsights } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
 import { lazyWithRetry } from '../utils/lazyWithRetry';
+import PromptGiftModal from './PromptGiftModal';
+import DiscoveryShowcase from './DiscoveryShowcase';
+import BenchmarkSection from './BenchmarkSection';
 
 const ReportRadarCard = lazyWithRetry(() => import('./ReportRadarCard'), 'ReportRadarCard');
 const KnowledgeGraph = lazyWithRetry(() => import('./KnowledgeGraph'), 'KnowledgeGraph');
@@ -48,12 +54,29 @@ const SECI_SECTIONS = [
   { key: 'internalization', icon: '🧠', title: 'I · 내면화', empty: '퀴즈와 역할극 인사이트가 여기에 축적됩니다.' },
 ];
 
+const ALL_TITLES = (() => {
+  const lookup = {};
+  [...ACTIVITIES, ...DEV_ACTIVITIES, ...AUTOMATION_ACTIVITIES, ...SHOWCASE_ACTIVITIES].forEach((entry) => {
+    if (entry?.id) lookup[entry.id] = entry.title;
+  });
+  return lookup;
+})();
+
 export default function ResultReport({ state, levelInfo, activeJourney = 'director', onOpenAIWorkbench }) {
   const isDev = activeJourney === 'developer';
+  const [openGift, setOpenGift] = useState(null);
 
   const axisScores = useMemo(() => buildAxisScores(state, isDev), [state, isDev]);
   const topInsights = useMemo(() => buildTopInsights(state.activityData), [state.activityData]);
   const seciMap = useMemo(() => buildSeciMap(state.activityData), [state.activityData]);
+  const promptBag = useMemo(
+    () => state.completed.map((id) => ({
+      id,
+      title: ALL_TITLES[id] ?? id,
+      gift: getActivityPromptGift(id, state.activityData[id], state.profile),
+    })),
+    [state.completed, state.activityData, state.profile],
+  );
 
   const profileName = state.profile.name?.trim() || (isDev ? '익명 개발자' : '익명 원장');
   const career = state.profile.career?.trim() || '경력 미입력';
@@ -79,7 +102,7 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
         </div>
         <div className="report-xp-stamp">
           <span className="report-xp-stamp-value">{state.xp}</span>
-          <span className="report-xp-stamp-label">Total XP</span>
+          <span className="report-xp-stamp-label">매뉴얼에 채운 페이지</span>
         </div>
       </div>
 
@@ -100,15 +123,15 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
             <div className="report-stat-tile">
               <div className="report-stat-tile-value">{state.completed.length}</div>
-              <div className="report-stat-tile-label">완료 활동</div>
+              <div className="report-stat-tile-label">채운 챕터 수</div>
             </div>
             <div className="report-stat-tile">
               <div className="report-stat-tile-value">{state.badges.length}</div>
-              <div className="report-stat-tile-label">획득 뱃지</div>
+              <div className="report-stat-tile-label">발견 카드</div>
             </div>
             <div className="report-stat-tile">
               <div className="report-stat-tile-value">{state.maxCombo}</div>
-              <div className="report-stat-tile-label">최대 콤보</div>
+              <div className="report-stat-tile-label">가장 길었던 흐름</div>
             </div>
           </div>
 
@@ -163,6 +186,96 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
           </button>
         </div>
       </article>
+
+      <article className="report-paper-card prompt-gift-bag-section" style={{ marginTop: 'var(--space-lg)' }}>
+        <div className="section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <span className="flow-eyebrow-tag" style={{ background: 'var(--pink-wash)', borderColor: 'var(--coral)', color: 'var(--coral)' }}>
+              🎁 PROMPT GIFT BAG
+            </span>
+            <h3 style={{ fontSize: '1.3rem', marginTop: '8px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>
+              완료한 활동 × {promptBag.length} — 실무용 프롬프트 가방
+            </h3>
+            <p style={{ color: 'var(--ink-500)', fontSize: '0.88rem', marginTop: '4px' }}>
+              지금까지 받은 모든 프롬프트를 한자리에. 카드를 누르면 다시 복사 / ChatGPT / Claude 로 보낼 수 있습니다.
+            </p>
+          </div>
+          {promptBag.length > 0 && (
+            <button
+              type="button"
+              className="btn-paper-primary print-hide"
+              onClick={() => {
+                document.body.classList.add('print-mode-prompt-bag');
+                window.requestAnimationFrame(() => {
+                  window.print();
+                  window.setTimeout(() => document.body.classList.remove('print-mode-prompt-bag'), 200);
+                });
+              }}
+              aria-label="프롬프트 가방을 PDF로 저장"
+            >
+              📄 가방 전체 PDF로 저장
+            </button>
+          )}
+        </div>
+
+        {promptBag.length === 0 ? (
+          <p className="prompt-gift-bag-empty">아직 완료한 활동이 없습니다. 추천 데모를 1개 마치면 첫 선물이 도착합니다.</p>
+        ) : (
+          <>
+            <div className="prompt-gift-bag print-hide">
+              {promptBag.map(({ id, title, gift }) => (
+                <button
+                  key={id}
+                  type="button"
+                  className="prompt-gift-bag-card"
+                  onClick={() => setOpenGift({ id, title, gift })}
+                  aria-label={`${title} 선물 프롬프트 다시 보기`}
+                >
+                  <span className="prompt-gift-bag-card-head">
+                    <span aria-hidden="true">{gift.emoji}</span>
+                    <span>{title}</span>
+                  </span>
+                  <h4 className="prompt-gift-bag-card-title">{gift.title}</h4>
+                  {gift.payoff && <p className="prompt-gift-bag-card-payoff">{gift.payoff}</p>}
+                </button>
+              ))}
+            </div>
+
+            {/* Print-only layout: every prompt in full, one per page-break point */}
+            <div className="prompt-gift-bag-print" aria-hidden="true">
+              <header className="prompt-gift-bag-print-cover">
+                <h1>🎁 프롬프트 선물 가방</h1>
+                <p>{state.profile.name?.trim() || '익명'} · {state.profile.academy?.trim() || '우리 학원'} · 총 {promptBag.length}개 프롬프트</p>
+                <p className="prompt-gift-bag-print-hint">각 프롬프트를 ChatGPT 또는 Claude에 그대로 붙여넣으면 됩니다.</p>
+              </header>
+              {promptBag.map(({ id, title, gift }, index) => (
+                <section key={id} className="prompt-gift-bag-print-card">
+                  <p className="prompt-gift-bag-print-eyebrow">#{index + 1} · {title}</p>
+                  <h2>{gift.emoji} {gift.title}</h2>
+                  {gift.payoff && <p className="prompt-gift-bag-print-payoff">“{gift.payoff}”</p>}
+                  <p className="prompt-gift-bag-print-usecase"><strong>📍 어디서 쓰나요</strong> {gift.useCase}</p>
+                  <pre>{gift.prompt}</pre>
+                </section>
+              ))}
+            </div>
+          </>
+        )}
+      </article>
+
+      <PromptGiftModal
+        open={!!openGift}
+        gift={openGift?.gift ?? null}
+        activityTitle={openGift?.title ?? ''}
+        onClose={() => setOpenGift(null)}
+      />
+
+      <div style={{ marginTop: 'var(--space-lg)' }}>
+        <DiscoveryShowcase state={state} />
+      </div>
+
+      <div style={{ marginTop: 'var(--space-lg)' }}>
+        <BenchmarkSection state={state} />
+      </div>
 
       <div className="report-grid" style={{ marginTop: 'var(--space-lg)' }}>
         <article className="report-paper-card" style={{ gridColumn: '1 / -1' }}>

@@ -1,7 +1,29 @@
 import React from 'react';
+import { Bot, ClipboardCheck, Presentation } from 'lucide-react';
 import { SHOWCASE_ACTIVITIES, SHOWCASE_LEVELS } from '../data/showcaseActivities';
 import { getActivityProgress } from '../utils/scoring';
 import ActivityCard from './ActivityCard';
+
+const MODE_OPTIONS = [
+  {
+    key: 'director',
+    icon: ClipboardCheck,
+    title: '진단 시작',
+    desc: '원장님의 판단 패턴을 활동 데이터와 리포트로 정리합니다.',
+  },
+  {
+    key: 'automation',
+    icon: Bot,
+    title: '자동화 실습',
+    desc: '복사와 붙여넣기로 AI 비서 자동화 흐름을 따라갑니다.',
+  },
+  {
+    key: 'showcase',
+    icon: Presentation,
+    title: '쇼케이스 보기',
+    desc: '암묵지가 실제 앱으로 바뀐 사례를 발표 모드로 시연합니다.',
+  },
+];
 
 export default function HomeJourneyView({
   activeJourney,
@@ -11,6 +33,7 @@ export default function HomeJourneyView({
   onGoReport,
   onOpenQr,
   onSelectActivity,
+  onChooseJourney,
 }) {
   const {
     journeyGuide,
@@ -23,6 +46,30 @@ export default function HomeJourneyView({
 
   return (
     <div style={{ textAlign: 'center' }}>
+      <div className="mode-selector" aria-label="앱 사용 목적 선택">
+        {MODE_OPTIONS.map((option) => {
+          const Icon = option.icon;
+          const active = activeJourney === option.key;
+
+          return (
+            <button
+              key={option.key}
+              type="button"
+              className={`mode-card ${active ? 'active' : ''}`}
+              onClick={() => onChooseJourney(option.key)}
+            >
+              <span className="mode-card-icon" aria-hidden="true">
+                <Icon size={20} />
+              </span>
+              <span className="mode-card-body">
+                <strong>{option.title}</strong>
+                <span>{option.desc}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       <div className="flow-card-paper" style={{ marginBottom: 'var(--space-lg)' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: '28px' }}>
           <div style={{ flex: '1 1 360px' }}>
@@ -81,40 +128,6 @@ export default function HomeJourneyView({
         </div>
       </div>
 
-      {journeyGuide.demoOrder.length > 0 && (
-        <div className="flow-card-paper" style={{ marginBottom: 'var(--space-lg)' }}>
-          <div style={{ paddingLeft: '28px' }}>
-            <span className="flow-eyebrow-tag" style={{ background: 'var(--blue-wash)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
-              GUIDED DEMO
-            </span>
-            <h3 className="flow-title" style={{ marginTop: '16px' }}>발표용 진행 순서</h3>
-            <p className="flow-subtitle">
-              시연 흐름과 발표 멘트를 한 번에 정리했습니다. 추천 순서대로 보여주면 설명 부담이 줄어듭니다.
-            </p>
-
-            <div style={{ display: 'grid', gap: '12px' }}>
-              {journeyGuide.demoOrder.map((step, index) => (
-                <div
-                  key={step.activityId}
-                  style={{
-                    padding: '16px 18px',
-                    borderRadius: '14px',
-                    background: 'var(--paper-100)',
-                    border: '1px solid var(--paper-300)',
-                    borderLeft: '4px solid var(--mustard)',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '6px' }}>
-                    <strong style={{ color: 'var(--ink-900)' }}>{index + 1}. {step.label}</strong>
-                    <span style={{ color: 'var(--ink-500)', fontSize: '0.85rem' }}>{step.audienceOutcome}</span>
-                  </div>
-                  <p style={{ margin: 0, color: 'var(--ink-700)', lineHeight: 1.7 }}>{step.presenterLine}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {lastCompletedActivity && (
         <div
@@ -132,7 +145,7 @@ export default function HomeJourneyView({
           </span>
           <h3 style={{ margin: '0 0 8px' }}>{lastCompletedActivity.title} 결과가 리포트에 반영되었습니다</h3>
           <p style={{ margin: '0 0 14px', color: 'var(--ink-700)', lineHeight: 1.6 }}>
-            마지막 완료 항목을 기준으로 진행도가 갱신되었습니다. 지금 리포트에서 축적된 XP와 핵심 통찰을 바로 확인할 수 있습니다.
+            마지막 완료 항목을 기준으로 진행도가 갱신되었습니다. 지금 리포트에서 채운 매뉴얼 페이지와 핵심 통찰을 바로 확인할 수 있습니다.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <button type="button" className="btn-paper-primary" onClick={onGoReport}>

@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PresentationShell from '../components/PresentationShell';
 import { Users, LayoutDashboard, Calendar, DollarSign, Target, UserCheck } from 'lucide-react';
+import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoAcademyOsActivity(props) {
+  const activity = SHOWCASE_ACTIVITIES.find((item) => item.id === props.id);
+  const stepNumber = activity?.title?.split('.')[0] ?? '8';
   const [role, setRole] = useState('director'); // director, teacher, student
 
   const layoutVariants = {
@@ -22,12 +25,13 @@ export default function DemoAcademyOsActivity(props) {
 
   return (
     <PresentationShell 
-      step="7" 
-      title="7. Academy OS"
-      subtitle="Firebase 풀스택 스케일업"
-      storyText="출결, 수납, 진도, 과제를 한 번에 꿰뚫어 보며 학원 운영의 누수를 막는 원장의 뇌내 멀티태스킹"
+      step={stepNumber}
+      title={activity?.title ?? "8. Academy OS"}
+      subtitle={activity?.subtitle ?? "운영 대시보드"}
+      storyText={activity?.storyText ?? "출결, 수납, 진도, 과제를 한 번에 꿰뚫어 보며 학원 운영의 누수를 막는 원장의 뇌내 멀티태스킹"}
+      speakerNotes={activity?.speakerNotes}
       actionText="Academy OS 백엔드 대시보드 마이그레이션"
-      actionColor="#EC4899"
+      actionColor={activity?.color ?? "#EC4899"}
       {...props}
     >
       <div className="flex flex-col bg-[#0F172A] rounded-xl overflow-hidden shadow-2xl border border-pink-900/40 w-full max-w-5xl" style={{ height: '550px' }}>

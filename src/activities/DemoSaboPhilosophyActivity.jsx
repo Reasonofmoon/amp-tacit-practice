@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PresentationShell from '../components/PresentationShell';
 import { Send, Map, Sparkles, BrainCircuit } from 'lucide-react';
+import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoSaboPhilosophyActivity(props) {
+  const activity = SHOWCASE_ACTIVITIES.find((item) => item.id === props.id);
+  const stepNumber = activity?.title?.split('.')[0] ?? '13';
   const [messages, setMessages] = useState([
     { role: 'assistant', content: '반갑습니다. 384 의식 매트릭스가 준비되었습니다. 어떤 고민을 나누고 싶으신가요?' }
   ]);
@@ -32,12 +35,13 @@ export default function DemoSaboPhilosophyActivity(props) {
 
   return (
     <PresentationShell 
-      step="3" 
-      title="3. 사보 철학 AI 챗봇"
-      subtitle="온톨로지와 시스템 프롬프트의 결합"
-      storyText="수십 년간 쌓아온 동양 철학적 직관과 심리 치유의 방법론을 384개의 경우의 수로 구조화한 통찰"
+      step={stepNumber}
+      title={activity?.title ?? "13. 사보 철학 AI"}
+      subtitle={activity?.subtitle ?? "온톨로지와 시스템 프롬프트의 결합"}
+      storyText={activity?.storyText ?? "수십 년간 쌓아온 동양 철학적 직관과 심리 치유의 방법론을 384개의 경우의 수로 구조화한 통찰"}
+      speakerNotes={activity?.speakerNotes}
       actionText="384 매트릭스 시스템 프롬프트 활성화"
-      actionColor="#8B5CF6"
+      actionColor={activity?.color ?? "#8B5CF6"}
       {...props}
     >
       <div className="flex bg-[#030712] rounded-xl overflow-hidden shadow-2xl border border-purple-900/50 w-full max-w-5xl" style={{ height: '550px' }}>

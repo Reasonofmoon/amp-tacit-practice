@@ -4,9 +4,33 @@ import { QUIZZES } from '../data/quizzes';
 import { DEV_QUIZZES } from '../data/developerQuizzes';
 import { useTimer } from '../hooks/useTimer';
 
+function normalizeQuiz(rawQuiz) {
+  if (!rawQuiz) {
+    return null;
+  }
+
+  const normalizedOptions = rawQuiz.options.map((option) =>
+    typeof option === 'string'
+      ? { text: option, isCorrect: false, insight: rawQuiz.insight }
+      : option,
+  );
+  const answerIndex = typeof rawQuiz.answer === 'number'
+    ? rawQuiz.answer
+    : normalizedOptions.findIndex((option) => option.isCorrect);
+  const answer = answerIndex >= 0 ? answerIndex : 0;
+
+  return {
+    id: rawQuiz.id ?? rawQuiz.q ?? rawQuiz.scenario,
+    q: rawQuiz.q ?? rawQuiz.scenario,
+    options: normalizedOptions.map((option) => option.text),
+    answer,
+    insight: rawQuiz.insight ?? normalizedOptions[answer]?.insight ?? '',
+  };
+}
+
 export default function QuickQuizActivity({ id, data, saveData, complete, onBack }) {
   const isDev = id?.startsWith('dev_');
-  const targetQuizzes = isDev ? DEV_QUIZZES : QUIZZES;
+  const targetQuizzes = (isDev ? DEV_QUIZZES : QUIZZES).map(normalizeQuiz).filter(Boolean);
   
   const [current, setCurrent] = useState(0);
   const [responses, setResponses] = useState(data?.responses ?? []);
@@ -29,6 +53,9 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
 
   const handleAnswer = (selectedOptionIndex, expired = false) => {
     pause();
+    if (phase !== 'quiz') {
+      return;
+    }
     const isCorrect = !expired && selectedOptionIndex === question.answer;
     
     const newResponse = {
@@ -59,10 +86,13 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
 
   const finishQuiz = () => {
     const correctCount = responses.filter(r => r.correct).length;
+    const confidenceAvg = responses.length > 0
+      ? responses.reduce((a, b) => a + b.confidence, 0) / responses.length
+      : 0;
     complete({ 
       activityData: { responses, correctCount }, 
       bonusXp: correctCount * 15,
-      metrics: { confidenceAvg: responses.reduce((a, b) => a + b.confidence, 0) / responses.length }
+      metrics: { confidenceAvg }
     });
   };
 
@@ -81,7 +111,7 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
               {Math.round((correctCount / targetQuizzes.length) * 100)}점
             </div>
             <p style={{ color: 'var(--text-muted)' }}>총 {targetQuizzes.length}문제 중 {correctCount}문제 정답</p>
-            <button className="btn btn-primary" onClick={finishQuiz} style={{ width: '100%' }}>XP 받고 메인으로</button>
+            <button className="btn btn-primary" onClick={finishQuiz} style={{ width: '100%' }}>매뉴얼에 페이지 채우고 홈으로</button>
           </div>
         </div>
       </div>
@@ -94,9 +124,9 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
         <div className="workspace-progress">
           <span>Q{current + 1}</span>
           <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${((current) / QUIZZES.length) * 100}%` }} />
+            <div className="progress-fill" style={{ width: `${((current) / targetQuizzes.length) * 100}%` }} />
           </div>
-          <span>{QUIZZES.length}</span>
+          <span>{targetQuizzes.length}</span>
         </div>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <strong style={{ color: timeLeft < 10 ? 'var(--danger)' : 'var(--text-main)', fontVariantNumeric: 'tabular-nums' }}>
@@ -185,11 +215,11 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
               {phase === 'feedback' && (
                 <div className="card" style={{ marginTop: '24px', background: responses[current]?.correct ? 'var(--primary-light)' : '#FEF2F2', borderColor: responses[current]?.correct ? 'var(--primary)' : 'var(--danger)' }}>
                   <h3 style={{ color: responses[current]?.correct ? 'var(--primary-hover)' : 'var(--danger)' }}>
-                    {responses[current]?.correct ? '정답입니다! (+15 XP)' : '아쉽습니다.'}
+                    {responses[current]?.correct ? '정답입니다 — 한 줄이 매뉴얼에 새겨졌어요 (+15 페이지)' : '아쉽습니다 — 다음 문장에서 다시 가다듬어 보세요.'}
                   </h3>
                   <p style={{ marginTop: '8px', color: 'var(--text-main)', fontWeight: 500 }}>{question.insight}</p>
                   <button className="btn btn-primary" style={{ marginTop: '16px' }} onClick={nextQuestion}>
-                    {current >= QUIZZES.length - 1 ? '결과 보기' : '다음 문제'}
+                    {current >= targetQuizzes.length - 1 ? '결과 보기' : '다음 문제'}
                   </button>
                 </div>
               )}

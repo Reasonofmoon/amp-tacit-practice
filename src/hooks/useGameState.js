@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ACTIVITIES } from '../data/activities';
-import { BADGES } from '../data/badges';
+import { DISCOVERY_CARDS, buildDiscoveryView, evaluateDiscoveries } from '../data/discoveryCards';
+import { parseStoredGameState } from '../schemas/gameState';
 import { ACTIVITY_XP, getComboMultiplier, getLevelInfo, getNextLevel, getOverallProgress } from '../utils/scoring';
 
 const STORAGE_KEY = 'tacit-game-state';
 
-function createDefaultState() {
+export function createDefaultState() {
   return {
     version: 1,
     xp: 0,
@@ -76,11 +77,13 @@ function mergeRecord(baseRecord = {}, savedRecord = {}) {
   return { ...baseRecord, ...(savedRecord ?? {}) };
 }
 
-function mergeState(savedState) {
+export function mergeState(savedState) {
   const base = createDefaultState();
-  if (!savedState || typeof savedState !== "object") {
+  const parsedState = parseStoredGameState(savedState);
+  if (!parsedState) {
     return base;
   }
+  savedState = parsedState;
 
   return {
     ...base,
@@ -193,18 +196,25 @@ function normalizeBadgeState(state) {
   const crisisAll = state.metrics.crisisAll || (state.activityData.crisis.completedScenarios ?? 0) >= 3;
   const transferAll = state.metrics.transferAll || Object.keys(state.activityData.transfer.answers ?? {}).length >= 6;
 
+  // Discovery card conditions read state.metrics.crisisAll/transferAll/quizTime,
+  // so keep both shapes available.
   return {
     ...state,
     completed,
     crisisAll,
     transferAll,
     quizTime: state.metrics.quizTime,
+    metrics: {
+      ...state.metrics,
+      crisisAll,
+      transferAll,
+    },
   };
 }
 
 function evaluateBadges(state) {
-  const badgeState = normalizeBadgeState(state);
-  return BADGES.filter((badge) => badge.condition(badgeState)).map((badge) => badge.id);
+  const normalized = normalizeBadgeState(state);
+  return evaluateDiscoveries(normalized);
 }
 
 function buildLeaderboard(state, activityId, levelInfo, previousLeaderboard) {
@@ -258,7 +268,7 @@ export function useGameState() {
   const nextLevel = useMemo(() => getNextLevel(state.xp), [state.xp]);
   const progressPercent = useMemo(() => getOverallProgress(state), [state]);
   const completionPercent = Math.round((state.completed.length / ACTIVITIES.length) * 100);
-  const unlockedBadges = BADGES.filter((badge) => state.badges.includes(badge.id));
+  const unlockedBadges = DISCOVERY_CARDS.filter((card) => state.badges.includes(card.id));
 
   const updateProfile = (partialProfile) => {
     setState((previous) => ({
@@ -342,10 +352,11 @@ export function useGameState() {
       nextState.badges = badgeIds;
       nextState.leaderboard = alreadyCompleted ? previous.leaderboard : buildLeaderboard(nextState, activityId, levelAfter, previous.leaderboard);
 
-      const newBadges = badgeIds
-        .filter((badgeId) => !previous.badges.includes(badgeId))
-        .map((badgeId) => BADGES.find((badge) => badge.id === badgeId))
-        .filter(Boolean);
+      // Only newly unlocked discovery cards trigger celebration.
+      // Build evidence text using the *next* state so the data line is fresh.
+      const normalizedNext = normalizeBadgeState(nextState);
+      const newIds = badgeIds.filter((badgeId) => !previous.badges.includes(badgeId));
+      const newBadges = buildDiscoveryView(normalizedNext, newIds).filter((card) => card.unlocked && newIds.includes(card.id));
 
       nextCelebration = {
         xpGain: xpGain > 0 ? { amount: xpGain, at: Date.now(), activityId } : null,

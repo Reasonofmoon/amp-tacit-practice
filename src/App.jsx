@@ -1,17 +1,22 @@
 import React, { Suspense, useRef, useState } from 'react';
 import './index.css';
-import confetti from 'canvas-confetti';
 import { useGameState } from './hooks/useGameState';
 import { SHOWCASE_ACTIVITIES } from './data/showcaseActivities';
 import { getJourneyGuide } from './data/journeyGuides';
 import { buildHomeViewModel } from './utils/homeFlow';
 import { lazyWithRetry } from './utils/lazyWithRetry';
 import { playSuccessSound, playFanfareSound } from './utils/sound';
+import { triggerInkBurst } from './utils/inkBurst';
 import HomeJourneyView from './components/HomeJourneyView';
 import Layout from './components/Layout';
 import OnboardingOverlay from './components/OnboardingOverlay';
 import ModalOverlay from './components/ModalOverlay';
 import ErrorBoundary from './components/ErrorBoundary';
+import PromptGiftModal from './components/PromptGiftModal';
+import NextStepBeacon from './components/NextStepBeacon';
+import ChapterPrintLayout from './components/ChapterPrintLayout';
+import { getActivityPromptGift } from './data/activityPrompts';
+import { ACTIVITY_TITLES } from './utils/activityTitles';
 const PromoGallery = lazyWithRetry(() => import('./components/PromoGallery'), 'PromoGallery');
 const ResultReport = lazyWithRetry(() => import('./components/ResultReport'), 'ResultReport');
 const ReportAIWorkbench = lazyWithRetry(() => import('./components/ReportAIWorkbench'), 'ReportAIWorkbench');
@@ -32,6 +37,10 @@ const AutoPropertyActivity = lazyWithRetry(() => import('./activities/AutoProper
 const AutoCodeActivity = lazyWithRetry(() => import('./activities/AutoCodeActivity'), 'AutoCodeActivity');
 const AutoTriggerActivity = lazyWithRetry(() => import('./activities/AutoTriggerActivity'), 'AutoTriggerActivity');
 const DemoLiveAppTemplate = lazyWithRetry(() => import('./activities/DemoLiveAppTemplate'), 'DemoLiveAppTemplate');
+const DemoAcademyOsActivity = lazyWithRetry(() => import('./activities/DemoAcademyOsActivity'), 'DemoAcademyOsActivity');
+const DemoSaboPhilosophyActivity = lazyWithRetry(() => import('./activities/DemoSaboPhilosophyActivity'), 'DemoSaboPhilosophyActivity');
+const DemoShowcaseIntroActivity = lazyWithRetry(() => import('./activities/DemoShowcaseIntroActivity'), 'DemoShowcaseIntroActivity');
+const DemoWritingCorrectionActivity = lazyWithRetry(() => import('./activities/DemoWritingCorrectionActivity'), 'DemoWritingCorrectionActivity');
 
 const ACTIVITY_COMPONENTS = {
   // Director Journey
@@ -66,15 +75,21 @@ const ACTIVITY_COMPONENTS = {
   auto_trigger: AutoTriggerActivity,
 
   // Showcase Journey (Live URLs)
+  demo_showcase_intro: DemoShowcaseIntroActivity,
+  demo_sign_design: DemoLiveAppTemplate,
   demo_readmaster: DemoLiveAppTemplate,
-  demo_pettrip: DemoLiveAppTemplate,
-  demo_smartstart: DemoLiveAppTemplate,
+  demo_writing_correction: DemoWritingCorrectionActivity,
+  demo_level_test_proto: DemoLiveAppTemplate,
+  demo_academy_os: DemoAcademyOsActivity,
   demo_ontology: DemoLiveAppTemplate,
+  demo_storyboard_gen: DemoLiveAppTemplate,
   demo_knot: DemoLiveAppTemplate,
   demo_bluel: DemoLiveAppTemplate,
   demo_librainy: DemoLiveAppTemplate,
   demo_moonlang: DemoLiveAppTemplate,
   demo_gidoboard: DemoLiveAppTemplate,
+  demo_sabo_philosophy: DemoSaboPhilosophyActivity,
+  demo_app_factory: DemoLiveAppTemplate,
 };
 
 function LoadingPanel() {
@@ -89,17 +104,31 @@ function LoadingPanel() {
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
-  const [activeJourney, setActiveJourney] = useState('showcase');
+  const [activeJourney, setActiveJourney] = useState('director');
   const [showJourneyPicker, setShowJourneyPicker] = useState(false);
   const [aiWorkbenchOpen, setAIWorkbenchOpen] = useState(false);
   const [qrInterstitialOpen, setQrInterstitialOpen] = useState(false);
+  const [pendingGift, setPendingGift] = useState(null);
+  const [printingChapter, setPrintingChapter] = useState(null);
   const appContentRef = useRef(null);
   const game = useGameState();
+
+  const handlePrintChapter = (chapterId) => {
+    setPrintingChapter(chapterId);
+    document.body.classList.add('print-mode-chapter');
+    window.requestAnimationFrame(() => {
+      window.print();
+      window.setTimeout(() => {
+        document.body.classList.remove('print-mode-chapter');
+        setPrintingChapter(null);
+      }, 200);
+    });
+  };
 
   const goHome = () => setCurrentView('home');
   const goReport = () => {
     playFanfareSound();
-    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+    triggerInkBurst({ origin: { x: 0.5, y: 0.55 }, size: 'lg' });
     setCurrentView('report');
   };
 
@@ -154,6 +183,7 @@ export default function App() {
         onToggleJourneyPicker={() => setShowJourneyPicker((previous) => !previous)}
         showJourneyPicker={showJourneyPicker}
         recommendedJourney={recommendedJourney}
+        onPrintChapter={handlePrintChapter}
       >
         {currentView === 'home' && activeJourney === 'promo' && (
           <Suspense fallback={<LoadingPanel />}>
@@ -170,6 +200,7 @@ export default function App() {
             onGoReport={goReport}
             onOpenQr={() => setQrInterstitialOpen(true)}
             onSelectActivity={setCurrentView}
+            onChooseJourney={handleToggleJourney}
           />
         )}
 
@@ -194,9 +225,19 @@ export default function App() {
               saveData={(next) => game.saveActivityData(currentView, next)}
               complete={(options) => {
                 playSuccessSound();
-                confetti({ particleCount: 50, spread: 60 });
-                game.completeActivity(currentView, options);
-                goHome();
+                triggerInkBurst({ origin: { x: 0.5, y: 0.5 }, size: 'md' });
+                const completedId = currentView;
+                game.completeActivity(completedId, options);
+                const mergedData = {
+                  ...(game.state.activityData[completedId] ?? {}),
+                  ...(options?.activityData ?? {}),
+                };
+                const gift = getActivityPromptGift(completedId, mergedData, game.state.profile);
+                setPendingGift({
+                  id: completedId,
+                  title: ACTIVITY_TITLES[completedId] ?? '',
+                  gift,
+                });
               }}
               onBack={goHome}
             />
@@ -221,9 +262,15 @@ export default function App() {
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', maxWidth: '600px' }}>
           {SHOWCASE_ACTIVITIES.map(a => (
+            a.url ? (
             <a key={a.id} href={a.url} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', background: `${a.color}15`, border: `1px solid ${a.color}40`, color: a.color, fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
               {a.icon} {a.title.split('. ')[1]}
             </a>
+            ) : (
+            <span key={a.id} style={{ padding: '8px 16px', borderRadius: '8px', background: `${a.color}15`, border: `1px solid ${a.color}40`, color: a.color, fontSize: '0.85rem', fontWeight: 600 }}>
+              {a.icon} {a.title.split('. ')[1]}
+            </span>
+            )
           ))}
         </div>
         <button className="btn btn-ghost" onClick={() => setQrInterstitialOpen(false)} style={{ marginTop: '16px', color: '#94a3b8', fontSize: '1rem' }}>← 닫기</button>
@@ -243,6 +290,35 @@ export default function App() {
           />
         </Suspense>
       </ModalOverlay>
+
+      <PromptGiftModal
+        open={!!pendingGift}
+        gift={pendingGift?.gift ?? null}
+        activityTitle={pendingGift?.title ?? ''}
+        appRootRef={appContentRef}
+        onClose={() => {
+          setPendingGift(null);
+          goHome();
+        }}
+      />
+
+      <ChapterPrintLayout
+        chapterId={printingChapter}
+        state={game.state}
+        levelInfo={game.levelInfo}
+      />
+
+      <NextStepBeacon
+        currentView={currentView}
+        completedCount={game.state.completed.length}
+        hasGiftOpen={!!pendingGift}
+        hasModalOpen={qrInterstitialOpen || aiWorkbenchOpen}
+        onStartTour={() => {
+          setActiveJourney('showcase');
+          setCurrentView('demo_readmaster');
+        }}
+        onGoReport={goReport}
+      />
     </ErrorBoundary>
   );
 }

@@ -1,24 +1,8 @@
-import { useState } from 'react';
 import ModalOverlay from './ModalOverlay';
 
-const STEPS = [
-  {
-    title: '암묵지를 플레이처럼 수집합니다',
-    desc: '11개의 활동을 돌며 원장님만의 직관을 말로 꺼내고, XP와 뱃지로 진행도를 추적합니다.',
-  },
-  {
-    title: '경험이 바로 프롬프트 자산이 됩니다',
-    desc: '답변은 모두 브라우저에 저장되고, 마지막에는 AI 프롬프트 팩과 SECI 리포트로 정리됩니다.',
-  },
-  {
-    title: '프로필을 넣으면 결과 리포트가 더 선명해집니다',
-    desc: '이름과 경력을 입력하면 리더보드와 최종 카드에 반영됩니다.',
-  },
-];
-
-export default function OnboardingOverlay({ open, profile, onChangeProfile, onClose, onQuickStart, appRootRef }) {
-  const [showProfileForm, setShowProfileForm] = useState(false);
-
+// One screen, one primary action. Profile collection is deferred to the
+// report stage where the name actually shows up — no friction at start.
+export default function OnboardingOverlay({ open, onClose, onQuickStart, appRootRef }) {
   if (!open) {
     return null;
   }
@@ -29,121 +13,42 @@ export default function OnboardingOverlay({ open, profile, onChangeProfile, onCl
       onClose={onClose}
       appRootRef={appRootRef}
       ariaLabel="첫 진입 안내"
-      closeOnBackdrop={true}
-      panelClassName="overlay-card glass-panel"
-      panelStyle={{ maxWidth: '600px', maxHeight: '90vh' }}
+      closeOnBackdrop={false}
+      panelClassName="overlay-card onboarding-card"
+      panelStyle={{ maxWidth: '520px' }}
     >
-        <p style={{ color: 'var(--primary)', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '1px', marginBottom: '8px' }}>ONBOARDING</p>
-        <h2>암묵지 발굴 워크숍에 오신 것을 환영합니다</h2>
-        <p style={{ color: 'var(--text-muted)', margin: '8px 0 20px', lineHeight: 1.6 }}>
-          1분 안에 추천 데모를 바로 볼 수 있습니다. 프로필 입력은 선택 사항이며, 나중에 언제든 추가할 수 있습니다.
-        </p>
-        <div className="overlay-steps">
-          {STEPS.map((step, index) => (
-            <article key={step.title} className="overlay-step">
-              <strong>0{index + 1}</strong>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.desc}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+      <p className="onboarding-eyebrow">암묵지 → 앱 워크숍</p>
+      <h2 className="onboarding-title">
+        1분이면 첫 결과를 보여드려요
+      </h2>
+      <p className="onboarding-lead">
+        ReadMaster 진단을 한 번 체험해보면, 곧바로 ChatGPT/Claude에 붙여 쓸 수 있는
+        <strong> 실무용 프롬프트가 선물</strong>로 도착합니다.
+      </p>
 
-        {showProfileForm && (
-          <div className="overlay-form">
-            <label>
-              이름
-              <input
-                value={profile.name}
-                onChange={(event) => onChangeProfile({ name: event.target.value })}
-                placeholder="예: 김원장"
-                aria-label="이름 입력"
-                autoComplete="name"
-                maxLength={50}
-              />
-            </label>
-            <label>
-              경력
-              <input
-                value={profile.career}
-                onChange={(event) => onChangeProfile({ career: event.target.value })}
-                placeholder="예: 12년차 영어학원 원장"
-                aria-label="경력 입력"
-                autoComplete="organization-title"
-                maxLength={50}
-              />
-            </label>
-            <label>
-              기관명
-              <input
-                value={profile.academy}
-                onChange={(event) => onChangeProfile({ academy: event.target.value })}
-                placeholder="예: 더라이트영어학원"
-                aria-label="기관명 입력"
-                autoComplete="organization"
-                maxLength={50}
-              />
-            </label>
-          </div>
-        )}
+      <ol className="onboarding-steps-mini">
+        <li><strong>STEP 1.</strong> ReadMaster 1분 체험</li>
+        <li><strong>STEP 2.</strong> 프롬프트 선물 받기</li>
+        <li><strong>STEP 3.</strong> 결과 리포트 보기</li>
+      </ol>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <button
-            type="button"
-            className="btn btn-primary"
-            style={{ width: '100%', padding: '16px', fontSize: '1.125rem' }}
-            onClick={() => {
-              onChangeProfile({
-                name: profile.name?.trim(),
-                career: profile.career?.trim(),
-                academy: profile.academy?.trim(),
-              });
-              onQuickStart?.('showcase');
-            }}
-            aria-label="추천 데모 시작하기"
-          >
-            1분 추천 데모 시작하기
-          </button>
+      <button
+        type="button"
+        className="btn btn-primary onboarding-cta"
+        onClick={() => onQuickStart?.('showcase')}
+        aria-label="1분 데모 시작 — ReadMaster 열기"
+        autoFocus
+      >
+        🎯 1분 데모 시작 — ReadMaster 열기 →
+      </button>
 
-          {!showProfileForm && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
-              onClick={() => setShowProfileForm(true)}
-            >
-              프로필 입력 후 시작하기
-            </button>
-          )}
-
-          {showProfileForm && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
-              onClick={() => {
-                onChangeProfile({
-                  name: profile.name?.trim(),
-                  career: profile.career?.trim(),
-                  academy: profile.academy?.trim(),
-                });
-                onClose();
-              }}
-            >
-              프로필 저장 후 둘러보기
-            </button>
-          )}
-
-          <button
-            type="button"
-            className="btn btn-ghost"
-            style={{ width: '100%' }}
-            onClick={onClose}
-          >
-            나중에 입력하고 둘러보기
-          </button>
-        </div>
+      <button
+        type="button"
+        className="btn btn-ghost onboarding-skip"
+        onClick={onClose}
+      >
+        먼저 둘러볼게요
+      </button>
     </ModalOverlay>
   );
 }

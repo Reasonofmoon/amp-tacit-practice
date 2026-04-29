@@ -230,7 +230,7 @@ export default function PresentationShell({
                      cursor: 'pointer', boxShadow: '0 0 20px rgba(16,185,129,0.4)', fontSize: '1rem' 
                    }}
                  >
-                   <CheckCircle size={20} /> 체험 완료 (+{xpReward} XP)
+                   <CheckCircle size={20} /> 체험 완료 (+{xpReward} 페이지)
                  </motion.button>
               </div>
             </motion.div>

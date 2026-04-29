@@ -1,6 +1,6 @@
 import React from 'react';
 import PresentationShell from '../components/PresentationShell';
-import { ExternalLink, Lock } from 'lucide-react';
+import { ExternalLink, Github, Lock } from 'lucide-react';
 import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoLiveAppTemplate(props) {
@@ -51,7 +51,20 @@ export default function DemoLiveAppTemplate(props) {
           </div>
 
           {/* External Link */}
-          <div style={{ flexShrink: 0, width: '120px', display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ flexShrink: 0, width: '220px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+            {activity.repoUrl && (
+              <a
+                href={activity.repoUrl} target="_blank" rel="noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px',
+                  backgroundColor: 'rgba(15,23,42,0.55)', color: '#cbd5e1', fontSize: '12px',
+                  fontWeight: 700, borderRadius: '6px', textDecoration: 'none', border: '1px solid rgba(148,163,184,0.24)',
+                  transition: 'background 0.2s'
+                }}
+              >
+                <Github size={14} /> <span style={{ display: 'inline-block' }}>Repo</span>
+              </a>
+            )}
             <a 
               href={activity.url} target="_blank" rel="noreferrer"
               style={{ 
@@ -74,7 +87,8 @@ export default function DemoLiveAppTemplate(props) {
             src={activity.url} 
             title={activity.title}
             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', border: 'none', backgroundColor: 'transparent' }}
-            allow="camera; microphone; fullscreen; clipboard-read; clipboard-write; display-capture"
+            allow="fullscreen; clipboard-read; clipboard-write"
+            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
             loading="lazy"
           />
         </div>

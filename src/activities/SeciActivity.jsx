@@ -174,7 +174,7 @@ export default function SeciActivity({ id, data, saveData, complete, onBack }) {
                   style={{ background: 'var(--primary-dark)', padding: '16px 32px', fontSize: '1.1rem' }}
                   onClick={() => complete({ activityData: { step, tacit, prompt, generatedPrompts, completed: true }, bonusXp: 50 })}
                 >
-                  {isDev ? '오토메이션 마스터 수료 및 XP 획득 ✨' : 'SECI 마스터 수료 및 XP 획득 ✨'}
+                  {isDev ? '자동화 변환 챕터 닫기 — 매뉴얼에 새기기' : 'SECI 변환 챕터 닫기 — 매뉴얼에 새기기'}
                 </button>
               </motion.div>
             )}

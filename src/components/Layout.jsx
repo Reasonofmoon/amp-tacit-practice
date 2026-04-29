@@ -1,6 +1,6 @@
 import { Home, BarChart2 } from 'lucide-react';
 import LogoMark from './LogoMark';
-import XPBar from './XPBar';
+import ManualProgress from './ManualProgress';
 
 const JOURNEY_CHIPS = [
   { key: 'director',   label: '원장 여정',     emoji: '🎓', variant: 'director' },
@@ -25,6 +25,7 @@ export default function Layout({
   onToggleJourneyPicker,
   showJourneyPicker,
   recommendedJourney,
+  onPrintChapter,
   children,
 }) {
   const isHome = currentView === 'home';
@@ -157,43 +158,63 @@ export default function Layout({
               </div>
             )}
 
-            <div className="level-card-paper">
+            <div className="level-card-paper manual-card-paper">
               <span className="binder-holes">
                 <span className="binder-hole" />
                 <span className="binder-hole" />
               </span>
-              <XPBar xp={state.xp} levelInfo={levelInfo} nextLevel={nextLevel} xpGain={celebration.xpGain} />
+              <ManualProgress
+                state={state}
+                levelInfo={levelInfo}
+                nextLevel={nextLevel}
+                xpGain={celebration.xpGain}
+                onPrintChapter={onPrintChapter}
+              />
             </div>
           </section>
         )}
 
         {celebration.levelUp && (
           <div className="card" role="status" style={{ marginBottom: '24px', borderColor: 'var(--mustard)', backgroundColor: 'var(--yellow-wash)' }}>
-            <span className="tag" style={{ background: 'var(--mustard)', color: 'var(--ink-900)', marginBottom: '8px' }}>LEVEL UP</span>
+            <span className="tag" style={{ background: 'var(--mustard)', color: 'var(--ink-900)', marginBottom: '8px' }}>직책 카드 갱신</span>
             <h3 style={{ color: 'var(--ink-900)', marginBottom: '4px' }}>
               {celebration.levelUp.to.icon} {celebration.levelUp.to.title}
             </h3>
-            <p style={{ fontSize: '0.875rem' }}>{celebration.levelUp.to.level}레벨에 도달했습니다. 암묵지 프로필이 한 단계 진화했습니다.</p>
+            <p style={{ fontSize: '0.875rem' }}>
+              그동안 채운 페이지가 한 묶음이 되어, 위와 같은 카드로 갱신됐습니다. 강사·동료에게 그대로 보여줄 수 있는 정체성입니다.
+            </p>
           </div>
         )}
 
         {celebration.badges.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-            {celebration.badges.map((badge) => (
-              <div key={badge.id} className="card" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px' }}>
-                <span style={{ fontSize: '2rem' }}>{badge.icon}</span>
-                <div>
-                  <h4 style={{ fontWeight: 600, color: 'var(--ink-900)' }}>{badge.name}</h4>
-                  <p style={{ fontSize: '0.875rem' }}>{badge.desc}</p>
+          <div className="discovery-celebrations" role="status" aria-live="polite">
+            {celebration.badges.map((card) => (
+              <article key={card.id} className="discovery-celebration-card">
+                <span className="discovery-celebration-eyebrow">🪞 발견 카드 도착</span>
+                <div className="discovery-celebration-body">
+                  <span className="discovery-celebration-icon" aria-hidden="true">{card.icon}</span>
+                  <div className="discovery-celebration-text">
+                    <h4>{card.name}</h4>
+                    <p className="discovery-celebration-desc">{card.desc}</p>
+                    {card.evidenceText && (
+                      <p className="discovery-celebration-evidence">{card.evidenceText}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
 
         {celebration.combo && (
-          <div className="card" style={{ textAlign: 'center', marginBottom: '24px', color: 'var(--mustard)', borderColor: 'var(--mustard)', padding: '12px' }}>
-            <strong style={{ fontSize: '1.25rem' }}>🔥 콤보 ×{celebration.combo.multiplier.toFixed(1).replace('.0', '')}</strong>
+          <div className="card flow-streak-card" role="status" style={{ marginBottom: '24px', padding: '14px 18px' }}>
+            <span className="flow-streak-eyebrow">흐름이 잡혔어요</span>
+            <p className="flow-streak-line">
+              {celebration.combo.count}개 연속 완료 — 답변이 또렷해지는 중입니다.
+              {celebration.combo.multiplier > 1 && (
+                <> <span className="flow-streak-bonus">보너스 +{Math.round((celebration.combo.multiplier - 1) * 100)}% 페이지</span></>
+              )}
+            </p>
           </div>
         )}
 

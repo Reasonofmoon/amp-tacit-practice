@@ -1,14 +1,22 @@
 import { ACTIVITIES } from '../data/activities';
+import { AUTOMATION_ACTIVITIES } from '../data/automationActivities';
+import { DEV_ACTIVITIES } from '../data/developerActivities';
+import { DEV_PATTERN_CARDS } from '../data/developerPatternCards';
+import { DEV_QUIZZES } from '../data/developerQuizzes';
+import { DEV_ROLEPLAY_SCENARIOS } from '../data/developerScenarios';
 import { PATTERN_CARDS } from '../data/patternCards';
 import { QUIZZES } from '../data/quizzes';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
+import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
+// 직책 카드: 게임식 호칭(견습/장인) 대신 "결과물 기반 정체성".
+// 무엇을 가졌는가 / 무엇을 하는가로 정의. minXP는 누적 페이지(=내부 xp) 임계값.
 export const LEVELS = [
-  { level: 1, title: '견습 원장', icon: '🌱', minXP: 0 },
-  { level: 2, title: '성장 원장', icon: '🌿', minXP: 100 },
-  { level: 3, title: '숙련 원장', icon: '🌳', minXP: 250 },
-  { level: 4, title: '마스터 원장', icon: '⭐', minXP: 500 },
-  { level: 5, title: '암묵지 장인', icon: '🏆', minXP: 800 },
+  { level: 1, title: '노트 첫 장을 펼친 원장',         icon: '✏️', minXP: 0 },
+  { level: 2, title: '운영 메모를 모으는 원장',        icon: '📓', minXP: 100 },
+  { level: 3, title: '자기 매뉴얼을 가진 원장',        icon: '📚', minXP: 250 },
+  { level: 4, title: '매뉴얼을 강사와 나누는 원장',    icon: '🗂️', minXP: 500 },
+  { level: 5, title: '학원의 운영 백서를 쓰는 원장',   icon: '🏛️', minXP: 800 },
 ];
 
 export const ACTIVITY_XP = {
@@ -39,14 +47,23 @@ export const ACTIVITY_XP = {
   auto_property: 50,
   auto_code: 60,
   auto_trigger: 60,
+  demo_showcase_intro: 15,
+  demo_sign_design: 20,
   demo_readmaster: 20,
   demo_pettrip: 20,
   demo_smartstart: 25,
+  demo_writing_correction: 25,
+  demo_level_test_proto: 25,
+  demo_academy_os: 30,
   demo_ontology: 25,
+  demo_storyboard_gen: 30,
   demo_knot: 30,
   demo_bluel: 30,
   demo_librainy: 35,
   demo_moonlang: 35,
+  demo_gidoboard: 40,
+  demo_sabo_philosophy: 40,
+  demo_app_factory: 45,
 };
 
 export function clamp(value, min, max) {
@@ -143,14 +160,17 @@ export function getActivityProgress(activityId, activityData) {
     case 'dev_gallery':
       return clamp((activityData?.posts?.length ?? 0) / 3, 0, 1);
     case 'quiz':
-    case 'dev_quiz':
       return clamp((activityData?.responses?.length ?? 0) / QUIZZES.length, 0, 1);
+    case 'dev_quiz':
+      return clamp((activityData?.responses?.length ?? 0) / DEV_QUIZZES.length, 0, 1);
     case 'roleplay':
-    case 'dev_roleplay':
       return clamp((activityData?.completedScenarioIds?.length ?? 0) / ROLEPLAY_SCENARIOS.length, 0, 1);
+    case 'dev_roleplay':
+      return clamp((activityData?.completedScenarioIds?.length ?? 0) / DEV_ROLEPLAY_SCENARIOS.length, 0, 1);
     case 'pattern':
-    case 'dev_pattern':
       return clamp((Object.keys(activityData?.reflections ?? {}).length || 0) / PATTERN_CARDS[0].situations.length, 0, 1);
+    case 'dev_pattern':
+      return clamp((Object.keys(activityData?.reflections ?? {}).length || 0) / DEV_PATTERN_CARDS[0].situations.length, 0, 1);
     case 'noticing':
     case 'dev_noticing':
       return clamp(
@@ -188,8 +208,23 @@ export function getOverallProgress(state) {
     return 0;
   }
 
-  const total = ACTIVITIES.reduce((sum, activity) => sum + getActivityProgress(activity.id, state.activityData[activity.id]), 0);
-  return Math.round((total / ACTIVITIES.length) * 100);
+  const allActivities = [
+    ...ACTIVITIES,
+    ...DEV_ACTIVITIES,
+    ...AUTOMATION_ACTIVITIES,
+    ...SHOWCASE_ACTIVITIES,
+  ];
+  const total = allActivities.reduce((sum, activity) => sum + getActivityProgress(activity.id, state.activityData[activity.id]), 0);
+  return Math.round((total / allActivities.length) * 100);
+}
+
+export function getJourneyProgress(state, activities = ACTIVITIES) {
+  if (!state?.activityData || activities.length === 0) {
+    return 0;
+  }
+
+  const total = activities.reduce((sum, activity) => sum + getActivityProgress(activity.id, state.activityData[activity.id]), 0);
+  return Math.round((total / activities.length) * 100);
 }
 
 export function roundPercent(value, total) {
