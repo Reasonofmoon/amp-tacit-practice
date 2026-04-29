@@ -85,14 +85,48 @@ export default function QuickQuizActivity({ id, data, saveData, complete, onBack
   };
 
   const finishQuiz = () => {
-    const correctCount = responses.filter(r => r.correct).length;
+    const correctResponses = responses.filter((r) => r.correct);
+    const correctCount = correctResponses.length;
+    const totalTime = responses.reduce((sum, r) => sum + (r.timeSpent ?? 0), 0);
     const confidenceAvg = responses.length > 0
       ? responses.reduce((a, b) => a + b.confidence, 0) / responses.length
       : 0;
-    complete({ 
-      activityData: { responses, correctCount }, 
+
+    // 정답 문항의 insight 만 모아 — 발견 카드 / 프롬프트 선물의 컨텍스트로 사용.
+    const insights = correctResponses
+      .map((r) => targetQuizzes[r.qIndex]?.insight)
+      .filter(Boolean);
+
+    // 문항별 사용자 응답 상세 — 프롬프트 선물에 그대로 인용해 워크북 재구성에 필요한
+    // 컨텍스트를 AI에 제공.
+    const responseDetails = responses.map((r) => {
+      const q = targetQuizzes[r.qIndex];
+      return {
+        question: q?.q ?? '',
+        userAnswer: r.selected >= 0 ? (q?.options[r.selected] ?? '') : '시간 초과',
+        correctAnswer: q?.options[q?.answer] ?? '',
+        isCorrect: r.correct,
+        insight: q?.insight ?? '',
+        confidence: r.confidence,
+        timeSpent: r.timeSpent,
+      };
+    });
+
+    complete({
+      activityData: {
+        responses,
+        responseDetails,
+        correctCount,
+        totalTime,
+        insights,
+        finished: true,
+      },
       bonusXp: correctCount * 15,
-      metrics: { confidenceAvg }
+      metrics: {
+        quizTime: totalTime,
+        quizCorrect: correctCount,
+        confidenceAvg,
+      },
     });
   };
 

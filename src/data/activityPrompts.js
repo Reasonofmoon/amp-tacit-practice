@@ -147,23 +147,59 @@ ${truncate((data?.posts ?? []).map((post) => post.text).join('\n- '), 1200) || '
 3. 마지막에 이 글의 썸네일에 들어갈 키 비주얼 아이디어 3개(이모지/배경색/한 줄 카피)를 제안해줘.`,
   }),
 
-  quiz: (data, profile) => makeGift({
-    emoji: '⏱️',
-    title: '10초 판단 퀴즈 → 강사 교육 자료',
-    useCase: 'AI가 강사 회의 자료/온보딩 워크북 한 묶음으로 변환합니다.',
-    payoff: '내가 풀던 퀴즈가 학원 자체 교재가 됩니다.',
-    prompt: `[역할] 너는 학원 강사 교육 워크북 디자이너다.
+  quiz: (data, profile) => {
+    const details = data?.responseDetails ?? [];
+    const totalQuestions = details.length || (data?.responses?.length ?? 0);
+    const correctCount = data?.correctCount ?? 0;
+    const totalTime = data?.totalTime ?? 0;
+    const minutes = Math.floor(totalTime / 60);
+    const seconds = Math.round(totalTime % 60);
+    const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
 
-[원장이 풀어본 판단 퀴즈]
-- 정답 수: ${data?.correctCount ?? 0}
-- 핵심 인사이트들:
-- ${truncate((data?.insights ?? []).join('\n- '), 1200) || '(자유롭게 보완)'}
+    const transcriptBlock = details.length > 0
+      ? details.map((row, idx) => {
+          const head = `Q${idx + 1}. ${row.question}`;
+          const lines = [
+            `  내가 고른 답: ${row.userAnswer}${row.isCorrect ? ' ✓' : ' ✗'}`,
+            !row.isCorrect ? `  정답: ${row.correctAnswer}` : null,
+            row.insight ? `  인사이트: ${row.insight}` : null,
+            `  확신도 ${row.confidence ?? 0}% / 응답 시간 ${row.timeSpent ?? 0}초`,
+          ].filter(Boolean).join('\n');
+          return `${head}\n${lines}`;
+        }).join('\n\n')
+      : '(아직 풀이 기록이 없다. 합리적으로 보완해도 좋다)';
+
+    const insightBlock = (data?.insights ?? []).length > 0
+      ? truncate((data?.insights ?? []).join('\n- '), 1500)
+      : '(정답 인사이트가 비어있다. 위 풀이 기록을 근거로 추정해도 좋다)';
+
+    return makeGift({
+      emoji: '⏱️',
+      title: '10초 판단 퀴즈 → 강사 교육 자료',
+      useCase: 'AI가 강사 회의 자료/온보딩 워크북 한 묶음으로 변환합니다.',
+      payoff: '내가 풀던 퀴즈가 학원 자체 교재가 됩니다.',
+      prompt: `[역할] 너는 학원 강사 교육 워크북 디자이너다.
+
+[${fallback(profile?.name, '원장')}님의 풀이 결과]
+- 정답률: ${correctCount} / ${totalQuestions} (${accuracy}%)
+- 총 풀이 시간: ${minutes}분 ${seconds}초
+- 평균 확신도: ${data?.responses && data.responses.length > 0
+        ? Math.round(data.responses.reduce((a, b) => a + (b.confidence ?? 0), 0) / data.responses.length)
+        : 0}%
+
+[풀이 기록 (문항·선택·정답·인사이트)]
+${transcriptBlock}
+
+[수집된 핵심 인사이트]
+- ${insightBlock}
 
 [작업]
-1. 위 인사이트를 5문항 강사 교육용 퀴즈로 재구성해줘 (질문 / 4지선다 / 정답 / 해설).
+1. 위 풀이 기록과 인사이트를 5문항 강사 교육용 퀴즈로 재구성해줘 (질문 / 4지선다 / 정답 / 해설).
+   - 원장이 정답을 맞춘 인사이트는 그대로 활용하고, 틀린 문항은 "베테랑이 무엇을 다르게 보는지"를 강사가 깨닫도록 재가공해줘.
 2. 각 문항마다 "신입이 흔히 고르는 오답 함정" 1줄을 추가해줘.
-3. 마지막 페이지에 이 퀴즈를 강사 회의에서 5분 안에 진행하는 진행 가이드를 적어줘.`,
-  }),
+3. 마지막 페이지에 이 퀴즈를 강사 회의에서 5분 안에 진행하는 진행 가이드를 적어줘. (오프닝 멘트, 문항당 토론 시간, 마무리 질문 1개 포함)`,
+    });
+  },
 
   roleplay: (data, profile) => makeGift({
     emoji: '🎭',

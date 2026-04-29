@@ -18,6 +18,12 @@ const TARGETS = {
     deepLink: (prompt) => `https://claude.ai/new?q=${encodeURIComponent(prompt)}`,
     homeLink: 'https://claude.ai/new',
   },
+  // Gemini는 안정적인 prompt query 파라미터를 공개하지 않아, 항상 자동 복사 + 홈 열기 흐름.
+  gemini: {
+    label: 'Gemini',
+    deepLink: null,
+    homeLink: 'https://gemini.google.com/app',
+  },
 };
 
 async function copyToClipboard(text) {
@@ -39,18 +45,21 @@ async function copyToClipboard(text) {
 }
 
 function isPromptUrlSafe(prompt, target) {
+  if (!target?.deepLink) return false; // 딥링크 미지원 타겟 — 항상 복사+홈 흐름
   return target.deepLink(prompt).length <= SAFE_URL_BUDGET;
 }
 
-async function openExternalAI(prompt, targetKey, onTooLongHint) {
+async function openExternalAI(prompt, targetKey, onCopiedHint) {
   const target = TARGETS[targetKey];
   if (!target) return;
-  if (isPromptUrlSafe(prompt, target)) {
+  if (target.deepLink && isPromptUrlSafe(prompt, target)) {
     window.open(target.deepLink(prompt), '_blank', 'noopener,noreferrer');
     return;
   }
+  // 딥링크 미지원이거나 프롬프트가 너무 길 때 — 자동 복사 + 홈 열기
   await copyToClipboard(prompt);
-  onTooLongHint?.(target.label);
+  const reason = !target.deepLink ? 'unsupported' : 'too-long';
+  onCopiedHint?.({ label: target.label, reason });
   window.open(target.homeLink, '_blank', 'noopener,noreferrer');
 }
 
@@ -65,8 +74,11 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
 
   if (!gift) return null;
 
-  const showHint = (label) => {
-    setHint(`${label}는 직접 열리지 않을 만큼 프롬프트가 깁니다. 자동으로 복사했으니, 열린 창의 입력창에 붙여넣기(Ctrl+V) 해주세요.`);
+  const showHint = ({ label, reason } = {}) => {
+    const message = reason === 'unsupported'
+      ? `${label}는 URL로 직접 입력하지 않습니다. 자동으로 복사했으니, 열린 창의 입력창에 붙여넣기(Ctrl+V) 해주세요.`
+      : `${label}는 직접 열리지 않을 만큼 프롬프트가 깁니다. 자동으로 복사했으니, 열린 창의 입력창에 붙여넣기(Ctrl+V) 해주세요.`;
+    setHint(message);
     window.setTimeout(() => setHint(null), 5200);
   };
 
@@ -78,6 +90,7 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
 
   const handleOpenChatGPT = () => openExternalAI(gift.prompt, 'chatgpt', showHint);
   const handleOpenClaude = () => openExternalAI(gift.prompt, 'claude', showHint);
+  const handleOpenGemini = () => openExternalAI(gift.prompt, 'gemini', showHint);
 
   return (
     <ModalOverlay
@@ -141,6 +154,13 @@ export default function PromptGiftModal({ open, onClose, gift, activityTitle, ap
           onClick={handleOpenClaude}
         >
           <ExternalLink size={16} /> ② Claude에서 열기
+        </button>
+        <button
+          type="button"
+          className="btn-gift-secondary"
+          onClick={handleOpenGemini}
+        >
+          <ExternalLink size={16} /> ② Gemini에서 열기
         </button>
       </div>
 
