@@ -1,41 +1,79 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DIRECTOR_GALLERY_SEEDS, DEV_GALLERY_SEEDS } from '../data/galleryPosts';
+import { fetchGalleryPosts, isGalleryServerEnabled, publishGalleryPost } from '../utils/galleryClient';
 
 export default function GalleryActivity({ id, data, saveData, complete, onBack }) {
   const isDev = id?.startsWith('dev_');
   const seeds = useMemo(() => (isDev ? DEV_GALLERY_SEEDS : DIRECTOR_GALLERY_SEEDS), [isDev]);
   const [posts, setPosts] = useState(data?.posts ?? []);
+  const [livePosts, setLivePosts] = useState([]);
   const [name, setName] = useState('');
   const [draft, setDraft] = useState('');
+  const [shareToServer, setShareToServer] = useState(false);
+  const galleryServerOn = isGalleryServerEnabled();
 
-  // 사용자 게시물 + 시드를 합쳐 표시. 시드는 isSeed: true 로 시각 구분.
-  const displayPosts = useMemo(() => [...posts, ...seeds], [posts, seeds]);
+  // 서버 모드일 때 다른 사용자 게시물을 fetch. 시드와 동일 카드 톤 + sharedFromServer 플래그.
+  useEffect(() => {
+    if (!galleryServerOn) return;
+    let cancelled = false;
+    fetchGalleryPosts({ isDev, limit: 20 }).then((remote) => {
+      if (cancelled) return;
+      const adapted = remote.map((p) => ({
+        id: p.id,
+        name: p.name,
+        text: p.text,
+        time: '커뮤니티',
+        likes: p.likes ?? 0,
+        isSharedFromServer: true,
+      }));
+      setLivePosts(adapted);
+    });
+    return () => { cancelled = true; };
+  }, [galleryServerOn, isDev]);
+
+  // 표시 순서: 내 게시물 → 다른 사용자 실시간 게시물 → 베테랑 시드.
+  const displayPosts = useMemo(
+    () => [...posts, ...livePosts, ...seeds],
+    [posts, livePosts, seeds],
+  );
   const userPostCount = posts.length;
 
   const addPost = () => {
     if (!draft.trim()) {
       return;
     }
+    const authorName = name.trim() || (isDev ? '익명의 개발자' : '익명의 원장님');
 
     const nextPosts = [
       {
         id: crypto.randomUUID(),
-        name: name.trim() || (isDev ? '익명의 개발자' : '익명의 원장님'),
+        name: authorName,
         text: draft.trim(),
         time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
-        likes: Math.floor(Math.random() * 5) + 1 // Add some fake interactions for gamification
+        likes: Math.floor(Math.random() * 5) + 1,
       },
       ...posts,
     ];
-
     setPosts(nextPosts);
     saveData({ posts: nextPosts });
+
+    // 서버 공유 — 작성자가 명시적으로 동의했고 + "N년차" 형식이면 송신.
+    if (shareToServer && galleryServerOn && /년차/.test(authorName)) {
+      publishGalleryPost({ name: authorName, text: draft.trim(), isDev }).then((result) => {
+        if (result?.post) {
+          setLivePosts((prev) => [
+            { ...result.post, time: '방금', isSharedFromServer: true },
+            ...prev.filter((p) => p.id !== result.post.id),
+          ]);
+        }
+      });
+    }
     setDraft('');
   };
 
-  const handleLike = (id) => {
-    setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
+  const handleLike = (postId) => {
+    setPosts(posts.map(p => p.id === postId ? { ...p, likes: p.likes + 1 } : p));
   };
 
   return (
@@ -83,9 +121,27 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
                 />
               </div>
 
-              <button 
-                className="btn btn-primary" 
-                onClick={addPost} 
+              {galleryServerOn && (
+                <label style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', fontSize: '0.82rem', color: 'var(--ink-700)', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={shareToServer}
+                    onChange={(e) => setShareToServer(e.target.checked)}
+                    style={{ marginTop: '3px', flexShrink: 0 }}
+                  />
+                  <span>
+                    <strong style={{ color: 'var(--ink-900)' }}>커뮤니티에 익명으로 공유하기</strong>
+                    <br />
+                    켜면 다른 {isDev ? '엔지니어' : '원장'}들에게도 이 한 줄이 보입니다. 작성자를
+                    <code style={{ background: 'var(--paper-100)', padding: '0 4px', borderRadius: '4px', margin: '0 2px' }}>"N년차 OO학원"</code>
+                    형식으로 적어주세요. 그 외 형식은 서버에서 거부됩니다.
+                  </span>
+                </label>
+              )}
+
+              <button
+                className="btn btn-primary"
+                onClick={addPost}
                 disabled={!draft.trim()}
                 style={{ width: '100%' }}
               >
@@ -127,9 +183,21 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
                   layout
                   className="card"
                   style={{
-                    background: post.isSeed ? 'var(--paper-100)' : 'var(--paper-50)',
-                    border: post.isSeed ? '1px dashed var(--paper-400)' : '1px solid var(--paper-300)',
-                    borderLeft: post.isSeed ? '3px solid var(--sage)' : '3px solid var(--ink-blue)',
+                    background: post.isSeed
+                      ? 'var(--paper-100)'
+                      : post.isSharedFromServer
+                      ? 'var(--lavender-wash)'
+                      : 'var(--paper-50)',
+                    border: post.isSeed
+                      ? '1px dashed var(--paper-400)'
+                      : post.isSharedFromServer
+                      ? '1px solid var(--lavender)'
+                      : '1px solid var(--paper-300)',
+                    borderLeft: post.isSeed
+                      ? '3px solid var(--sage)'
+                      : post.isSharedFromServer
+                      ? '3px solid var(--lavender)'
+                      : '3px solid var(--ink-blue)',
                   }}
                 >
                   <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', gap: '8px', flexWrap: 'wrap' }}>
@@ -138,7 +206,11 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
                         width: '28px',
                         height: '28px',
                         borderRadius: '50%',
-                        background: post.isSeed ? 'var(--sage)' : 'var(--ink-blue)',
+                        background: post.isSeed
+                          ? 'var(--sage)'
+                          : post.isSharedFromServer
+                          ? 'var(--lavender)'
+                          : 'var(--ink-blue)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: 'white', fontSize: '0.75rem', fontWeight: 'bold',
                         flexShrink: 0,
@@ -148,15 +220,17 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
                       <strong style={{ fontSize: '0.9rem', color: 'var(--ink-900)' }}>{post.name}</strong>
                       {post.isSeed && (
                         <span style={{
-                          fontSize: '0.65rem',
-                          fontWeight: 700,
-                          padding: '2px 7px',
-                          borderRadius: '999px',
-                          background: 'var(--green-wash)',
-                          color: '#3F6620',
-                          border: '1px solid var(--sage)',
-                          letterSpacing: '0.4px',
+                          fontSize: '0.65rem', fontWeight: 700, padding: '2px 7px',
+                          borderRadius: '999px', background: 'var(--green-wash)', color: '#3F6620',
+                          border: '1px solid var(--sage)', letterSpacing: '0.4px',
                         }}>🌱 베테랑 시드</span>
+                      )}
+                      {post.isSharedFromServer && (
+                        <span style={{
+                          fontSize: '0.65rem', fontWeight: 700, padding: '2px 7px',
+                          borderRadius: '999px', background: 'var(--paper-50)', color: '#5B3EA6',
+                          border: '1px solid var(--lavender)', letterSpacing: '0.4px',
+                        }}>🌐 커뮤니티</span>
                       )}
                     </div>
                     <span style={{ fontSize: '0.75rem', color: 'var(--ink-500)' }}>{post.time}</span>
