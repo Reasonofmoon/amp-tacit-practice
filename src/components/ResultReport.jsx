@@ -10,6 +10,7 @@ import { lazyWithRetry } from '../utils/lazyWithRetry';
 import PromptGiftModal from './PromptGiftModal';
 import DiscoveryShowcase from './DiscoveryShowcase';
 import BenchmarkSection from './BenchmarkSection';
+import BackupPanel from './BackupPanel';
 
 const ReportRadarCard = lazyWithRetry(() => import('./ReportRadarCard'), 'ReportRadarCard');
 const KnowledgeGraph = lazyWithRetry(() => import('./KnowledgeGraph'), 'KnowledgeGraph');
@@ -275,6 +276,10 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
 
       <div style={{ marginTop: 'var(--space-lg)' }}>
         <BenchmarkSection state={state} consent={state.consent} onUpdateConsent={onUpdateConsent} />
+      </div>
+
+      <div style={{ marginTop: 'var(--space-lg)' }}>
+        <BackupPanel state={state} />
       </div>
 
       <div className="report-grid" style={{ marginTop: 'var(--space-lg)' }}>

@@ -4372,6 +4372,102 @@ p { color: var(--text-muted); }
   color: var(--ink-500) !important;
 }
 
+/* ─── BACKUP PANEL (f) ─────────
+   파일 모드 + (옵션) 클라우드 코드 모드.
+   ───────────────────────────── */
+.backup-panel { margin-top: var(--space-lg); }
+.backup-mode {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: var(--paper-100);
+  border: 1px solid var(--paper-300);
+  border-radius: 12px;
+}
+.backup-mode-title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ink-900);
+}
+.backup-mode-desc {
+  margin: 0 0 12px;
+  font-size: 0.86rem;
+  color: var(--ink-700);
+  line-height: 1.55;
+}
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.backup-actions .btn-paper-primary,
+.backup-actions .btn-paper-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.backup-code-display {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--ink-900);
+  color: #F5F0E1;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+}
+.backup-code-display strong {
+  font-size: 1.4rem;
+  letter-spacing: 4px;
+  color: white;
+}
+.backup-code-display span { font-size: 0.78rem; color: #CFC8B8; }
+.backup-code-input {
+  width: 180px;
+  padding: 10px 14px;
+  border: 1px solid var(--paper-300);
+  border-radius: 10px;
+  background: var(--paper-50);
+  font-family: var(--font-mono);
+  letter-spacing: 4px;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+.backup-code-input:focus {
+  outline: none;
+  border-color: var(--ink-blue);
+  box-shadow: 0 0 0 3px var(--blue-wash);
+}
+.backup-status {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.backup-status.tone-positive {
+  background: var(--green-wash);
+  color: #3F6620;
+  border-left: 3px solid var(--sage);
+}
+.backup-status.tone-caution {
+  background: var(--yellow-wash);
+  color: #8B6914;
+  border-left: 3px solid var(--mustard);
+}
+.backup-status.tone-neutral {
+  background: var(--paper-100);
+  color: var(--ink-700);
+  border-left: 3px solid var(--paper-400);
+}
+@media (max-width: 600px) {
+  .backup-actions { flex-direction: column; align-items: stretch; }
+  .backup-actions .btn-paper-primary,
+  .backup-actions .btn-paper-outline { width: 100%; justify-content: center; }
+  .backup-code-input { width: 100%; }
+}
+
 /* ─── LENS TOGGLE (b) ─────────
    Activity 워크스페이스 위에 뜨는 director ↔ developer 콘텐츠 렌즈 스위치.
    ───────────────────────────── */
