@@ -16,7 +16,7 @@ export const LEVELS = [
   { level: 2, title: '운영 메모를 모으는 원장',        icon: '📓', minXP: 100 },
   { level: 3, title: '자기 매뉴얼을 가진 원장',        icon: '📚', minXP: 250 },
   { level: 4, title: '매뉴얼을 강사와 나누는 원장',    icon: '🗂️', minXP: 500 },
-  { level: 5, title: '학원의 운영 백서를 쓰는 원장',   icon: '🏛️', minXP: 800 },
+  { level: 5, title: '운영 매뉴얼이 책 한 권이 된 원장', icon: '🏛️', minXP: 800 },
 ];
 
 export const ACTIVITY_XP = {

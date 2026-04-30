@@ -43,7 +43,7 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
       <header className="workspace-header">
         <div>
           <span className="tag" style={{ marginBottom: '8px' }}>Community &amp; Exchange</span>
-          <h2 className="question-title" style={{ marginBottom: 0 }}>{isDev ? '오픈소스 에이전트 갤러리' : '원장님 암묵지 갤러리'}</h2>
+          <h2 className="question-title" style={{ marginBottom: 0 }}>{isDev ? '오픈소스 에이전트 갤러리' : '원장님 노하우 갤러리'}</h2>
           <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>{isDev ? '유용한 AI 에이전트 스니펫이나 프롬프트 패턴을 한 줄로 공유하고 통찰을 얻어가세요.' : '오늘 발견한 가장 인상적인 노하우를 한 줄로 공유하고 다른 원장님들의 통찰을 얻어가세요.'}</p>
         </div>
         <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
@@ -68,7 +68,7 @@ export default function GalleryActivity({ id, data, saveData, complete, onBack }
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '8px' }}>{isDev ? '오늘의 한 줄 스니펫' : '오늘의 한 줄 암묵지'}</label>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '8px' }}>{isDev ? '오늘의 한 줄 스니펫' : '오늘의 한 줄 노하우'}</label>
                 <textarea
                   value={draft}
                   onChange={(event) => setDraft(event.target.value)}

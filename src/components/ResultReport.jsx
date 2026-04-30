@@ -90,7 +90,7 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
             FINAL DIAGNOSTIC
           </span>
           <h2 className="report-heading-display" style={{ marginTop: '12px' }}>
-            암묵지 프로필 리포트
+            현장 노하우 프로필 리포트
           </h2>
           <button
             className="btn-paper-outline print-hide"
@@ -137,7 +137,7 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
 
           <div>
             <h4 style={{ marginBottom: '12px', color: 'var(--ink-900)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span aria-hidden="true">✨</span> 핵심 암묵지 Top 3
+              <span aria-hidden="true">✨</span> 핵심 노하우 Top 3
             </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {topInsights.length === 0 ? (
@@ -160,7 +160,7 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
       <article className="report-paper-card" style={{ marginTop: 'var(--space-lg)' }}>
         <div style={{ marginBottom: '18px' }}>
           <p className="eyebrow">KNOWLEDGE GRAPH</p>
-          <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>🕸️ 암묵지 지식그래프</h3>
+          <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>🕸️ 노하우 지식그래프</h3>
           <p style={{ color: 'var(--ink-500)', fontSize: '0.85rem', marginTop: '4px' }}>
             인사이트 간 연결을 시각적으로 탐색하세요 — 노드를 드래그하거나 호버하면 상세 정보가 표시됩니다
           </p>
@@ -284,7 +284,7 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
               <p className="eyebrow">SECI MAP</p>
               <h3 style={{ fontSize: '1.3rem', marginTop: '4px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>지식 전환 흐름</h3>
               <p style={{ color: 'var(--ink-500)', fontSize: '0.85rem', marginTop: '4px' }}>
-                네 가지 모드로 암묵지가 형식지로 변환되는 과정을 스티커 노트처럼 정리합니다.
+                네 가지 모드로 현장 노하우가 형식 지식으로 변환되는 과정을 스티커 노트처럼 정리합니다.
               </p>
             </div>
           </div>

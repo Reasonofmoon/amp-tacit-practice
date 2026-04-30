@@ -33,7 +33,7 @@ export default function ReportRadarCard({ axisScores, isDev }) {
     <article className="report-paper-card">
       <div style={{ marginBottom: '20px' }}>
         <p className="eyebrow">RADAR MAP</p>
-        <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>발견된 암묵지 영역</h3>
+        <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '4px' }}>발견된 노하우 영역</h3>
         {showBenchmark && (
           <div className="radar-legend">
             <span className="radar-legend-dot user" /> 당신

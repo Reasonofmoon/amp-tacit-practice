@@ -23,7 +23,7 @@ function buildGeneratedPrompts(tacit, isDev) {
 }
 
 const STEPS = [
-  { id: 'step-1', label: '1. 암묵지 언어화 (표출화)' },
+  { id: 'step-1', label: '1. 노하우 언어화 (표출화)' },
   { id: 'step-2', label: '2. AI 프롬프트 변환 (연결화)' },
   { id: 'step-3', label: '3. 자산화 완료 (내면화)' }
 ];
@@ -50,7 +50,7 @@ export default function SeciActivity({ id, data, saveData, complete, onBack }) {
       <header className="workspace-header">
         <div>
           <span className="tag" style={{ marginBottom: '8px', background: 'var(--lavender)', color: 'white', borderColor: 'var(--lavender)' }}>{isDev ? 'Low-Code Automation' : 'Final Stage: SECI Master'}</span>
-          <h2 className="question-title" style={{ marginBottom: 0 }}>{isDev ? '백오피스 봇 자동화 실습' : '암묵지 AI 자산화 실습'}</h2>
+          <h2 className="question-title" style={{ marginBottom: 0 }}>{isDev ? '백오피스 봇 자동화 실습' : '현장 노하우 AI 자산화 실습'}</h2>
           <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>{isDev ? '반복되는 수기 업무를 AppSheet나 Zapier가 이해할 수 있는 자동화 프롬프트로 전환합니다.' : '머릿속 감각을 AI가 읽을 수 있는 프롬프트로 전환하여 영구적인 자산으로 만듭니다.'}</p>
         </div>
         <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
@@ -92,7 +92,7 @@ export default function SeciActivity({ id, data, saveData, complete, onBack }) {
           <AnimatePresence mode="wait">
             {step === 0 && (
               <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <h3 style={{ fontSize: '1.25rem', marginBottom: '16px' }}>{isDev ? '1단계: 레거시 업무 발굴' : '1단계: 직관적 암묵지 발굴'}</h3>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '16px' }}>{isDev ? '1단계: 레거시 업무 발굴' : '1단계: 현장 노하우 발굴'}</h3>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>{isDev ? '학원이나 회사에서 매번 복붙하거나 수기로 옮겨 적는 반복 업무를 적어보세요.' : '앞선 활동에서 깨달은 나만의 운영 감각이나 노하우를 한 문장으로 적어보세요.'}</p>
                 <textarea
                   value={tacit}

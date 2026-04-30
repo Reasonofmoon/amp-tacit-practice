@@ -21,7 +21,7 @@ const MODE_OPTIONS = [
     key: 'showcase',
     icon: Presentation,
     title: '쇼케이스 보기',
-    desc: '암묵지가 실제 앱으로 바뀐 사례를 발표 모드로 시연합니다.',
+    desc: '현장 노하우가 실제 앱으로 바뀐 사례를 발표 모드로 시연합니다.',
   },
 ];
 

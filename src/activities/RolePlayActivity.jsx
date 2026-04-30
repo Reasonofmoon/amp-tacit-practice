@@ -155,16 +155,14 @@ export default function RolePlayActivity({ id, data, saveData, complete, onBack 
           </div>
 
           <div className="card" style={{ background: 'var(--bg-card-hover)', border: 'none', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-            <h4 style={{ marginBottom: '12px', color: 'var(--text-muted)' }}>현재 스타일 분석</h4>
-            <div style={{ fontSize: '3rem', marginBottom: '8px' }}>
-              {snapshot.totalScore === 0 ? '🤔' : snapshot.totalScore > 15 ? '⭐' : '🌱'}
-            </div>
-            <strong style={{ fontSize: '1.1rem', color: 'var(--primary-dark)', marginBottom: '8px' }}>{snapshot.style.title || '분석 중...'}</strong>
+            <h4 style={{ marginBottom: '12px', color: 'var(--text-muted)' }}>당신의 응대 스타일</h4>
+            <div style={{ fontSize: '3rem', marginBottom: '8px' }}>🪞</div>
+            <strong style={{ fontSize: '1.1rem', color: 'var(--ink-blue-deep)', marginBottom: '8px' }}>{snapshot.style.title || '분석 중...'}</strong>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-main)', textAlign: 'center', lineHeight: 1.5 }}>
-              {snapshot.style.desc || '모든 시나리오를 완료하면 스타일이 분석됩니다.'}
+              {snapshot.style.desc || '모든 시나리오를 완료하면 당신만의 패턴이 드러납니다.'}
             </p>
-            <div style={{ marginTop: '16px', fontSize: '0.875rem', fontWeight: 'bold', color: 'var(--primary)' }}>
-              누적 스코어: {snapshot.totalScore}/{snapshot.maxScore}
+            <div style={{ marginTop: '16px', fontSize: '0.78rem', color: 'var(--ink-500)', fontStyle: 'italic' }}>
+              ※ 응대에 정답은 없습니다. 베테랑 패턴과 비교만 보여드려요.
             </div>
           </div>
 

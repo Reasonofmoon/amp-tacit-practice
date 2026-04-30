@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ActivityFooter from '../components/ActivityFooter';
+import ConceptModeBanner from '../components/ConceptModeBanner';
 
 export default function AutoTriggerActivity({ data, saveData, complete, onBack }) {
   const [isChecked, setIsChecked] = useState(data?.isChecked ?? false);
@@ -26,6 +27,9 @@ export default function AutoTriggerActivity({ data, saveData, complete, onBack }
       </header>
 
       <div className="workspace-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <ConceptModeBanner
+          onConceptComplete={() => complete({ activityData: { isChecked: true, mode: 'concept' }, bonusXp: 5 })}
+        />
         <div className="card" style={{ padding: '24px', background: 'var(--bg-app)', border: '1px solid var(--border)' }}>
           <h3 style={{ marginBottom: '16px', color: '#F59E0B' }}>🎯 미션: 스케줄 시계 설정하기</h3>
           <ol style={{ lineHeight: '1.8', color: 'var(--text-main)', paddingLeft: '20px' }}>

@@ -3110,6 +3110,132 @@ p { color: var(--text-muted); }
   line-height: 1.5;
 }
 
+/* W9 — Concept-mode banner for auto_* activities */
+.concept-mode-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--blue-wash);
+  border: 1px dashed var(--ink-blue);
+  border-left: 4px solid var(--ink-blue);
+  border-radius: 14px;
+  flex-wrap: wrap;
+}
+.concept-mode-banner-text { flex: 1 1 280px; min-width: 0; }
+.concept-mode-banner-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--ink-blue-deep);
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  margin-bottom: 4px;
+}
+.concept-mode-banner-text p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-900);
+  line-height: 1.5;
+}
+.concept-mode-banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: var(--ink-blue);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s var(--ease-spring), box-shadow 0.2s var(--ease-out);
+  min-height: 44px;
+}
+.concept-mode-banner-cta:hover {
+  background: var(--ink-blue-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(46, 91, 255, 0.32);
+}
+@media (max-width: 600px) {
+  .concept-mode-banner-cta { width: 100%; justify-content: center; }
+}
+
+/* W10 — Home resume card */
+.resume-card {
+  margin: 26px auto 0;
+  max-width: 720px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 22px;
+  background: var(--paper-50);
+  border: 1px solid var(--paper-300);
+  border-left: 4px solid var(--mustard);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+  text-align: left;
+}
+.resume-card-meta { flex: 1 1 280px; min-width: 0; }
+.resume-card-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #8B6914;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.resume-card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--ink-900);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.resume-card-progress {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-500);
+}
+.resume-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--ink-blue);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s var(--ease-spring), box-shadow 0.2s var(--ease-out);
+  min-height: 44px;
+  box-shadow: 0 4px 12px rgba(46, 91, 255, 0.25);
+}
+.resume-card-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(46, 91, 255, 0.35);
+}
+@media (max-width: 600px) {
+  .resume-card { padding: 14px 16px; flex-direction: column; align-items: stretch; }
+  .resume-card-cta { width: 100%; justify-content: center; }
+}
+
 /* W8 — micro-insight panel inside the gift modal */
 .prompt-gift-mirror {
   margin: 0 0 14px;

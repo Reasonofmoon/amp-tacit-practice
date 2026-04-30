@@ -185,6 +185,7 @@ export default function App() {
         showJourneyPicker={showJourneyPicker}
         recommendedJourney={recommendedJourney}
         onPrintChapter={handlePrintChapter}
+        onResumeActivity={(id) => { if (id) setCurrentView(id); }}
       >
         {currentView === 'home' && activeJourney === 'promo' && (
           <Suspense fallback={<LoadingPanel />}>

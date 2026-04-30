@@ -1,6 +1,7 @@
 import { Home, BarChart2 } from 'lucide-react';
 import LogoMark from './LogoMark';
 import ManualProgress from './ManualProgress';
+import ResumeCard from './ResumeCard';
 
 const JOURNEY_CHIPS = [
   { key: 'director',   label: '원장 여정',     emoji: '🎓', variant: 'director' },
@@ -26,17 +27,18 @@ export default function Layout({
   showJourneyPicker,
   recommendedJourney,
   onPrintChapter,
+  onResumeActivity,
   children,
 }) {
   const isHome = currentView === 'home';
 
   const title = activeJourney === 'developer' ? 'AI 개발자의 1년' :
                 activeJourney === 'automation' ? '나만의 AI 서기 만들기' :
-                activeJourney === 'showcase' ? '암묵지가 앱으로 변하는 그 순간' :
+                activeJourney === 'showcase' ? '현장 노하우가 앱으로 변하는 그 순간' :
                 activeJourney === 'promo' ? '키노트 모션 그래픽 갤러리' :
                 '학원 원장의 1년';
   const subtitle = activeJourney === 'developer'
-    ? '소프트웨어 개발 과정에서 발생하는 암묵지 패턴을 추출하여 시스템 프롬프트로 변환합니다.'
+    ? '소프트웨어 개발 과정의 현장 노하우(암묵지)를 추출해 시스템 프롬프트로 변환합니다.'
     : activeJourney === 'automation'
     ? '코딩을 몰라도 괜찮습니다. 복사+붙여넣기로 나만의 24시간 AI 비서를 완성해보세요!'
     : activeJourney === 'showcase'
@@ -98,6 +100,13 @@ export default function Layout({
                 {subtitle}
               </p>
             </div>
+
+            <ResumeCard
+              state={state}
+              onContinue={onResumeActivity}
+              onPrintChapter={onPrintChapter}
+              onGoReport={onGoReport}
+            />
 
             {recommendedJourney && (
               <div className="flow-card-paper flow-card-paper--spaced flow-card-paper--hero">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ActivityFooter from '../components/ActivityFooter';
+import ConceptModeBanner from '../components/ConceptModeBanner';
 
 const SCRIPT_CODE = `const MY_EMAIL = "당신의이메일@gmail.com";
 
@@ -72,6 +73,9 @@ export default function AutoCodeActivity({ data, saveData, complete, onBack }) {
       </header>
 
       <div className="workspace-content" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <ConceptModeBanner
+          onConceptComplete={() => complete({ activityData: { isChecked: true, mode: 'concept' }, bonusXp: 5 })}
+        />
         <div className="card" style={{ padding: '24px', background: 'var(--bg-app)', border: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ color: '#3B82F6', margin: 0 }}>🎯 미션: 복사 & 붙여넣고 실행하기</h3>

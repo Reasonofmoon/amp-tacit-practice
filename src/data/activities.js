@@ -12,7 +12,7 @@ export const ACTIVITIES = [
   {
     id: 'autopilot',
     title: '자동조종 탐지기',
-    subtitle: '무의식적으로 하고 있는 것들, 그것이 암묵지입니다',
+    subtitle: '무의식적으로 하고 있는 것들, 그것이 현장 노하우입니다',
     icon: '🧭',
     color: '#6366F1',
     time: '4분',
@@ -21,7 +21,7 @@ export const ACTIVITIES = [
   {
     id: 'quiz',
     title: '스피드 퀴즈',
-    subtitle: '30초 안에 베테랑의 반응을 고르고 암묵지 인사이트를 회수합니다',
+    subtitle: '30초 안에 베테랑의 반응을 고르고 노하우 인사이트를 회수합니다',
     icon: '⏱️',
     color: '#22C55E',
     time: '6분',
@@ -87,7 +87,7 @@ export const ACTIVITIES = [
   },
   {
     id: 'gallery',
-    title: '암묵지 갤러리 워크',
+    title: '노하우 갤러리 워크',
     subtitle: '서로의 발견을 공유하고 다른 원장의 통찰에서 영감을 얻습니다',
     icon: '🖼️',
     color: '#0EA5E9',
@@ -97,7 +97,7 @@ export const ACTIVITIES = [
   {
     id: 'seci',
     title: 'SECI 변환 실습',
-    subtitle: '발견한 암묵지를 AI 프롬프트로 전환해 재사용 가능하게 만듭니다',
+    subtitle: '발견한 노하우를 AI 프롬프트로 전환해 재사용 가능하게 만듭니다',
     icon: '🔮',
     color: '#A855F7',
     time: '5분',
@@ -110,7 +110,7 @@ export const AXES = [
   { key: 'teaching', label: '교수법' },
   { key: 'management', label: '경영' },
   { key: 'crisis', label: '위기관리' },
-  { key: 'leadership', label: '리더십' },
+  { key: 'leadership', label: '강사·팀 관리' },
 ];
 
 export const HOME_STATS = {
