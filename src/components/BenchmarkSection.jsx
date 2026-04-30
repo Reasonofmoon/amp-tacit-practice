@@ -94,6 +94,7 @@ function fmtMinSec(seconds) {
 
 export default function BenchmarkSection({ state, consent, onUpdateConsent }) {
   const [live, setLive] = useState(null);
+  const [pending, setPending] = useState(null); // { totalSubmissions } 일 때 transition viz
   const benchmarkServerOn = isBenchmarkServerEnabled();
   const optedIn = !!consent?.benchmarkOptIn;
 
@@ -101,9 +102,19 @@ export default function BenchmarkSection({ state, consent, onUpdateConsent }) {
   useEffect(() => {
     if (!benchmarkServerOn) return;
     let cancelled = false;
-    fetchLiveBenchmark().then((data) => {
-      if (!cancelled && data?.ready) setLive(data);
-    });
+    fetch(import.meta.env.VITE_BENCHMARK_ENDPOINT || '/api/benchmark', { method: 'GET' })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (cancelled || !data) return;
+        if (data.ready) {
+          setLive(data);
+          setPending(null);
+        } else {
+          setLive(null);
+          setPending({ totalSubmissions: data.totalSubmissions ?? 0 });
+        }
+      })
+      .catch(() => {});
     return () => { cancelled = true; };
   }, [benchmarkServerOn, optedIn]);
 
@@ -192,6 +203,31 @@ export default function BenchmarkSection({ state, consent, onUpdateConsent }) {
           tone="neutral"
         />
       </div>
+
+      {/* 실측 전환 프로그레스 (N<5 일 때만, 사용자가 켜져 있으면 본인 1명을 마중하기 위해 노출) */}
+      {benchmarkServerOn && pending && pending.totalSubmissions < 5 && (
+        <div className="benchmark-transition" role="status" aria-live="polite">
+          <div className="benchmark-transition-text">
+            <strong>가상 → 실측 전환까지 {Math.max(0, 5 - pending.totalSubmissions)}명 남음</strong>
+            <p>옵트인 사용자 5명 이상 누적되면 위 카드들이 자동으로 실측 평균으로 전환됩니다.</p>
+          </div>
+          <div className="benchmark-transition-bar" aria-hidden="true">
+            <div
+              className="benchmark-transition-fill"
+              style={{ width: `${Math.min(100, (pending.totalSubmissions / 5) * 100)}%` }}
+            />
+            <span className="benchmark-transition-marker" style={{ left: '0%' }}>
+              <span>가상 N=84</span>
+            </span>
+            <span className="benchmark-transition-marker right" style={{ left: '100%' }}>
+              <span>실측 N=5+</span>
+            </span>
+          </div>
+          <div className="benchmark-transition-counter">
+            현재 누적 <strong>{pending.totalSubmissions}</strong>명
+          </div>
+        </div>
+      )}
 
       {/* 옵트인 토글 — 실측 데이터에 익명 기여 */}
       {benchmarkServerOn && onUpdateConsent && (

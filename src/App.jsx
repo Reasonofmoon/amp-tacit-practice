@@ -15,6 +15,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import PromptGiftModal from './components/PromptGiftModal';
 import NextStepBeacon from './components/NextStepBeacon';
 import ChapterPrintLayout from './components/ChapterPrintLayout';
+import AutoSaveIndicator from './components/AutoSaveIndicator';
 import { getActivityPromptGift } from './data/activityPrompts';
 import { ACTIVITY_TITLES } from './utils/activityTitles';
 import { buildMicroInsight } from './utils/microInsight';
@@ -371,6 +372,10 @@ export default function App() {
           goHome();
         }}
       />
+
+      {ActivityComponent && (
+        <AutoSaveIndicator lastSaveAt={game.state.metrics?.lastSaveAt} />
+      )}
 
       <ChapterPrintLayout
         chapterId={printingChapter}

@@ -311,6 +311,10 @@ export function useGameState() {
           ...previous.activityData,
           [activityId]: resolvedValue,
         },
+        metrics: {
+          ...(previous.metrics ?? {}),
+          lastSaveAt: Date.now(),
+        },
       };
     });
   };
