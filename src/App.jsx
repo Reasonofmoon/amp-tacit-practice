@@ -16,6 +16,7 @@ import PromptGiftModal from './components/PromptGiftModal';
 import NextStepBeacon from './components/NextStepBeacon';
 import ChapterPrintLayout from './components/ChapterPrintLayout';
 import AutoSaveIndicator from './components/AutoSaveIndicator';
+import LensToggle from './components/LensToggle';
 import { getActivityPromptGift } from './data/activityPrompts';
 import { ACTIVITY_TITLES } from './utils/activityTitles';
 import { buildMicroInsight } from './utils/microInsight';
@@ -218,6 +219,18 @@ export default function App() {
               onUpdateConsent={game.updateConsent}
             />
           </Suspense>
+        )}
+
+        {ActivityComponent && (
+          <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+            <LensToggle
+              currentId={currentView}
+              onSwitch={(nextId) => {
+                setActiveJourney(nextId.startsWith('dev_') ? 'developer' : 'director');
+                setCurrentView(nextId);
+              }}
+            />
+          </div>
         )}
 
         {ActivityComponent && (

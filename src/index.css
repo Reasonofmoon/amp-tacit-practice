@@ -4372,6 +4372,50 @@ p { color: var(--text-muted); }
   color: var(--ink-500) !important;
 }
 
+/* ─── LENS TOGGLE (b) ─────────
+   Activity 워크스페이스 위에 뜨는 director ↔ developer 콘텐츠 렌즈 스위치.
+   ───────────────────────────── */
+.lens-toggle {
+  display: inline-flex;
+  align-items: stretch;
+  background: var(--paper-100);
+  border: 1px solid var(--paper-300);
+  border-radius: 999px;
+  padding: 3px;
+  margin: 0 auto var(--space-md);
+  gap: 2px;
+}
+.lens-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-500);
+  cursor: pointer;
+  transition: background 0.18s var(--ease-out), color 0.18s, transform 0.15s var(--ease-spring);
+  font-family: var(--font-sans);
+}
+.lens-toggle-btn:hover { color: var(--ink-900); }
+.lens-toggle-btn.is-active {
+  background: var(--ink-blue);
+  color: white;
+  cursor: default;
+  box-shadow: 0 2px 6px rgba(46, 91, 255, 0.32);
+}
+.lens-toggle-btn.is-active:hover { color: white; }
+
+/* Wrap the lens toggle in a row so it doesn't claim full width */
+.page-body .lens-toggle {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ─── AUTOSAVE PILL (a) ────────
    활동 화면 우상단 고정 바. localStorage 저장 시점을 즉시 알린다.
    ───────────────────────────── */
