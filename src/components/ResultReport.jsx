@@ -171,23 +171,6 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
         </Suspense>
       </article>
 
-      <article className="report-paper-card" style={{ marginTop: 'var(--space-lg)', background: 'var(--blue-wash)', borderColor: 'var(--ink-blue)' }}>
-        <div className="section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <div>
-            <span className="flow-eyebrow-tag" style={{ background: 'var(--paper-50)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
-              AI WORKBENCH
-            </span>
-            <h3 style={{ fontSize: '1.3rem', marginTop: '12px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>AI 실행 워크벤치</h3>
-            <p style={{ color: 'var(--ink-700)', fontSize: '0.9rem', marginTop: '4px', maxWidth: '540px' }}>
-              리포트 본문과 실행 패널을 완전히 분리했습니다. 필요할 때 전용 모달에서 실행하세요.
-            </p>
-          </div>
-          <button type="button" className="btn-paper-primary" onClick={onOpenAIWorkbench}>
-            AI 워크벤치 열기 →
-          </button>
-        </div>
-      </article>
-
       <article className="report-paper-card prompt-gift-bag-section" style={{ marginTop: 'var(--space-lg)' }}>
         <div className="section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
           <div>
@@ -269,6 +252,23 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
         activityTitle={openGift?.title ?? ''}
         onClose={() => setOpenGift(null)}
       />
+
+      <article className="report-paper-card" style={{ marginTop: 'var(--space-lg)', background: 'var(--blue-wash)', borderColor: 'var(--ink-blue)' }}>
+        <div className="section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div>
+            <span className="flow-eyebrow-tag" style={{ background: 'var(--paper-50)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
+              AI WORKBENCH
+            </span>
+            <h3 style={{ fontSize: '1.3rem', marginTop: '12px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>AI 실행 워크벤치 (선택)</h3>
+            <p style={{ color: 'var(--ink-700)', fontSize: '0.9rem', marginTop: '4px', maxWidth: '540px' }}>
+              위 가방의 프롬프트를 외부 ChatGPT/Claude/Gemini로 보내는 대신, 앱 안에서 바로 실행하고 싶을 때 사용하세요. API 키는 가져오거나 서버 프록시가 켜져 있어야 합니다.
+            </p>
+          </div>
+          <button type="button" className="btn-paper-primary" onClick={onOpenAIWorkbench}>
+            AI 워크벤치 열기 →
+          </button>
+        </div>
+      </article>
 
       <div style={{ marginTop: 'var(--space-lg)' }}>
         <DiscoveryShowcase state={state} />

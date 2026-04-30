@@ -21,6 +21,7 @@ import { getActivityPromptGift } from './data/activityPrompts';
 import { ACTIVITY_TITLES } from './utils/activityTitles';
 import { buildMicroInsight } from './utils/microInsight';
 import { findClosestChapter, findNextActivityForChapter } from './utils/chapterProgress';
+import { buildSelectActivity, inferJourneyFromActivityId, pickNextStep } from './utils/nextActivity';
 const PromoGallery = lazyWithRetry(() => import('./components/PromoGallery'), 'PromoGallery');
 const ResultReport = lazyWithRetry(() => import('./components/ResultReport'), 'ResultReport');
 const ReportAIWorkbench = lazyWithRetry(() => import('./components/ReportAIWorkbench'), 'ReportAIWorkbench');
@@ -116,6 +117,9 @@ export default function App() {
   const appContentRef = useRef(null);
   const game = useGameState();
 
+  // 어떤 활동으로든 한 번에 이동하면서 activeJourney 도 자연스럽게 같이 갱신.
+  const selectActivity = buildSelectActivity(setActiveJourney, setCurrentView);
+
   const handlePrintChapter = (chapterId) => {
     setPrintingChapter(chapterId);
     document.body.classList.add('print-mode-chapter');
@@ -187,7 +191,7 @@ export default function App() {
         showJourneyPicker={showJourneyPicker}
         recommendedJourney={recommendedJourney}
         onPrintChapter={handlePrintChapter}
-        onResumeActivity={(id) => { if (id) setCurrentView(id); }}
+        onResumeActivity={selectActivity}
       >
         {currentView === 'home' && activeJourney === 'promo' && (
           <Suspense fallback={<LoadingPanel />}>
@@ -223,13 +227,7 @@ export default function App() {
 
         {ActivityComponent && (
           <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-            <LensToggle
-              currentId={currentView}
-              onSwitch={(nextId) => {
-                setActiveJourney(nextId.startsWith('dev_') ? 'developer' : 'director');
-                setCurrentView(nextId);
-              }}
-            />
+            <LensToggle currentId={currentView} onSwitch={selectActivity} />
           </div>
         )}
 
@@ -265,51 +263,44 @@ export default function App() {
                   },
                   metrics: { ...(game.state.metrics ?? {}), lastCompletedId: completedId },
                 };
-                const closestChapter = findClosestChapter(optimisticState);
+                // 시연 매끄러움: 1) 같은 여정 안에 미완료 데모가 있으면 그걸 우선.
+                //               2) 없을 때만 가장 가까운 챕터 PDF 마일스톤으로.
                 let nextStep = null;
-                if (closestChapter) {
-                  if (closestChapter.kind === 'just-completed') {
+                const closestChapter = findClosestChapter(optimisticState);
+                if (closestChapter && closestChapter.kind === 'just-completed') {
+                  // 챕터 닫힘 — 무조건 PDF 발급 알림이 우선.
+                  nextStep = {
+                    line: `🎉 ${closestChapter.title} 챕터가 완성되었습니다. 강사 회의용 PDF를 바로 발급할 수 있어요.`,
+                    cta: '챕터 PDF 받기',
+                    onClick: () => {
+                      setPendingGift(null);
+                      handlePrintChapter(closestChapter.id);
+                    },
+                  };
+                } else {
+                  const picked = pickNextStep(optimisticState, activeJourney);
+                  if (picked?.activityId) {
+                    const nextTitle = ACTIVITY_TITLES[picked.activityId] ?? '';
+                    let line;
+                    if (picked.source === 'journey') {
+                      line = picked.line ?? `이어서 ${nextTitle}`;
+                    } else if (picked.chapter?.kind === 'one-away') {
+                      line = `${nextTitle} 1개만 더 풀면 ${picked.chapter.title} 챕터 PDF가 발급됩니다.`;
+                    } else if (picked.chapter?.kind === 'in-progress') {
+                      line = `${picked.chapter.title} 챕터까지 ${picked.chapter.remaining}개 남음 — 다음은 ${nextTitle}.`;
+                    } else if (picked.chapter?.kind === 'empty') {
+                      line = `${picked.chapter.title}는 단 ${picked.chapter.totalCount}개로 닫히는 가장 가까운 챕터입니다.`;
+                    } else {
+                      line = `이어서 ${nextTitle} 진행`;
+                    }
                     nextStep = {
-                      line: `🎉 ${closestChapter.title} 챕터가 완성되었습니다. 강사 회의용 PDF를 바로 발급할 수 있어요.`,
-                      cta: '챕터 PDF 받기',
+                      line,
+                      cta: `${nextTitle} 시작`,
                       onClick: () => {
                         setPendingGift(null);
-                        handlePrintChapter(closestChapter.id);
+                        selectActivity(picked.activityId);
                       },
                     };
-                  } else if (closestChapter.kind === 'one-away') {
-                    const nextId = findNextActivityForChapter(closestChapter, optimisticState);
-                    const nextTitle = ACTIVITY_TITLES[nextId] ?? '';
-                    nextStep = nextId ? {
-                      line: `${nextTitle} 1개만 더 풀면 ${closestChapter.title} 챕터 PDF가 발급됩니다.`,
-                      cta: `${nextTitle} 시작`,
-                      onClick: () => {
-                        setPendingGift(null);
-                        setCurrentView(nextId);
-                      },
-                    } : null;
-                  } else if (closestChapter.kind === 'in-progress') {
-                    const nextId = findNextActivityForChapter(closestChapter, optimisticState);
-                    const nextTitle = ACTIVITY_TITLES[nextId] ?? '';
-                    nextStep = nextId ? {
-                      line: `${closestChapter.title} 챕터까지 ${closestChapter.remaining}개 활동 남음 — 다음은 ${nextTitle}.`,
-                      cta: `${nextTitle} 시작`,
-                      onClick: () => {
-                        setPendingGift(null);
-                        setCurrentView(nextId);
-                      },
-                    } : null;
-                  } else if (closestChapter.kind === 'empty') {
-                    const nextId = findNextActivityForChapter(closestChapter, optimisticState);
-                    const nextTitle = ACTIVITY_TITLES[nextId] ?? '';
-                    nextStep = nextId ? {
-                      line: `${closestChapter.title}는 단 ${closestChapter.totalCount}개 활동으로 닫히는 가장 가까운 챕터입니다.`,
-                      cta: `${nextTitle} 시작`,
-                      onClick: () => {
-                        setPendingGift(null);
-                        setCurrentView(nextId);
-                      },
-                    } : null;
                   }
                 }
 
@@ -406,9 +397,7 @@ export default function App() {
           setCurrentView('demo_readmaster');
         }}
         onGoReport={goReport}
-        onSelectActivity={(id) => {
-          if (id) setCurrentView(id);
-        }}
+        onSelectActivity={selectActivity}
         onPrintChapter={handlePrintChapter}
       />
     </ErrorBoundary>

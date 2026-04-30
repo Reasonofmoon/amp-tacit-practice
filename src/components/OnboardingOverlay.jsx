@@ -17,7 +17,7 @@ export default function OnboardingOverlay({ open, onClose, onQuickStart, appRoot
       panelClassName="overlay-card onboarding-card"
       panelStyle={{ maxWidth: '520px' }}
     >
-      <p className="onboarding-eyebrow">암묵지 → 앱 워크숍</p>
+      <p className="onboarding-eyebrow">현장 노하우 → 앱 워크숍</p>
       <h2 className="onboarding-title">
         1분이면 첫 결과를 보여드려요
       </h2>

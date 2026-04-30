@@ -42,14 +42,14 @@ export default function Layout({
     : activeJourney === 'automation'
     ? '코딩을 몰라도 괜찮습니다. 복사+붙여넣기로 나만의 24시간 AI 비서를 완성해보세요!'
     : activeJourney === 'showcase'
-    ? '원장님의 8가지 수업 노하우가 탁월한 웹앱으로 변신하는 과정을 보여드립니다.'
+    ? '원장님의 현장 노하우가 실제 웹앱으로 변신하는 과정을 라이브로 보여드립니다.'
     : activeJourney === 'promo'
     ? 'Remotion으로 제작한 키네틱 타이포그래피 모션 그래픽 세트. 발표에 바로 활용 가능한 12개 영상.'
     : '무의식적 운영 감각을 문장과 선택의 데이터로 끌어올리고, AI가 재사용할 수 있는 형태로 변환합니다.';
 
   const eyebrowLabel = activeJourney === 'developer' ? 'DEVELOPER LAB'
     : activeJourney === 'automation' ? 'AUTOMATION WORKSHOP'
-    : activeJourney === 'showcase' ? 'DIAGNOSTIC PLAYGROUND'
+    : activeJourney === 'showcase' ? 'LIVE APP SHOWCASE'
     : activeJourney === 'promo' ? 'MOTION GALLERY'
     : 'DIRECTOR JOURNEY';
 
