@@ -19,6 +19,11 @@ export const metricsSchema = z.object({
   lastCompletedId: z.string().nullable().catch(null),
 }).partial().catch({});
 
+export const consentSchema = z.object({
+  benchmarkOptIn: z.boolean().catch(false),
+  optedInAt: z.number().nullable().catch(null),
+}).partial().catch({ benchmarkOptIn: false, optedInAt: null });
+
 export const gameStateSchema = z.object({
   version: z.number().catch(1),
   xp: z.number().nonnegative().catch(0),
@@ -31,6 +36,7 @@ export const gameStateSchema = z.object({
   leaderboard: z.array(unknownRecord).catch([]),
   metrics: metricsSchema,
   activityData: unknownRecord.catch({}),
+  consent: consentSchema,
 }).passthrough();
 
 export function parseStoredGameState(value) {

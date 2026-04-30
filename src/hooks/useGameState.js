@@ -3,6 +3,8 @@ import { ACTIVITIES } from '../data/activities';
 import { DISCOVERY_CARDS, buildDiscoveryView, evaluateDiscoveries } from '../data/discoveryCards';
 import { parseStoredGameState } from '../schemas/gameState';
 import { ACTIVITY_XP, getComboMultiplier, getLevelInfo, getNextLevel, getOverallProgress } from '../utils/scoring';
+import { buildBenchmarkSnapshot } from '../utils/benchmarkSnapshot';
+import { submitBenchmarkSnapshot, isBenchmarkServerEnabled } from '../utils/benchmarkClient';
 
 const STORAGE_KEY = 'tacit-game-state';
 
@@ -30,6 +32,10 @@ export function createDefaultState() {
       patternCount: 0,
       completionCount: 0,
       lastCompletedId: null,
+    },
+    consent: {
+      benchmarkOptIn: false,
+      optedInAt: null,
     },
     activityData: {
       timeline: { placedEvents: {}, insight: '' },
@@ -90,6 +96,7 @@ export function mergeState(savedState) {
     ...savedState,
     profile: mergeRecord(base.profile, savedState.profile),
     metrics: mergeRecord(base.metrics, savedState.metrics),
+    consent: mergeRecord(base.consent, savedState.consent),
     activityData: {
       ...base.activityData,
       ...savedState.activityData,
@@ -365,10 +372,35 @@ export function useGameState() {
         combo: !alreadyCompleted && nextCombo > 1 ? { count: nextCombo, multiplier, at: Date.now() } : null,
       };
 
+      // W11 — 옵트인된 사용자만 익명 통계 한 번 제출 (fire-and-forget).
+      if (
+        !alreadyCompleted
+        && previous.consent?.benchmarkOptIn === true
+        && isBenchmarkServerEnabled()
+      ) {
+        try {
+          const snapshot = buildBenchmarkSnapshot(activityId, mergedActivityData);
+          if (snapshot) submitBenchmarkSnapshot(snapshot);
+        } catch {
+          // 어떤 실패도 사용자 흐름에 노출 X
+        }
+      }
+
       return nextState;
     });
 
     setCelebration(nextCelebration);
+  };
+
+  const updateConsent = (partial) => {
+    setState((previous) => ({
+      ...previous,
+      consent: {
+        ...(previous.consent ?? {}),
+        ...partial,
+        optedInAt: partial.benchmarkOptIn === true ? Date.now() : (previous.consent?.optedInAt ?? null),
+      },
+    }));
   };
 
   return {
@@ -380,6 +412,7 @@ export function useGameState() {
     unlockedBadges,
     celebration,
     updateProfile,
+    updateConsent,
     setOnboardingSeen,
     saveActivityData,
     completeActivity,

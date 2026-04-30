@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BENCHMARK_SAMPLE, COMPLETION_BENCHMARK, KEYWORD_BENCHMARK } from '../data/benchmarks';
 import {
   compareAnswerLength,
@@ -8,6 +8,7 @@ import {
   compareQuizTime,
 } from '../utils/benchmark';
 import { QUIZZES } from '../data/quizzes';
+import { fetchLiveBenchmark, isBenchmarkServerEnabled } from '../utils/benchmarkClient';
 
 function collectStrings(value, bucket) {
   if (!value) return;
@@ -25,11 +26,17 @@ function collectStrings(value, bucket) {
   }
 }
 
-function buildComparisons(state) {
+function buildComparisons(state, live) {
   const allStrings = [];
   collectStrings(state.activityData ?? {}, allStrings);
   const totalChars = allStrings.reduce((sum, s) => sum + s.length, 0);
   const avgLength = allStrings.length > 0 ? Math.round(totalChars / allStrings.length) : 0;
+
+  // 실측이 있으면 평균값을 live로 swap.
+  // (아직 단순 1차 적용 — percentile/tier 계산은 정적 헬퍼 그대로 사용)
+  const liveLengthMean = live?.metrics?.answerLength?.mean ?? null;
+  const liveQuizTimeMean = live?.metrics?.quizTime?.mean ?? null;
+  const liveQuizAccMean = live?.metrics?.quizAccuracy?.mean ?? null;
 
   const lengthCmp = avgLength > 0 ? compareAnswerLength(avgLength, 'mid') : null;
 
@@ -42,7 +49,6 @@ function buildComparisons(state) {
   const accuracyCmp = accuracy !== null ? compareQuizAccuracy(accuracy) : null;
 
   const crisisCmp = compareCrisisCompletion(state.metrics?.crisisAll);
-
   const completedCount = state.completed?.length ?? 0;
 
   const fullText = allStrings.join(' ');
@@ -54,10 +60,13 @@ function buildComparisons(state) {
   return {
     avgLength,
     lengthCmp,
+    liveLengthMean,
     quizTimeSec,
     quizTimeCmp,
+    liveQuizTimeMean,
     accuracy,
     accuracyCmp,
+    liveQuizAccMean,
     crisisCmp,
     completedCount,
     relCount,
@@ -83,21 +92,43 @@ function fmtMinSec(seconds) {
   return `${m}분 ${s}초`;
 }
 
-export default function BenchmarkSection({ state }) {
-  const cmp = useMemo(() => buildComparisons(state), [state]);
+export default function BenchmarkSection({ state, consent, onUpdateConsent }) {
+  const [live, setLive] = useState(null);
+  const benchmarkServerOn = isBenchmarkServerEnabled();
+  const optedIn = !!consent?.benchmarkOptIn;
+
+  // 처음 렌더 시 + opt-in 변경 시 실측 fetch 시도. 24h 캐시 적용.
+  useEffect(() => {
+    if (!benchmarkServerOn) return;
+    let cancelled = false;
+    fetchLiveBenchmark().then((data) => {
+      if (!cancelled && data?.ready) setLive(data);
+    });
+    return () => { cancelled = true; };
+  }, [benchmarkServerOn, optedIn]);
+
+  const cmp = useMemo(() => buildComparisons(state, live), [state, live]);
+
+  const cohortLabel = live?.ready
+    ? `실측 코호트 N=${live.totalSubmissions}`
+    : `${BENCHMARK_SAMPLE.cohortLabel} N=${BENCHMARK_SAMPLE.totalRespondents}`;
+  const cohortBadge = live?.ready ? '🟢 LIVE BENCHMARK' : '📊 ANONYMOUS BENCHMARK';
+  const cohortNote = live?.ready
+    ? '실측 익명 응답이 누적되면 자동으로 갱신됩니다 (24시간 캐시).'
+    : `표본은 ${BENCHMARK_SAMPLE.collectedAt} 가상 코호트. 옵트인 사용자 5명 이상 누적되면 실측으로 자동 전환됩니다.`;
 
   return (
     <article className="report-paper-card benchmark-section">
       <div className="section-heading">
         <div>
           <span className="flow-eyebrow-tag" style={{ background: 'var(--green-wash)', borderColor: 'var(--sage)', color: '#3F6620' }}>
-            📊 ANONYMOUS BENCHMARK
+            {cohortBadge}
           </span>
           <h3 style={{ fontSize: '1.3rem', marginTop: '8px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>
-            익명 비교 — {BENCHMARK_SAMPLE.cohortLabel} N={BENCHMARK_SAMPLE.totalRespondents}
+            익명 비교 — {cohortLabel}
           </h3>
           <p style={{ color: 'var(--ink-500)', fontSize: '0.86rem', marginTop: '4px' }}>
-            남과 비교하라는 게 아니라, 당신이 어디에 서 있는지를 익명 표본으로 보여줍니다. 표본은 {BENCHMARK_SAMPLE.collectedAt} 가상 코호트.
+            남과 비교하라는 게 아니라, 당신이 어디에 서 있는지를 익명 표본으로 보여줍니다. {cohortNote}
           </p>
         </div>
       </div>
@@ -106,16 +137,16 @@ export default function BenchmarkSection({ state }) {
         <BenchmarkTile
           label="답변 평균 길이"
           userValue={cmp.avgLength > 0 ? `${cmp.avgLength} 자` : '—'}
-          cohortValue={cmp.lengthCmp ? `${cmp.lengthCmp.cohortMean} 자` : '— 자'}
+          cohortValue={cmp.lengthCmp ? `${cmp.liveLengthMean ?? cmp.lengthCmp.cohortMean} 자${cmp.liveLengthMean != null ? ' (실측)' : ''}` : '— 자'}
           tier={cmp.lengthCmp?.label}
-          delta={cmp.lengthCmp ? cmp.avgLength - cmp.lengthCmp.cohortMean : null}
+          delta={cmp.lengthCmp ? cmp.avgLength - (cmp.liveLengthMean ?? cmp.lengthCmp.cohortMean) : null}
           unit="자"
         />
 
         <BenchmarkTile
           label="퀴즈 풀이 시간"
           userValue={fmtMinSec(cmp.quizTimeSec)}
-          cohortValue={cmp.quizTimeCmp ? fmtMinSec(cmp.quizTimeCmp.cohortMean) : '—'}
+          cohortValue={cmp.quizTimeCmp ? `${fmtMinSec(cmp.liveQuizTimeMean ?? cmp.quizTimeCmp.cohortMean)}${cmp.liveQuizTimeMean != null ? ' (실측)' : ''}` : '—'}
           tier={cmp.quizTimeCmp?.label}
           tone={cmp.quizTimeCmp && cmp.quizTimeCmp.percentile >= 50 ? 'positive' : 'neutral'}
           smaller
@@ -124,11 +155,11 @@ export default function BenchmarkSection({ state }) {
         <BenchmarkTile
           label="퀴즈 정답률"
           userValue={cmp.accuracy !== null ? `${Math.round(cmp.accuracy * 100)}%` : '—'}
-          cohortValue={cmp.accuracyCmp ? `${Math.round(cmp.accuracyCmp.cohortMean * 100)}%` : '— %'}
+          cohortValue={cmp.accuracyCmp ? `${Math.round((cmp.liveQuizAccMean ?? cmp.accuracyCmp.cohortMean) * 100)}%${cmp.liveQuizAccMean != null ? ' (실측)' : ''}` : '— %'}
           tier={cmp.accuracyCmp?.label}
           delta={
             cmp.accuracyCmp
-              ? Math.round((cmp.accuracy - cmp.accuracyCmp.cohortMean) * 100)
+              ? Math.round((cmp.accuracy - (cmp.liveQuizAccMean ?? cmp.accuracyCmp.cohortMean)) * 100)
               : null
           }
           unit="%p"
@@ -162,8 +193,32 @@ export default function BenchmarkSection({ state }) {
         />
       </div>
 
+      {/* 옵트인 토글 — 실측 데이터에 익명 기여 */}
+      {benchmarkServerOn && onUpdateConsent && (
+        <div className="benchmark-consent" role="region" aria-label="익명 통계 기여 동의">
+          <div className="benchmark-consent-text">
+            <strong>익명 통계에 기여하기</strong>
+            <p>
+              켜면 활동 완료 시 <strong>이름·답변 원문 없이</strong> 답변 길이, 퀴즈 정확도/시간, 역할극 스타일 라벨만 익명으로 누적됩니다.
+              실측 N이 5명 이상 누적되면 위 카드들이 자동으로 실측 평균으로 갱신됩니다. 언제든 끌 수 있습니다.
+            </p>
+          </div>
+          <label className="benchmark-consent-toggle">
+            <input
+              type="checkbox"
+              checked={optedIn}
+              onChange={(e) => onUpdateConsent({ benchmarkOptIn: e.target.checked })}
+            />
+            <span className="benchmark-consent-toggle-track" aria-hidden="true">
+              <span className="benchmark-consent-toggle-thumb" />
+            </span>
+            <span className="benchmark-consent-toggle-label">{optedIn ? '기여 중' : '기여 안 함'}</span>
+          </label>
+        </div>
+      )}
+
       <p className="benchmark-footer">
-        ※ 익명·평균 비교 채널입니다. 개인 식별 정보를 비교하지 않습니다. 표본은 익명 응답으로 구성된 가상 코호트로, 실측 데이터가 누적되면 자동 갱신됩니다.
+        ※ 개인 식별 정보(이름·학원명·답변 원문)는 절대 비교/송신되지 않습니다. 본인 데이터는 항상 브라우저 안에만 저장됩니다.
       </p>
     </article>
   );

@@ -62,7 +62,7 @@ const ALL_TITLES = (() => {
   return lookup;
 })();
 
-export default function ResultReport({ state, levelInfo, activeJourney = 'director', onOpenAIWorkbench }) {
+export default function ResultReport({ state, levelInfo, activeJourney = 'director', onOpenAIWorkbench, onUpdateConsent }) {
   const isDev = activeJourney === 'developer';
   const [openGift, setOpenGift] = useState(null);
 
@@ -274,7 +274,7 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
       </div>
 
       <div style={{ marginTop: 'var(--space-lg)' }}>
-        <BenchmarkSection state={state} />
+        <BenchmarkSection state={state} consent={state.consent} onUpdateConsent={onUpdateConsent} />
       </div>
 
       <div className="report-grid" style={{ marginTop: 'var(--space-lg)' }}>

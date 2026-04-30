@@ -3990,6 +3990,78 @@ p { color: var(--text-muted); }
   line-height: 1.5;
 }
 
+/* W11 — Anonymous benchmark consent toggle */
+.benchmark-consent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px;
+  margin: 18px 0 0;
+  background: var(--green-wash);
+  border: 1px solid var(--sage);
+  border-left: 4px solid var(--sage);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+.benchmark-consent-text { flex: 1 1 320px; min-width: 0; }
+.benchmark-consent-text strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #3F6620;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+.benchmark-consent-text p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--ink-700);
+  line-height: 1.55;
+}
+.benchmark-consent-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+.benchmark-consent-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.benchmark-consent-toggle-track {
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  background: var(--paper-300);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.2s var(--ease-out);
+}
+.benchmark-consent-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.benchmark-consent-toggle input:checked + .benchmark-consent-toggle-track { background: var(--sage); }
+.benchmark-consent-toggle input:checked + .benchmark-consent-toggle-track .benchmark-consent-toggle-thumb {
+  transform: translateX(20px);
+}
+.benchmark-consent-toggle input:focus-visible + .benchmark-consent-toggle-track {
+  outline: 2px solid var(--ink-blue);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .benchmark-consent { flex-direction: column; align-items: stretch; }
+  .benchmark-consent-toggle { justify-content: space-between; }
+}
+
 /* Radar legend for veteran-average overlay */
 .radar-legend {
   display: flex;
