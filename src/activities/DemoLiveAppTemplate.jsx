@@ -51,7 +51,7 @@ export default function DemoLiveAppTemplate(props) {
           </div>
 
           {/* External Link */}
-          <div style={{ flexShrink: 0, width: '220px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+          <div style={{ flexShrink: 0, minWidth: '220px', display: 'flex', justifyContent: 'flex-end', gap: '8px', flexWrap: 'wrap' }}>
             {activity.repoUrl && (
               <a
                 href={activity.repoUrl} target="_blank" rel="noreferrer"
@@ -78,6 +78,22 @@ export default function DemoLiveAppTemplate(props) {
             >
               <ExternalLink size={14} /> <span style={{ display: 'inline-block' }}>새 창 열기</span>
             </a>
+            {activity.extraLinks?.map((link) => (
+              <a
+                key={link.url}
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px',
+                  backgroundColor: `${activity.color}22`, color: '#e0f2fe', fontSize: '12px',
+                  fontWeight: 800, borderRadius: '6px', textDecoration: 'none', border: `1px solid ${activity.color}66`,
+                  transition: 'background 0.2s'
+                }}
+              >
+                <ExternalLink size={14} /> <span style={{ display: 'inline-block' }}>{link.label}</span>
+              </a>
+            ))}
           </div>
         </div>
 
@@ -158,6 +174,29 @@ export default function DemoLiveAppTemplate(props) {
                       <Github size={16} /> Repo
                     </a>
                   )}
+                  {activity.extraLinks?.map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '10px 16px',
+                        borderRadius: '10px',
+                        backgroundColor: `${activity.color}22`,
+                        border: `1px solid ${activity.color}66`,
+                        color: '#e0f2fe',
+                        fontSize: '14px',
+                        fontWeight: 800,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <ExternalLink size={16} /> {link.label}
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
