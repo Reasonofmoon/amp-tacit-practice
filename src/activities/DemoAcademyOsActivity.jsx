@@ -7,6 +7,7 @@ import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 export default function DemoAcademyOsActivity(props) {
   const activity = SHOWCASE_ACTIVITIES.find((item) => item.id === props.id);
   const stepNumber = activity?.title?.split('.')[0] ?? '8';
+  const externalUrl = activity?.url ?? activity?.repoUrl;
   const [role, setRole] = useState('director'); // director, teacher, student
 
   const layoutVariants = {
@@ -82,12 +83,12 @@ export default function DemoAcademyOsActivity(props) {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto', marginRight: '16px' }}>
-            {activity?.repoUrl && (
+            {externalUrl && (
               <a
-                href={activity.repoUrl}
+                href={externalUrl}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Academy OS GitHub 저장소 새 창으로 열기"
+                aria-label="Academy OS 새 창으로 열기"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -103,15 +104,15 @@ export default function DemoAcademyOsActivity(props) {
                   boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 24px rgba(0,0,0,0.35)',
                 }}
               >
-                <Github size={14} /> Repo
+                <ExternalLink size={14} /> 새 창 열기
               </a>
             )}
-            {activity?.url && (
+            {activity?.repoUrl && (
               <a
-                href={activity.url}
+                href={activity.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Academy OS 라이브 앱 새 창으로 열기"
+                aria-label="Academy OS GitHub 저장소 새 창으로 열기"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -126,7 +127,7 @@ export default function DemoAcademyOsActivity(props) {
                   textDecoration: 'none',
                 }}
               >
-                <ExternalLink size={14} /> Live
+                <Github size={14} /> GitHub
               </a>
             )}
           </div>
