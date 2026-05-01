@@ -178,6 +178,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["React", "TypeScript", "Tailwind", "Go Metaphor"],
     url: "https://gido-board.vercel.app/",
+    extraLinks: [
+      { label: "Version 2", url: "https://baduck-coding.vercel.app/" },
+    ],
     storyText: "바둑의 포석·정석·선수 개념으로 소프트웨어 개발 수순을 설계하고, 목표에 맞는 기술 스택을 자동 추천하는 바이브 코딩 워크벤치",
     speakerNotes: "개발을 어디서부터 시작할지 모르겠다 → 바둑처럼 첫 수(포석)부터 끝내기까지 순서가 있다. 목표를 말하면 언어·라이브러리·수순이 자동 설계된다. 개발 경험이 곧 기보(棋譜)."
   },
