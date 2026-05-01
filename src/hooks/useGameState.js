@@ -7,6 +7,7 @@ import { buildBenchmarkSnapshot } from '../utils/benchmarkSnapshot';
 import { submitBenchmarkSnapshot, isBenchmarkServerEnabled } from '../utils/benchmarkClient';
 
 const STORAGE_KEY = 'tacit-game-state';
+const BENCHMARK_CACHE_KEY = 'tacit-benchmark-cache-v1';
 
 export function createDefaultState() {
   return {
@@ -407,6 +408,22 @@ export function useGameState() {
     }));
   };
 
+  const resetGameState = () => {
+    const defaultState = createDefaultState();
+
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+        window.localStorage.removeItem(BENCHMARK_CACHE_KEY);
+      } catch {
+        // Ignore unavailable storage. React state still resets for the session.
+      }
+    }
+
+    setCelebration(emptyCelebration());
+    setState(defaultState);
+  };
+
   return {
     state,
     levelInfo,
@@ -420,6 +437,7 @@ export function useGameState() {
     setOnboardingSeen,
     saveActivityData,
     completeActivity,
+    resetGameState,
     isReportUnlocked: state.completed.length >= ACTIVITIES.length,
   };
 }

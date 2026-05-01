@@ -36,6 +36,32 @@ test('NextStepBeacon advances the user from cold start', async ({ page }) => {
   await expect(beacon).toBeVisible();
 });
 
+test('reset button clears saved workshop progress', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'tacit-game-state',
+      JSON.stringify({
+        onboardingSeen: true,
+        xp: 240,
+        completed: ['quiz'],
+        badges: ['speedster'],
+        profile: { name: '테스터' },
+      })
+    );
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: /저장된 테스트 결과 초기화/ }).click();
+  await expect(page.getByRole('dialog', { name: /저장된 테스트 결과 초기화 확인/ })).toBeVisible();
+  await page.getByRole('button', { name: '저장 결과 초기화' }).click();
+
+  const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem('tacit-game-state')));
+  expect(stored.xp).toBe(0);
+  expect(stored.completed).toEqual([]);
+  expect(stored.badges).toEqual([]);
+  expect(stored.onboardingSeen).toBe(false);
+});
+
 test('clicking a director activity card opens the activity workspace', async ({ page }) => {
   // 기본 진입은 showcase 여정. director 여정으로 토글한 뒤 활동 그리드의 첫 카드를 클릭.
   await page.addInitScript(() => {
@@ -54,8 +80,8 @@ test('clicking a director activity card opens the activity workspace', async ({ 
   await expect(quizCard).toBeVisible();
   await quizCard.click();
 
-  // workspace-header 의 활동 제목이 보이면 진입 성공.
-  await expect(page.getByRole('heading', { name: /스피드 퀴즈|판단 퀴즈/ }).first()).toBeVisible({ timeout: 10000 });
+  // 퀴즈 활동의 첫 상호작용 화면이 보이면 진입 성공.
+  await expect(page.getByRole('heading', { name: /문제 풀이 전략 선택/ }).first()).toBeVisible({ timeout: 10000 });
 
   // 자동저장 pill 은 활동 화면에서 노출 (저장 발생 전엔 idle 상태).
   await expect(page.locator('.autosave-pill')).toBeVisible();

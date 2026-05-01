@@ -1,4 +1,4 @@
-import { Home, BarChart2 } from 'lucide-react';
+import { Home, BarChart2, RotateCcw } from 'lucide-react';
 import LogoMark from './LogoMark';
 import ManualProgress from './ManualProgress';
 import ResumeCard from './ResumeCard';
@@ -19,6 +19,7 @@ export default function Layout({
   celebration,
   onGoHome,
   onGoReport,
+  onResetRequest,
   showReportButton,
   activeJourney,
   onToggleJourney,
@@ -85,6 +86,15 @@ export default function Layout({
               <BarChart2 size={16} /> 진단 리포트
             </button>
           )}
+          <button
+            type="button"
+            className="btn btn-sm btn-ghost"
+            onClick={onResetRequest}
+            aria-label="저장된 테스트 결과 초기화"
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
+          >
+            <RotateCcw size={16} /> 초기화
+          </button>
         </nav>
       </header>
 

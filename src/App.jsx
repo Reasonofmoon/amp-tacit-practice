@@ -20,8 +20,8 @@ import LensToggle from './components/LensToggle';
 import { getActivityPromptGift } from './data/activityPrompts';
 import { ACTIVITY_TITLES } from './utils/activityTitles';
 import { buildMicroInsight } from './utils/microInsight';
-import { findClosestChapter, findNextActivityForChapter } from './utils/chapterProgress';
-import { buildSelectActivity, inferJourneyFromActivityId, pickNextStep } from './utils/nextActivity';
+import { findClosestChapter } from './utils/chapterProgress';
+import { buildSelectActivity, pickNextStep } from './utils/nextActivity';
 const PromoGallery = lazyWithRetry(() => import('./components/PromoGallery'), 'PromoGallery');
 const ResultReport = lazyWithRetry(() => import('./components/ResultReport'), 'ResultReport');
 const ReportAIWorkbench = lazyWithRetry(() => import('./components/ReportAIWorkbench'), 'ReportAIWorkbench');
@@ -112,6 +112,7 @@ export default function App() {
   const [showJourneyPicker, setShowJourneyPicker] = useState(false);
   const [aiWorkbenchOpen, setAIWorkbenchOpen] = useState(false);
   const [qrInterstitialOpen, setQrInterstitialOpen] = useState(false);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [pendingGift, setPendingGift] = useState(null);
   const [printingChapter, setPrintingChapter] = useState(null);
   const appContentRef = useRef(null);
@@ -137,6 +138,17 @@ export default function App() {
     playFanfareSound();
     triggerInkBurst({ origin: { x: 0.5, y: 0.55 }, size: 'lg' });
     setCurrentView('report');
+  };
+
+  const handleResetGameState = () => {
+    game.resetGameState();
+    setResetConfirmOpen(false);
+    setAIWorkbenchOpen(false);
+    setQrInterstitialOpen(false);
+    setPendingGift(null);
+    setActiveJourney('director');
+    setShowJourneyPicker(false);
+    setCurrentView('home');
   };
 
   const ActivityComponent = ACTIVITY_COMPONENTS[currentView] ?? null;
@@ -183,6 +195,7 @@ export default function App() {
         celebration={game.celebration}
         onGoHome={goHome}
         onGoReport={goReport}
+        onResetRequest={() => setResetConfirmOpen(true)}
         showReportButton={true}
         activeJourney={activeJourney}
         onToggleJourney={handleToggleJourney}
@@ -350,6 +363,37 @@ export default function App() {
       </ModalOverlay>
 
       <ModalOverlay
+        open={resetConfirmOpen}
+        onClose={() => setResetConfirmOpen(false)}
+        appRootRef={appContentRef}
+        ariaLabel="저장된 테스트 결과 초기화 확인"
+        panelStyle={{ maxWidth: '520px' }}
+      >
+        <span className="tag" style={{ width: 'fit-content', marginBottom: '10px' }}>초기화</span>
+        <h2 style={{ margin: '0 0 10px', color: 'var(--text-main)' }}>저장된 테스트 결과를 지울까요?</h2>
+        <p style={{ margin: '0 0 18px', color: 'var(--text-muted)', lineHeight: 1.65 }}>
+          XP, 완료한 활동, 작성한 답변, 뱃지, 리더보드, 진단 리포트 입력값이 이 브라우저에서 초기화됩니다.
+          처음 진입 상태로 돌아가 다시 테스트할 수 있습니다.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => setResetConfirmOpen(false)}
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleResetGameState}
+          >
+            저장 결과 초기화
+          </button>
+        </div>
+      </ModalOverlay>
+
+      <ModalOverlay
         open={aiWorkbenchOpen}
         onClose={() => setAIWorkbenchOpen(false)}
         appRootRef={appContentRef}
@@ -391,7 +435,7 @@ export default function App() {
         state={game.state}
         currentView={currentView}
         hasGiftOpen={!!pendingGift}
-        hasModalOpen={qrInterstitialOpen || aiWorkbenchOpen}
+        hasModalOpen={qrInterstitialOpen || aiWorkbenchOpen || resetConfirmOpen}
         onStartTour={() => {
           setActiveJourney('showcase');
           setCurrentView('demo_readmaster');

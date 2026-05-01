@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PresentationShell from '../components/PresentationShell';
-import { Users, LayoutDashboard, Calendar, DollarSign, Target, UserCheck } from 'lucide-react';
+import { Users, LayoutDashboard, Calendar, DollarSign, Target, UserCheck, ExternalLink, Github } from 'lucide-react';
 import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoAcademyOsActivity(props) {
@@ -34,19 +34,114 @@ export default function DemoAcademyOsActivity(props) {
       actionColor={activity?.color ?? "#EC4899"}
       {...props}
     >
-      <div className="flex flex-col bg-[#0F172A] rounded-xl overflow-hidden shadow-2xl border border-pink-900/40 w-full max-w-5xl" style={{ height: '550px' }}>
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '1024px',
+          height: '550px',
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: '#0f172a',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          border: '1px solid rgba(244, 114, 182, 0.28)',
+          boxShadow: '0 24px 80px rgba(0,0,0,0.55)',
+        }}
+      >
         
         {/* Top Navbar */}
-        <header className="bg-[#1E293B] border-b border-pink-900/30 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-[0_0_10px_rgba(236,72,153,0.5)]">
-               <LayoutDashboard size={18} className="text-white" />
+        <header
+          style={{
+            minHeight: '72px',
+            backgroundColor: '#1e293b',
+            borderBottom: '1px solid rgba(244, 114, 182, 0.25)',
+            padding: '16px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #ec4899, #f43f5e)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 14px rgba(236,72,153,0.45)',
+              color: '#ffffff',
+            }}>
+               <LayoutDashboard size={18} />
             </div>
-            <h2 className="text-white font-bold text-xl tracking-wide">Academy OS</h2>
+            <h2 style={{ color: '#ffffff', fontSize: '20px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>
+              Academy OS
+            </h2>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto', marginRight: '16px' }}>
+            {activity?.repoUrl && (
+              <a
+                href={activity.repoUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Academy OS GitHub 저장소 새 창으로 열기"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                  border: '1px solid rgba(244, 114, 182, 0.45)',
+                  color: '#fce7f3',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  textDecoration: 'none',
+                  boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 24px rgba(0,0,0,0.35)',
+                }}
+              >
+                <Github size={14} /> Repo
+              </a>
+            )}
+            {activity?.url && (
+              <a
+                href={activity.url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Academy OS 라이브 앱 새 창으로 열기"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(236, 72, 153, 0.22)',
+                  border: '1px solid rgba(244, 114, 182, 0.45)',
+                  color: '#fce7f3',
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  textDecoration: 'none',
+                }}
+              >
+                <ExternalLink size={14} /> Live
+              </a>
+            )}
           </div>
 
           {/* Role Switcher */}
-          <div className="flex p-1 bg-[#0F172A] rounded-lg border border-[#334155]">
+          <div
+            style={{
+              display: 'flex',
+              gap: '4px',
+              padding: '4px',
+              backgroundColor: '#0f172a',
+              borderRadius: '10px',
+              border: '1px solid #334155',
+            }}
+          >
             {[
               { id: 'director', label: '원장 (Director)' },
               { id: 'teacher', label: '강사 (Teacher)' },
@@ -55,11 +150,17 @@ export default function DemoAcademyOsActivity(props) {
               <button
                 key={r.id}
                 onClick={() => setRole(r.id)}
-                className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${
-                  role === r.id 
-                    ? 'bg-pink-600 text-white shadow-md' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  border: 0,
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: 800,
+                  backgroundColor: role === r.id ? '#db2777' : 'transparent',
+                  color: role === r.id ? '#ffffff' : '#94a3b8',
+                  boxShadow: role === r.id ? '0 8px 16px rgba(219, 39, 119, 0.25)' : 'none',
+                }}
               >
                 {r.label}
               </button>

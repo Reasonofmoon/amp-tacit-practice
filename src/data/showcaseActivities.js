@@ -115,6 +115,7 @@ export const SHOWCASE_ACTIVITIES = [
     time: "4분",
     difficulty: 3,
     techTags: ["React", "Dashboard", "Operations"],
+    repoUrl: "https://github.com/Reasonofmoon/lms-main.git",
     storyText: "출결, 수납, 숙제, 진도표를 따로 보지 않아도 어디서 운영 누수가 생기는지 바로 감지하는 원장의 운영 감각",
     speakerNotes: "원장님은 엑셀 하나만 보고 판단하지 않습니다. 결석이 늘고, 과제가 밀리고, 수납 알림이 겹치면 머릿속에서 바로 위험 신호가 켜집니다. Academy OS는 그 멀티태스킹 감각을 대시보드와 역할별 화면으로 바꾼 사례입니다."
   },
