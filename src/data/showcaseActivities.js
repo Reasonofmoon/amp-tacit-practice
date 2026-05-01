@@ -63,6 +63,7 @@ export const SHOWCASE_ACTIVITIES = [
     techTags: ["React", "Assessment", "Prototype"],
     url: "https://level-test-proto.vercel.app/",
     repoUrl: "https://github.com/Reasonofmoon/echobridge-web.git",
+    embedDisabled: true,
     storyText: "학생 답안 몇 개와 말하는 태도만 보고 어느 지점에서 막혔는지 가늠하는 레벨테스트 판단 감각",
     speakerNotes: "레벨테스트의 핵심은 점수표가 아니라, 틀린 이유와 다음 반 배정의 설득 문장입니다. 숙련된 원장은 답안, 반응 속도, 설명 방식에서 현재 위치를 읽습니다. Level Test Proto는 그 판단을 진단 흐름으로 만든 중간 단계입니다."
   },
@@ -115,6 +116,7 @@ export const SHOWCASE_ACTIVITIES = [
     time: "4분",
     difficulty: 3,
     techTags: ["React", "Dashboard", "Operations"],
+    url: "https://academy-os-phi.vercel.app/",
     repoUrl: "https://github.com/Reasonofmoon/lms-main.git",
     storyText: "출결, 수납, 숙제, 진도표를 따로 보지 않아도 어디서 운영 누수가 생기는지 바로 감지하는 원장의 운영 감각",
     speakerNotes: "원장님은 엑셀 하나만 보고 판단하지 않습니다. 결석이 늘고, 과제가 밀리고, 수납 알림이 겹치면 머릿속에서 바로 위험 신호가 켜집니다. Academy OS는 그 멀티태스킹 감각을 대시보드와 역할별 화면으로 바꾼 사례입니다."

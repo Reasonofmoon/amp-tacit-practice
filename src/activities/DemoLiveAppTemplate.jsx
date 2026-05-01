@@ -83,14 +83,94 @@ export default function DemoLiveAppTemplate(props) {
 
         {/* Live Iframe View */}
         <div style={{ flex: 1, position: 'relative', backgroundColor: '#ffffff' }}>
-          <iframe 
-            src={activity.url} 
-            title={activity.title}
-            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', border: 'none', backgroundColor: 'transparent' }}
-            allow="fullscreen; clipboard-read; clipboard-write"
-            sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-            loading="lazy"
-          />
+          {activity.embedDisabled ? (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '32px',
+              background: 'linear-gradient(135deg, #0f172a, #111827)',
+              color: '#e5e7eb',
+              textAlign: 'center',
+            }}>
+              <div style={{ maxWidth: '560px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px' }}>
+                <span style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '16px',
+                  display: 'grid',
+                  placeItems: 'center',
+                  backgroundColor: `${activity.color}22`,
+                  border: `1px solid ${activity.color}66`,
+                  fontSize: '28px',
+                }}>
+                  {activity.icon}
+                </span>
+                <div>
+                  <h3 style={{ margin: '0 0 8px', fontSize: '1.5rem', color: '#ffffff' }}>
+                    별도 탭에서 확인하세요
+                  </h3>
+                  <p style={{ margin: 0, color: '#94a3b8', lineHeight: 1.7 }}>
+                    이 데모는 Vercel 보안 정책 때문에 쇼케이스 안쪽 미리보기 대신 새 창에서 여는 방식으로 보여줍니다.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                  <a
+                    href={activity.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 16px',
+                      borderRadius: '10px',
+                      backgroundColor: activity.color,
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      fontWeight: 800,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <ExternalLink size={16} /> 새 창 열기
+                  </a>
+                  {activity.repoUrl && (
+                    <a
+                      href={activity.repoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '10px 16px',
+                        borderRadius: '10px',
+                        backgroundColor: 'rgba(15,23,42,0.92)',
+                        border: '1px solid rgba(148,163,184,0.32)',
+                        color: '#e5e7eb',
+                        fontSize: '14px',
+                        fontWeight: 800,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <Github size={16} /> Repo
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <iframe
+              src={activity.url}
+              title={activity.title}
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', border: 'none', backgroundColor: 'transparent' }}
+              allow="fullscreen; clipboard-read; clipboard-write"
+              sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              loading="lazy"
+            />
+          )}
         </div>
       </div>
     </PresentationShell>
