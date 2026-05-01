@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PresentationShell from '../components/PresentationShell';
-import { Send, Map, Sparkles, BrainCircuit, ExternalLink } from 'lucide-react';
+import { Send, Map, Sparkles, BrainCircuit } from 'lucide-react';
 import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoSaboPhilosophyActivity(props) {
@@ -104,31 +104,6 @@ export default function DemoSaboPhilosophyActivity(props) {
               <h3 className="text-purple-50 font-bold">사보 통찰 AI</h3>
               <p className="text-purple-400/70 text-xs">Based on Gemini 2.5 Pro</p>
             </div>
-            {activity?.url && (
-              <a
-                href={activity.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="사보 철학 AI 새 창으로 열기"
-                style={{
-                  marginLeft: 'auto',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '8px 12px',
-                  borderRadius: '999px',
-                  backgroundColor: 'rgba(139, 92, 246, 0.22)',
-                  border: '1px solid rgba(196, 181, 253, 0.42)',
-                  color: '#ede9fe',
-                  fontSize: '12px',
-                  fontWeight: 800,
-                  textDecoration: 'none',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <ExternalLink size={14} /> 새 창 열기
-              </a>
-            )}
           </header>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6">

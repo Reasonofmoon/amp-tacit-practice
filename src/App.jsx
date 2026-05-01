@@ -43,7 +43,6 @@ const AutoCodeActivity = lazyWithRetry(() => import('./activities/AutoCodeActivi
 const AutoTriggerActivity = lazyWithRetry(() => import('./activities/AutoTriggerActivity'), 'AutoTriggerActivity');
 const DemoLiveAppTemplate = lazyWithRetry(() => import('./activities/DemoLiveAppTemplate'), 'DemoLiveAppTemplate');
 const DemoAcademyOsActivity = lazyWithRetry(() => import('./activities/DemoAcademyOsActivity'), 'DemoAcademyOsActivity');
-const DemoSaboPhilosophyActivity = lazyWithRetry(() => import('./activities/DemoSaboPhilosophyActivity'), 'DemoSaboPhilosophyActivity');
 const DemoShowcaseIntroActivity = lazyWithRetry(() => import('./activities/DemoShowcaseIntroActivity'), 'DemoShowcaseIntroActivity');
 
 const ACTIVITY_COMPONENTS = {
@@ -92,7 +91,7 @@ const ACTIVITY_COMPONENTS = {
   demo_librainy: DemoLiveAppTemplate,
   demo_moonlang: DemoLiveAppTemplate,
   demo_gidoboard: DemoLiveAppTemplate,
-  demo_sabo_philosophy: DemoSaboPhilosophyActivity,
+  demo_sabo_philosophy: DemoLiveAppTemplate,
   demo_app_factory: DemoLiveAppTemplate,
 };
 
