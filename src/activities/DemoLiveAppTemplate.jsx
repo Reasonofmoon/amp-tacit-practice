@@ -84,6 +84,7 @@ export default function DemoLiveAppTemplate(props) {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
+                title={link.password ? `${link.label} 비밀번호: ${link.password}` : link.label}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px',
                   backgroundColor: `${activity.color}22`, color: '#e0f2fe', fontSize: '12px',
@@ -198,6 +199,28 @@ export default function DemoLiveAppTemplate(props) {
                     </a>
                   ))}
                 </div>
+                {activity.extraLinks?.some((link) => link.password) && (
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(15,23,42,0.74)',
+                    border: '1px solid rgba(148,163,184,0.24)',
+                    color: '#cbd5e1',
+                    fontSize: '13px',
+                    lineHeight: 1.55,
+                  }}>
+                    {activity.extraLinks
+                      .filter((link) => link.password)
+                      .map((link) => (
+                        <span key={`${link.url}-password`}>
+                          <strong style={{ color: '#ffffff' }}>{link.label}</strong> 화면 비번: <code style={{ color: '#67e8f9', fontWeight: 800 }}>{link.password}</code>
+                        </span>
+                      ))}
+                  </div>
+                )}
               </div>
             </div>
           ) : (

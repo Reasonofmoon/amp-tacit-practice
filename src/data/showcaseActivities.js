@@ -148,6 +148,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Next.js", "Supabase", "Gemini AI"],
     url: "https://librainy-platform.vercel.app/",
+    extraLinks: [
+      { label: "Audio Book Quest", url: "https://audio-book-quest.lovable.app/", password: "darlbit123" },
+    ],
     embedDisabled: true,
     storyText: "방대한 원서와 독서 데이터를 한곳에 모아, 가장 체계적이고 몰입감 있는 영어 도서관 경험을 제공하는 에듀테크 생태계",
     speakerNotes: "500권 원서 중 이 학생에게 이 책 → 3초 판단. 20년이 걸린 눈. AR레벨+렉사일+관심사+독서패턴 종합. 기술이 어려운 게 아니라 어떤 데이터를 조합하면 좋은 대시보드가 되는지가 핵심."
