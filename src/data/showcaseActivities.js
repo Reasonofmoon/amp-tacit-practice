@@ -194,6 +194,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Ontology", "Prompt", "AI Chat"],
     url: "https://sabo-dashboard.onrender.com/",
+    extraLinks: [
+      { label: "Version 2", url: "https://sabo-philosophy.vercel.app/" },
+    ],
     storyText: "학생의 표면 행동 너머에 있는 인정 욕구와 관계 신호를 읽어 상담 첫 문장을 고르는 철학적 직관",
     speakerNotes: "마지막으로 기술이 더 깊어지는 지점입니다. 어떤 학생을 야단칠지, 먼저 인정할지, 기다릴지는 매뉴얼보다 존재 이해의 관점에 가깝습니다. 사보 철학 AI는 그 철학적 판단 체계를 챗봇 형태로 실험한 사례입니다."
   },
