@@ -11,6 +11,69 @@ const JOURNEY_CHIPS = [
   { key: 'promo',      label: '모션 갤러리',   emoji: '🎬', variant: 'promo' },
 ];
 
+const HERO_NOTEBOOKS = {
+  director: [
+    { label: '원장님 수업 노트 #1', title: '학부모 상담 감각', accent: 'var(--yellow-wash)' },
+    { label: '원장님 수업 노트 #2', title: '반 배정 판단법', accent: 'var(--blue-wash)' },
+    { label: '원장님 수업 노트 #3', title: '퇴원 위기 신호', accent: 'var(--pink-wash)' },
+  ],
+  developer: [
+    { label: '개발자 작업 노트 #1', title: '디버깅 직감', accent: 'var(--blue-wash)' },
+    { label: '개발자 작업 노트 #2', title: '구조화 습관', accent: 'var(--green-wash)' },
+    { label: '개발자 작업 노트 #3', title: '프롬프트 규칙', accent: 'var(--lavender-wash)' },
+  ],
+  automation: [
+    { label: '자동화 실습 노트 #1', title: '반복 업무 찾기', accent: 'var(--green-wash)' },
+    { label: '자동화 실습 노트 #2', title: '붙여넣기 루틴', accent: 'var(--yellow-wash)' },
+    { label: '자동화 실습 노트 #3', title: 'AI 서기 완성', accent: 'var(--blue-wash)' },
+  ],
+  showcase: [
+    { label: '쇼케이스 노트 #1', title: '현장 노하우', accent: 'var(--pink-wash)' },
+    { label: '쇼케이스 노트 #2', title: '웹앱 변환', accent: 'var(--blue-wash)' },
+    { label: '쇼케이스 노트 #3', title: '라이브 시연', accent: 'var(--yellow-wash)' },
+  ],
+  promo: [
+    { label: '모션 연출 노트 #1', title: '키네틱 문장', accent: 'var(--lavender-wash)' },
+    { label: '모션 연출 노트 #2', title: '발표 장면', accent: 'var(--blue-wash)' },
+    { label: '모션 연출 노트 #3', title: '영상 갤러리', accent: 'var(--pink-wash)' },
+  ],
+};
+
+function HeroNotebookStack({ activeJourney }) {
+  const notebooks = HERO_NOTEBOOKS[activeJourney] ?? HERO_NOTEBOOKS.director;
+
+  return (
+    <div className="hero-notebook-stage" aria-hidden="true">
+      <svg className="hero-doodle hero-doodle-loop" viewBox="0 0 120 80" fill="none">
+        <path d="M10 42C28 8 72 5 88 24C105 45 74 68 50 54C32 44 45 23 65 31" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        <path d="M88 24L83 13M88 24L76 25" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+      <svg className="hero-doodle hero-doodle-spark" viewBox="0 0 90 70" fill="none">
+        <path d="M45 6L50 28L72 35L50 42L45 64L40 42L18 35L40 28L45 6Z" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
+      </svg>
+
+      <div className="notebook-stack-paper">
+        {notebooks.map((notebook, index) => (
+          <article
+            key={notebook.title}
+            className={`paper-notebook paper-notebook-${index + 1}`}
+            style={{ '--notebook-accent': notebook.accent }}
+          >
+            <span className="paper-notebook-label">{notebook.label}</span>
+            <strong>{notebook.title}</strong>
+            <span className="paper-notebook-lines" />
+          </article>
+        ))}
+      </div>
+
+      <span className="sticker sticker-md sticker-wobble hero-sticker hero-sticker-pencil">✏️</span>
+      <span className="sticker sticker-sm sticker-wobble hero-sticker hero-sticker-star">⭐</span>
+      <span className="sticker sticker-lg sticker-wobble hero-sticker hero-sticker-book">📖</span>
+      <span className="sticker sticker-sm sticker-wobble hero-sticker hero-sticker-bulb">💡</span>
+    </div>
+  );
+}
+
 export default function Layout({
   currentView,
   state,
@@ -101,14 +164,19 @@ export default function Layout({
       <main className="app-frame">
         {isHome && (
           <section className="hero-paper">
-            <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto' }}>
-              <span className="eyebrow">{eyebrowLabel}</span>
-              <h1 className="hero-paper-title" style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'clamp(2.25rem, 5vw, 3.75rem)', lineHeight: 1.15, letterSpacing: '-0.01em', color: 'var(--ink-900)' }}>
-                {title}
-              </h1>
-              <p className="lead" style={{ margin: '0 auto', maxWidth: '620px' }}>
-                {subtitle}
-              </p>
+            <div className="hero-paper-grid">
+              <div className="hero-copy">
+                <span className="eyebrow">{eyebrowLabel}</span>
+                <h1 className="hero-paper-title">
+                  <span className="hero-title-hand">{title.split(' ')[0]}</span>{' '}
+                  <span className="highlighter highlighter-blue">{title.split(' ').slice(1).join(' ')}</span>
+                </h1>
+                <p className="lead">
+                  {subtitle}
+                </p>
+              </div>
+
+              <HeroNotebookStack activeJourney={activeJourney} />
             </div>
 
             <ResumeCard
