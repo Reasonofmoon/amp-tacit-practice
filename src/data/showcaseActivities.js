@@ -131,6 +131,7 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Next.js", "AI", "MECE"],
     url: "https://bluel-app.vercel.app/",
+    embedDisabled: true,
     storyText: "강사의 수업을 정교하게 설계(Blueprint Lecture)하고, 인지적 부하 없이 MECE하게 실습하도록 이끄는 학습 환경",
     speakerNotes: "Blueprint Lecture = 청사진 수업. 좋은 수업은 학생이 직접 해보는 수업. 난이도 조절을 감으로 하는 것이 암묵지. 이 감각이 시스템이 되면 신입도 베테랑처럼 설계 가능."
   },
