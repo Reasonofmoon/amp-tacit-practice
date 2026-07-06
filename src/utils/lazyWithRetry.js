@@ -7,6 +7,47 @@ const CHUNK_ERROR_PATTERNS = [
   /ChunkLoadError/i,
   /dynamically imported module/i,
 ];
+const memoryRetryKeys = new Set();
+
+function hasRetryKey(storageKey) {
+  if (typeof window === 'undefined') {
+    return memoryRetryKeys.has(storageKey);
+  }
+
+  try {
+    return window.sessionStorage.getItem(storageKey) === '1';
+  } catch {
+    return memoryRetryKeys.has(storageKey);
+  }
+}
+
+function setRetryKey(storageKey) {
+  memoryRetryKeys.add(storageKey);
+
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.sessionStorage.setItem(storageKey, '1');
+  } catch {
+    // In-memory retry tracking still prevents reload loops when storage is blocked.
+  }
+}
+
+function clearRetryKey(storageKey) {
+  memoryRetryKeys.delete(storageKey);
+
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.sessionStorage.removeItem(storageKey);
+  } catch {
+    // Storage may be unavailable in private or locked-down browsing contexts.
+  }
+}
 
 function isRecoverableChunkError(error) {
   const message = error instanceof Error ? error.message : String(error ?? '');
@@ -20,18 +61,16 @@ export function lazyWithRetry(importer, cacheKey) {
     try {
       const module = await importer();
 
-      if (typeof window !== 'undefined') {
-        window.sessionStorage.removeItem(storageKey);
-      }
+      clearRetryKey(storageKey);
 
       return module;
     } catch (error) {
       if (
         typeof window !== 'undefined' &&
         isRecoverableChunkError(error) &&
-        !window.sessionStorage.getItem(storageKey)
+        !hasRetryKey(storageKey)
       ) {
-        window.sessionStorage.setItem(storageKey, '1');
+        setRetryKey(storageKey);
         window.location.reload();
 
         return new Promise(() => {});

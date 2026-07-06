@@ -482,7 +482,7 @@ const PATTERN_CARDS = [
 
 ### Phase 5: 크로스도메인 신규 활동 4가지 (추가)
 
-#### 5-1. 🎯 감각 캘리브레이션 (`SensoryActivity.jsx`)
+#### 5-1. 🎯 감각 캘리브레이션 (proposed: `SensoryActivity.jsx`)
 **출처**: 간호학 — 숙련 간호사가 환자 표정만 보고 상태를 감지하는 비언어적 직관  
 **형식**: 카드 기반 시나리오 판단 (텍스트 카드 + 직감 판단)
 
@@ -526,7 +526,7 @@ const SENSORY_CARDS = [
 **UI**: 카드 플립 + 직감 판단 → 전문가 평균과 비교 → "당신의 감각은 상위 X%"  
 **XP**: 40 XP + 전문가 일치 보너스 20 XP
 
-#### 5-2. 📖 Before → After 스토리텔링 (`StoryActivity.jsx`)
+#### 5-2. 📖 Before → After 스토리텔링 (proposed: `StoryActivity.jsx`)
 **출처**: 군사학 CDM + 간호학 디브리핑 — 과거 판단 vs 현재 판단 대비를 통한 성장 가시화
 
 **구조**:
@@ -546,7 +546,7 @@ const STORY_PROMPTS = [
 
 **XP**: 60 XP (두 답변 모두 작성 시)
 
-#### 5-3. 🧪 도제식 시뮬레이션 (`ApprenticeActivity.jsx`)
+#### 5-3. 🧪 도제식 시뮬레이션 (proposed: `ApprenticeActivity.jsx`)
 **출처**: 요리의 Niteni(관찰) → Nirokke(모방) → Nambahi(자기화) 3단계
 
 **3단계 플로우**:
@@ -573,7 +573,7 @@ const APPRENTICE_SCRIPTS = [
 
 **XP**: 50 XP (3단계 모두 완료 시)
 
-#### 5-4. 🗺️ 지식 고고학 (`ArchaeologyActivity.jsx`)
+#### 5-4. 🗺️ 지식 고고학 (proposed: `ArchaeologyActivity.jsx`)
 **출처**: Knowledge Mapping + CTA(Cognitive Task Analysis)
 
 **형식**: 역추적 트리 — 현재의 노하우를 시간순으로 거슬러 올라감

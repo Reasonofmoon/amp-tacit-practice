@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TRANSFER_QUESTIONS = [
@@ -27,10 +27,11 @@ export default function TransferActivity({ id, data, saveData, complete, onBack 
   const [answers, setAnswers] = useState(data?.answers ?? {});
   const [draft, setDraft] = useState(data?.answers?.[0] ?? '');
 
-  const answerCount = useMemo(
-    () => Object.values(answers).filter((value) => typeof value === 'string' && value.trim()).length,
-    [answers],
-  );
+  const visibleAnswers = {
+    ...answers,
+    [selected]: draft.trim(),
+  };
+  const visibleAnswerCount = Object.values(visibleAnswers).filter((value) => typeof value === 'string' && value.trim()).length;
 
   const commitCurrent = () => {
     const nextAnswers = {
@@ -151,7 +152,7 @@ export default function TransferActivity({ id, data, saveData, complete, onBack 
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px' }}>
                 <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', fontWeight: 600 }}>
-                  진척도: <strong style={{ color: 'var(--primary)' }}>{answerCount}</strong> / 6
+                  진척도: <strong style={{ color: 'var(--primary)' }}>{visibleAnswerCount}</strong> / 6
                 </div>
                 
                 <div style={{ display: 'flex', gap: '12px' }}>
@@ -162,12 +163,12 @@ export default function TransferActivity({ id, data, saveData, complete, onBack 
                   ) : (
                     <button 
                       className="btn btn-primary" 
-                      disabled={answerCount < 6}
+                      disabled={visibleAnswerCount < 6}
                       onClick={() => {
                         const nextAnswers = commitCurrent();
                         complete({ activityData: { answers: nextAnswers }, bonusXp: 40 });
                       }}
-                      style={{ background: answerCount >= 6 ? 'var(--primary)' : 'var(--border)', color: answerCount >= 6 ? 'white' : 'var(--text-muted)' }}
+                      style={{ background: visibleAnswerCount >= 6 ? 'var(--primary)' : 'var(--border)', color: visibleAnswerCount >= 6 ? 'white' : 'var(--text-muted)' }}
                     >
                       전수 활동 최종 완료
                     </button>

@@ -15,7 +15,6 @@ function fmtRelative(timestamp) {
 
 export default function AutoSaveIndicator({ lastSaveAt }) {
   const [, setTick] = useState(0);
-  const [pulse, setPulse] = useState(false);
 
   // 매 5초마다 라벨 재계산
   useEffect(() => {
@@ -23,19 +22,12 @@ export default function AutoSaveIndicator({ lastSaveAt }) {
     return () => window.clearInterval(id);
   }, []);
 
-  // lastSaveAt 가 새 값으로 바뀌면 잠깐 pulse
-  useEffect(() => {
-    if (!lastSaveAt) return;
-    setPulse(true);
-    const id = window.setTimeout(() => setPulse(false), 1100);
-    return () => window.clearTimeout(id);
-  }, [lastSaveAt]);
-
   const idle = !lastSaveAt;
 
   return (
     <div
-      className={`autosave-pill ${idle ? 'idle' : ''} ${pulse ? 'pulse' : ''}`}
+      key={lastSaveAt || 'idle'}
+      className={`autosave-pill ${idle ? 'idle' : 'pulse'}`}
       role="status"
       aria-live="polite"
     >

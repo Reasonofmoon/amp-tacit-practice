@@ -1,10 +1,26 @@
-import React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PresentationShell from '../components/PresentationShell';
 import { ExternalLink, Github, Lock } from 'lucide-react';
 import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
 
 export default function DemoLiveAppTemplate(props) {
   const activity = SHOWCASE_ACTIVITIES.find(a => a.id === props.id);
+  const frameLoadedRef = useRef(false);
+  const [isFrameLoaded, setIsFrameLoaded] = useState(false);
+  const [showFrameFallback, setShowFrameFallback] = useState(false);
+
+  useEffect(() => {
+    frameLoadedRef.current = false;
+
+    const fallbackTimer = window.setTimeout(() => {
+      if (!frameLoadedRef.current) {
+        setShowFrameFallback(true);
+      }
+    }, 7000);
+
+    return () => window.clearTimeout(fallbackTimer);
+  }, [activity?.url]);
+
   if (!activity) return null;
 
   const stepNumber = activity.title.split('.')[0];
@@ -54,7 +70,7 @@ export default function DemoLiveAppTemplate(props) {
           <div style={{ flexShrink: 0, minWidth: '220px', display: 'flex', justifyContent: 'flex-end', gap: '8px', flexWrap: 'wrap' }}>
             {activity.repoUrl && (
               <a
-                href={activity.repoUrl} target="_blank" rel="noreferrer"
+                href={activity.repoUrl} target="_blank" rel="noopener noreferrer"
                 style={{
                   display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px',
                   backgroundColor: 'rgba(15,23,42,0.55)', color: '#cbd5e1', fontSize: '12px',
@@ -66,7 +82,7 @@ export default function DemoLiveAppTemplate(props) {
               </a>
             )}
             <a 
-              href={activity.url} target="_blank" rel="noreferrer"
+              href={activity.url} target="_blank" rel="noopener noreferrer"
               style={{ 
                 display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', 
                 backgroundColor: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: '12px', 
@@ -83,7 +99,7 @@ export default function DemoLiveAppTemplate(props) {
                 key={link.url}
                 href={link.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 title={link.password ? `${link.label} 비밀번호: ${link.password}` : link.label}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 10px',
@@ -137,7 +153,7 @@ export default function DemoLiveAppTemplate(props) {
                   <a
                     href={activity.url}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -157,7 +173,7 @@ export default function DemoLiveAppTemplate(props) {
                     <a
                       href={activity.repoUrl}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -180,7 +196,7 @@ export default function DemoLiveAppTemplate(props) {
                       key={link.url}
                       href={link.url}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -224,14 +240,46 @@ export default function DemoLiveAppTemplate(props) {
               </div>
             </div>
           ) : (
-            <iframe
-              src={activity.url}
-              title={activity.title}
-              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', border: 'none', backgroundColor: 'transparent' }}
-              allow="fullscreen; clipboard-read; clipboard-write"
-              sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-              loading="lazy"
-            />
+            <>
+              {!isFrameLoaded && (
+                <div style={{
+                  position: 'absolute', inset: 0, zIndex: 5, display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center', gap: '14px', background: '#f8fafc',
+                  color: '#0f172a', textAlign: 'center', padding: '24px'
+                }}>
+                  <div style={{ width: '42px', height: '42px', borderRadius: '999px', border: `3px solid ${activity.color}30`, borderTopColor: activity.color, animation: 'spin 0.9s linear infinite' }} />
+                  <strong style={{ fontSize: '1rem' }}>{activity.title} 로딩 중</strong>
+                  {showFrameFallback && (
+                    <a
+                      href={activity.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 14px',
+                        borderRadius: '8px', color: '#fff', background: activity.color, fontWeight: 700,
+                        textDecoration: 'none', boxShadow: `0 10px 24px ${activity.color}40`
+                      }}
+                    >
+                      새 창에서 열기 <ExternalLink size={16} />
+                    </a>
+                  )}
+                </div>
+              )}
+              <iframe
+                src={activity.url}
+                title={activity.title}
+                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width: '100%', height: '100%', border: 'none', backgroundColor: 'transparent' }}
+                allow="fullscreen; clipboard-read; clipboard-write"
+                sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                loading="lazy"
+                onLoad={() => {
+                  frameLoadedRef.current = true;
+                  setIsFrameLoaded(true);
+                  setShowFrameFallback(false);
+                }}
+                onError={() => setShowFrameFallback(true)}
+              />
+            </>
           )}
         </div>
       </div>

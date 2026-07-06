@@ -57,7 +57,7 @@ ${truncate(data?.insight, 400) || '- (자유롭게 채워줘도 좋다)'}
 4. 마지막에 "이 학원이 지키면 안 되는 금기 3가지"를 구체적 문장으로 적어줘.`,
   }),
 
-  autopilot: (data, profile) => makeGift({
+  autopilot: (data) => makeGift({
     emoji: '🔍',
     title: '무의식 행동 → 신입 강사 SOP',
     useCase: 'AI에게 붙여넣으면 신입 강사가 따라할 수 있는 표준 행동 매뉴얼이 나옵니다.',
@@ -74,7 +74,7 @@ ${truncate(data?.insight, 400) || '- (자유롭게 채워줘도 좋다)'}
 4. 마지막에 "원장이 자리에 없어도 학원이 같은 결을 유지하기 위한 핵심 원칙 1줄"을 만들어줘.`,
   }),
 
-  crisis: (data, profile) => makeGift({
+  crisis: (data) => makeGift({
     emoji: '⚡',
     title: '위기 시나리오 대응 플레이북',
     useCase: 'AI가 즉시 위기별 대응 멘트 + 체크리스트로 변환합니다.',
@@ -91,7 +91,7 @@ ${truncate(JSON.stringify(data?.answers ?? {}, null, 2), 1500)}
 4. 마지막에 "이 위기를 같은 패턴으로 다시 겪지 않기 위한 사전 신호 5가지"를 적어줘.`,
   }),
 
-  transfer: (data, profile) => makeGift({
+  transfer: (data) => makeGift({
     emoji: '🎓',
     title: '신입 강사 5분 브리핑 카드',
     useCase: 'AI가 한 장짜리 멘토링 브리핑 카드로 압축해줍니다.',
@@ -111,7 +111,7 @@ ${truncate(JSON.stringify(data?.answers ?? {}, null, 2), 1500)}
 마지막에 "이 카드를 코팅해서 강사 책상에 두면 좋은 한 마디"를 적어줘.`,
   }),
 
-  seci: (data, profile) => makeGift({
+  seci: (data) => makeGift({
     emoji: '🔮',
     title: 'SECI 변환 — 암묵지 → 자동화 처방',
     useCase: 'AI에 붙여넣으면 운영 자동화 로드맵이 나옵니다.',
@@ -131,7 +131,7 @@ ${truncate(data?.prompt, 600) || '(없음)'}
 4. 마지막에 신입 강사가 이 도구를 호출하기 위한 트리거 문장 3개를 적어줘.`,
   }),
 
-  gallery: (data, profile) => makeGift({
+  gallery: (data) => makeGift({
     emoji: '🖼️',
     title: '동료 원장에게 공유할 인사이트 포스트',
     useCase: '카페·블로그·뉴스레터에 그대로 올릴 수 있는 글로 변환됩니다.',
@@ -201,7 +201,7 @@ ${transcriptBlock}
     });
   },
 
-  roleplay: (data, profile) => makeGift({
+  roleplay: (data) => makeGift({
     emoji: '🎭',
     title: '학부모/강사 대응 스크립트북',
     useCase: 'AI가 상황별 응답 스크립트 모음집으로 만듭니다.',
@@ -221,7 +221,7 @@ ${truncate(JSON.stringify(data?.scenarioProgress ?? {}, null, 2), 1500)}
 3. 마지막에 신입 강사가 들고 다닐 수 있는 "절대 하지 말 것 5가지" 카드를 만들어줘.`,
   }),
 
-  pattern: (data, profile) => makeGift({
+  pattern: (data) => makeGift({
     emoji: '🧩',
     title: '상황 → 대응 결정 트리',
     useCase: 'AI가 의사결정 트리/플로우차트로 변환합니다.',
@@ -239,7 +239,7 @@ ${truncate(JSON.stringify(data?.scenarioProgress ?? {}, null, 2), 1500)}
 3. 마지막에 이 결정 트리를 신입에게 가르칠 때 사용할 한 문장 비유를 만들어줘.`,
   }),
 
-  noticing: (data, profile) => makeGift({
+  noticing: (data) => makeGift({
     emoji: '👀',
     title: '단서 라이브러리 만들기',
     useCase: 'AI가 신입이 현장에서 즉시 감지해야 할 단서 카드 묶음으로 변환합니다.',
@@ -258,7 +258,7 @@ ${truncate(JSON.stringify(data?.scenarioProgress ?? {}, null, 2), 1500)}
 3. 신입이 이 카드를 매일 1장씩 꺼내볼 수 있게 하는 3분 의식(루틴)을 설계해줘.`,
   }),
 
-  cdm: (data, profile) => makeGift({
+  cdm: (data) => makeGift({
     emoji: '🃏',
     title: 'Critical Decision Method 카드 1장',
     useCase: 'AI가 한 번의 결정을 재사용 가능한 의사결정 카드로 만듭니다.',

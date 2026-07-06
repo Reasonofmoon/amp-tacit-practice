@@ -56,7 +56,7 @@ const NUDGE_CARDS = {
   },
 };
 
-export function buildMicroInsight(activityId, data, _profile) {
+export function buildMicroInsight(activityId, data) {
   if (!activityId) return NUDGE_CARDS.default;
 
   // ── Showcase 데모 (demo_*): 그냥 nudge

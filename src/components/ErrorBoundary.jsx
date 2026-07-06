@@ -11,6 +11,12 @@ export default class ErrorBoundary extends React.Component {
     console.error('ErrorBoundary caught:', error, info);
   }
 
+  componentDidUpdate(previousProps) {
+    if (this.state.hasError && previousProps.resetKey !== this.props.resetKey) {
+      this.setState({ hasError: false });
+    }
+  }
+
   render() {
     if (this.state.hasError) {
       return (

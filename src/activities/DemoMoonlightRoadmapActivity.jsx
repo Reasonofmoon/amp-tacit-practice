@@ -127,13 +127,13 @@ export default function DemoMoonlightRoadmapActivity(props) {
                 <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-lg flex items-center gap-4 w-full justify-between">
                   <div className="text-left">
                     <div className="text-xs text-slate-500 uppercase font-semibold mb-1">Domain</div>
-                    <a href="#" className="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-2">
+                    <a href="https://moonlight-academy-roadmap.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-2">
                       moonlight-academy-roadmap.vercel.app <ExternalLink size={14} />
                     </a>
                   </div>
-                  <button className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-white text-sm font-medium transition-colors">
+                  <a href="https://moonlight-academy-roadmap.vercel.app/" target="_blank" rel="noopener noreferrer" className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-white text-sm font-medium transition-colors no-underline">
                     Visit Site
-                  </button>
+                  </a>
                 </div>
               </motion.div>
             )}

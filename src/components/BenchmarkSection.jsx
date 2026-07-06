@@ -8,7 +8,7 @@ import {
   compareQuizTime,
 } from '../utils/benchmark';
 import { QUIZZES } from '../data/quizzes';
-import { fetchLiveBenchmark, isBenchmarkServerEnabled } from '../utils/benchmarkClient';
+import { isBenchmarkServerEnabled } from '../utils/benchmarkClient';
 
 function collectStrings(value, bucket) {
   if (!value) return;

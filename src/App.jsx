@@ -153,6 +153,7 @@ export default function App() {
   const ActivityComponent = ACTIVITY_COMPONENTS[currentView] ?? null;
   const homeView = buildHomeViewModel(activeJourney, game.state);
   const recommendedJourney = homeView.journeyGuide;
+  const errorBoundaryResetKey = `${currentView}:${activeJourney}:${aiWorkbenchOpen}:${qrInterstitialOpen}`;
 
   const handleToggleJourney = (journey) => {
     setActiveJourney(journey);
@@ -175,7 +176,7 @@ export default function App() {
   };
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary resetKey={errorBoundaryResetKey}>
       <OnboardingOverlay
         open={!game.state.onboardingSeen}
         profile={game.state.profile}
@@ -246,6 +247,7 @@ export default function App() {
         {ActivityComponent && (
           <Suspense fallback={<LoadingPanel />}>
             <ActivityComponent
+              key={currentView}
               id={currentView}
               state={game.state}
               data={game.state.activityData[currentView]}
@@ -348,7 +350,7 @@ export default function App() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', maxWidth: '600px' }}>
           {SHOWCASE_ACTIVITIES.map(a => (
             a.url ? (
-            <a key={a.id} href={a.url} target="_blank" rel="noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', background: `${a.color}15`, border: `1px solid ${a.color}40`, color: a.color, fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
+            <a key={a.id} href={a.url} target="_blank" rel="noopener noreferrer" style={{ padding: '8px 16px', borderRadius: '8px', background: `${a.color}15`, border: `1px solid ${a.color}40`, color: a.color, fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>
               {a.icon} {a.title.split('. ')[1]}
             </a>
             ) : (

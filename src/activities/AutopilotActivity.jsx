@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AUTOPILOT_PROMPTS = [
@@ -27,10 +27,11 @@ export default function AutopilotActivity({ id, data, saveData, complete, onBack
   const [answers, setAnswers] = useState(data?.answers ?? {});
   const [draft, setDraft] = useState(data?.answers?.[0] ?? '');
 
-  const answeredCount = useMemo(
-    () => Object.values(answers).filter((value) => typeof value === 'string' && value.trim()).length,
-    [answers],
-  );
+  const visibleAnswers = {
+    ...answers,
+    [current]: draft.trim(),
+  };
+  const visibleAnsweredCount = Object.values(visibleAnswers).filter((value) => typeof value === 'string' && value.trim()).length;
 
   const handleMove = (index) => {
     setCurrent(index);
@@ -127,7 +128,7 @@ export default function AutopilotActivity({ id, data, saveData, complete, onBack
               
               <div style={{ display: 'flex', gap: '12px' }}>
                 <span style={{ display: 'flex', alignItems: 'center', fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                  {answeredCount} / 6 완료
+                  {visibleAnsweredCount} / 6 완료
                 </span>
                 {current < targetPrompts.length - 1 ? (
                   <button className="btn btn-primary" onClick={handleNext}>
@@ -136,12 +137,13 @@ export default function AutopilotActivity({ id, data, saveData, complete, onBack
                 ) : (
                   <button 
                     className="btn btn-primary" 
-                    disabled={answeredCount < 4}
+                    disabled={visibleAnsweredCount < 4}
                     onClick={() => {
                        const nextAnswers = commitCurrent();
-                       complete({ activityData: { answers: nextAnswers }, bonusXp: answeredCount >= 6 ? 20 : 10 });
+                       const completedCount = Object.values(nextAnswers).filter((value) => typeof value === 'string' && value.trim()).length;
+                       complete({ activityData: { answers: nextAnswers }, bonusXp: completedCount >= 6 ? 20 : 10 });
                     }}
-                    style={{ background: answeredCount >= 4 ? 'var(--success)' : 'var(--border)', color: answeredCount >= 4 ? 'white' : 'var(--text-muted)' }}
+                    style={{ background: visibleAnsweredCount >= 4 ? 'var(--success)' : 'var(--border)', color: visibleAnsweredCount >= 4 ? 'white' : 'var(--text-muted)' }}
                   >
                     데이터 추출 완료
                   </button>

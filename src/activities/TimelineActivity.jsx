@@ -33,6 +33,7 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
   
   const [placedEvents, setPlacedEvents] = useState(data?.placedEvents ?? {});
   const [draggedId, setDraggedId] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
   const availableEvents = targetEvents.filter(ev => !Object.values(placedEvents).some(placed => placed.id === ev.id));
   const filledCount = Object.keys(placedEvents).length;
@@ -47,13 +48,28 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
     e.preventDefault();
     if (!draggedId) return;
 
-    const eventToDrop = targetEvents.find(ev => ev.id === draggedId);
+    placeEvent(draggedId, monthIndex);
+    setDraggedId(null);
+  };
+
+  const placeEvent = (eventId, monthIndex) => {
+    const eventToDrop = targetEvents.find(ev => ev.id === eventId);
     if (eventToDrop) {
       const nextPlaced = { ...placedEvents, [monthIndex]: eventToDrop };
       setPlacedEvents(nextPlaced);
       saveData({ placedEvents: nextPlaced });
     }
-    setDraggedId(null);
+    setSelectedEventId(null);
+  };
+
+  const handleSelectEvent = (eventId) => {
+    setSelectedEventId((current) => (current === eventId ? null : eventId));
+  };
+
+  const handleSlotClick = (monthIndex) => {
+    if (selectedEventId && !placedEvents[monthIndex]) {
+      placeEvent(selectedEventId, monthIndex);
+    }
   };
 
   const handleRemove = (monthIndex) => {
@@ -78,6 +94,7 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
           </h2>
           <p style={{ color: 'var(--text-muted)', marginTop: '8px' }}>
             오른쪽의 주요 사건을 해당하는 월(Month) 슬롯으로 <strong>드래그 앤 드랍</strong> 해보세요. 
+            모바일에서는 이벤트를 먼저 선택한 뒤 월 슬롯을 누르면 됩니다. 
             {isDev ? '개발의 전체 리듬이 시각화됩니다.' : '학원의 운영 리듬이 시각화됩니다.'}
           </p>
         </div>
@@ -100,7 +117,7 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
                 style={{ background: 'var(--primary)', color: 'white', padding: '8px 16px', borderRadius: '20px', display: 'inline-block', alignSelf: 'center', marginBottom: '8px', fontWeight: 'bold', fontSize: '0.9rem', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.4)' }}
               >
-                👇 아이콘을 달에 드래그!
+                👇 드래그하거나 선택 후 달을 누르세요
               </motion.div>
             )}
             <div className="drag-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px' }}>
@@ -110,8 +127,19 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
                   draggable
                   layout
                   onDragStart={(e) => handleDragStart(e, ev)}
+                  onClick={() => handleSelectEvent(ev.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      handleSelectEvent(ev.id);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={selectedEventId === ev.id}
+                  aria-label={`${ev.text} 선택`}
                   className="drag-item gamified-node"
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', borderRadius: '16px', background: 'var(--bg-app)', border: '2px solid var(--border)', cursor: 'grab', boxShadow: '0 4px 8px rgba(0,0,0,0.05)' }}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '16px', borderRadius: '16px', background: selectedEventId === ev.id ? 'var(--primary-light)' : 'var(--bg-app)', border: `2px solid ${selectedEventId === ev.id ? 'var(--primary)' : 'var(--border)'}`, cursor: 'grab', boxShadow: selectedEventId === ev.id ? '0 8px 18px rgba(59,130,246,0.18)' : '0 4px 8px rgba(0,0,0,0.05)' }}
                   whileHover={{ scale: 1.05, borderColor: 'var(--primary)', y: -4, boxShadow: '0 8px 16px rgba(99, 102, 241, 0.2)' }}
                   whileTap={{ scale: 0.95, cursor: 'grabbing' }}
                 >
@@ -148,6 +176,17 @@ export default function TimelineActivity({ id, data, saveData, complete, onBack 
                 className={`drop-zone ${placedEvents[idx] ? 'filled' : ''}`}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, idx)}
+                onClick={() => handleSlotClick(idx)}
+                onKeyDown={(event) => {
+                  if ((event.key === 'Enter' || event.key === ' ') && !placedEvents[idx]) {
+                    event.preventDefault();
+                    handleSlotClick(idx);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`${month} 슬롯${placedEvents[idx] ? `, ${placedEvents[idx].text} 배치됨` : selectedEventId ? ', 선택한 이벤트 배치' : ', 비어 있음'}`}
+                style={{ cursor: selectedEventId && !placedEvents[idx] ? 'pointer' : undefined }}
               >
                 {placedEvents[idx] ? (
                   <motion.div 

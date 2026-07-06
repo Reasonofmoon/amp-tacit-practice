@@ -12,7 +12,7 @@ function getScenarioState(progressMap, scenarioId) {
   };
 }
 
-function buildProgressSnapshot(progressMap, targetScenarios) {
+function buildProgressSnapshot(progressMap, targetScenarios = []) {
   const completedScenarioIds = targetScenarios.filter((scenario) => getScenarioState(progressMap, scenario.id).complete).map((scenario) => scenario.id);
   const allResponses = targetScenarios.flatMap((scenario) => getScenarioState(progressMap, scenario.id).responses);
   const totalScore = allResponses.reduce((sum, response) => sum + response.score, 0);

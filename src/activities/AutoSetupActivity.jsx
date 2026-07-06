@@ -34,7 +34,7 @@ export default function AutoSetupActivity({ data, saveData, complete, onBack }) 
           <h3 style={{ marginBottom: '16px', color: '#A78BFA' }}>🎯 미션: Gemini API 키 발급</h3>
           <ol style={{ lineHeight: '1.8', color: 'var(--text-main)', paddingLeft: '20px' }}>
             <li>
-              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" style={{ color: '#8B5CF6', textDecoration: 'underline' }}>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style={{ color: '#8B5CF6', textDecoration: 'underline' }}>
                 Google AI Studio
               </a>에 접속하여 Google 계정으로 로그인합니다.
             </li>

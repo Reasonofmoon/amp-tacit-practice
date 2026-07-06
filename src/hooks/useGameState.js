@@ -256,7 +256,11 @@ export function useGameState() {
   const [celebration, setCelebration] = useState(emptyCelebration);
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (error) {
+      console.warn('Unable to persist game state locally.', error);
+    }
   }, [state]);
 
   useEffect(() => {

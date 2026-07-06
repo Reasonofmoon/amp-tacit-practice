@@ -204,10 +204,22 @@ function VideoCard({ video, expanded, onToggle }) {
     if (v?.requestFullscreen) v.requestFullscreen();
   };
 
+  const handleCardKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onToggle();
+    }
+  };
+
   return (
     <div
       className="card promo-card"
       onClick={onToggle}
+      onKeyDown={handleCardKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-expanded={expanded}
+      aria-label={`${video.title} 상세 정보 ${expanded ? '접기' : '열기'}`}
       style={{
         cursor: 'pointer',
         borderColor: expanded ? video.color : 'var(--border)',
@@ -330,8 +342,8 @@ function VideoCard({ video, expanded, onToggle }) {
             <button
               onClick={togglePlay}
               style={{
-                width: '32px',
-                height: '32px',
+                width: '44px',
+                height: '44px',
                 borderRadius: '8px',
                 background: 'rgba(0,0,0,0.6)',
                 border: 'none',
@@ -343,13 +355,13 @@ function VideoCard({ video, expanded, onToggle }) {
               }}
               aria-label="Pause"
             >
-              <Pause size={16} />
+              <Pause size={18} />
             </button>
             <button
               onClick={handleFullscreen}
               style={{
-                width: '32px',
-                height: '32px',
+                width: '44px',
+                height: '44px',
                 borderRadius: '8px',
                 background: 'rgba(0,0,0,0.6)',
                 border: 'none',
@@ -361,7 +373,7 @@ function VideoCard({ video, expanded, onToggle }) {
               }}
               aria-label="Fullscreen"
             >
-              <Maximize2 size={14} />
+              <Maximize2 size={18} />
             </button>
           </div>
         )}
@@ -524,17 +536,17 @@ export default function PromoGallery() {
       >
         <h3 style={{ margin: '0 0 8px' }}>🛠️ 직접 수정하고 싶다면?</h3>
         <p style={{ margin: '0 0 12px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-          모든 영상의 텍스트, 색상, 타이밍은{' '}
+          이 갤러리의 영상 목록, 순서, 설명은{' '}
           <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>
-            remo-motion-graphic/remotion/AMPTypoComposition.tsx
+            src/components/PromoGallery.jsx
           </code>
-          {' '}에서 수정할 수 있습니다.
+          {' '}의 <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>VIDEO_SETS</code>에서 수정할 수 있습니다.
         </p>
         <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
           <code style={{ background: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '4px' }}>
-            npm run studio
+            npm run build
           </code>
-          {' '}로 Remotion Studio를 열어 바로 프리뷰 + 렌더 가능
+          {' '}로 경로와 번들 오류를 확인한 뒤 배포하세요.
         </p>
       </div>
     </div>

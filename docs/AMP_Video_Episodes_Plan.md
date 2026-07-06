@@ -121,7 +121,7 @@
 ### Step 1: Google Whisk로 씬 이미지 생성
 
 ```
-1. labs.google.com/whisk 접속
+1. https://labs.google/fx/tools/whisk 접속
 2. 각 에피소드의 Whisk 프롬프트 입력
 3. 스타일 일관성을 위해 동일한 "Subject + Scene + Style" 3-input 패턴 사용
 4. 각 에피소드당 3~5장 키프레임 이미지 생성
