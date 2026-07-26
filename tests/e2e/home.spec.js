@@ -62,6 +62,25 @@ test('reset button clears saved workshop progress', async ({ page }) => {
   expect(stored.onboardingSeen).toBe(false);
 });
 
+test('developer principles: lock then unlock with presenter mode', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem('tacit-game-state', JSON.stringify({ onboardingSeen: true }));
+    window.localStorage.removeItem('tacit-presenter-mode');
+  });
+  await page.goto('/');
+
+  await page.getByRole('button', { name: /천천히 둘러보기/ }).click();
+  await page.getByRole('button', { name: /개발자 여정/ }).click();
+  await expect(page.getByRole('heading', { name: /AI 시대에 뒤쳐지지 않는 방법/ })).toBeVisible();
+
+  const lockedCard = page.getByRole('button', { name: /원칙 #2.*잠김|산출물로 닫기/ }).first();
+  await expect(lockedCard).toBeDisabled();
+
+  await page.getByRole('button', { name: /발표 모드 켜기|^발표$/ }).click();
+  await expect(page.getByText(/발표 모드 · 원칙/)).toBeVisible();
+  await expect(lockedCard).toBeEnabled();
+});
+
 test('clicking a director activity card opens the activity workspace', async ({ page }) => {
   // 기본 진입은 showcase 여정. director 여정으로 토글한 뒤 활동 그리드의 첫 카드를 클릭.
   await page.addInitScript(() => {

@@ -1,4 +1,4 @@
-import { Home, BarChart2, RotateCcw } from 'lucide-react';
+import { Home, BarChart2, RotateCcw, Presentation } from 'lucide-react';
 import LogoMark from './LogoMark';
 import ManualProgress from './ManualProgress';
 import ResumeCard from './ResumeCard';
@@ -92,6 +92,8 @@ export default function Layout({
   recommendedJourney,
   onPrintChapter,
   onResumeActivity,
+  presenterMode = false,
+  onTogglePresenterMode,
   children,
 }) {
   const isHome = currentView === 'home';
@@ -151,6 +153,18 @@ export default function Layout({
           )}
           <button
             type="button"
+            className={`btn btn-sm ${presenterMode ? 'btn-secondary' : 'btn-ghost'}`}
+            onClick={onTogglePresenterMode}
+            aria-pressed={presenterMode}
+            aria-label={presenterMode ? '발표 모드 끄기' : '발표 모드 켜기'}
+            title="원칙 잠금 해제 · 발표 멘트 기본 펼침"
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
+          >
+            <Presentation size={16} />
+            {presenterMode ? '발표 ON' : '발표'}
+          </button>
+          <button
+            type="button"
             className="btn btn-sm btn-ghost"
             onClick={onResetRequest}
             aria-label="저장된 테스트 결과 초기화"
@@ -160,6 +174,11 @@ export default function Layout({
           </button>
         </nav>
       </header>
+      {presenterMode && (
+        <div className="presenter-mode-banner" role="status">
+          발표 모드 · 원칙 ①→⑦ 잠금 해제 · 강연자 노트 기본 펼침
+        </div>
+      )}
 
       <main className="app-frame">
         {isHome && (

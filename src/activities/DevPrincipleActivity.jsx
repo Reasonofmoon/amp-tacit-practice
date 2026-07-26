@@ -46,9 +46,9 @@ function mergeDefaults(id, data) {
   };
 }
 
-function SpeakerNotesPanel({ principleId, color }) {
+function SpeakerNotesPanel({ principleId, color, defaultOpen = false }) {
   const notes = getPrincipleSpeakerNotes(principleId);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   if (!notes.length) return null;
   return (
     <div className="card speaker-notes-panel" style={{ padding: '14px 16px', border: `1px dashed ${color}55` }}>
@@ -68,18 +68,26 @@ function SpeakerNotesPanel({ principleId, color }) {
           ))}
         </ul>
       )}
-      <p className="speaker-notes-hint">수강생 워크시트가 아닙니다. 발표자만 펼치세요.</p>
+      <p className="speaker-notes-hint">
+        {defaultOpen
+          ? '발표 모드: 강연자 노트가 기본으로 펼쳐져 있습니다.'
+          : '수강생 워크시트가 아닙니다. 발표자만 펼치세요.'}
+      </p>
     </div>
   );
 }
 
-function ExplainPanel({ principle }) {
+function ExplainPanel({ principle, presenterMode = false }) {
   const { explain, myth, contrast, liveExamples } = principle;
   const examples = liveExamples ?? (principle.liveExample ? [principle.liveExample] : []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <SpeakerNotesPanel principleId={principle.id} color={principle.color} />
+      <SpeakerNotesPanel
+        principleId={principle.id}
+        color={principle.color}
+        defaultOpen={presenterMode}
+      />
 
       <div className="card" style={{ padding: '20px', borderLeft: `4px solid ${principle.color}` }}>
         <p style={{ margin: 0, fontSize: '1.05rem', lineHeight: 1.65 }}>{explain.hook}</p>
@@ -758,7 +766,15 @@ function FieldCard({ label, value, onChange, rows = 3, single = false, placehold
   );
 }
 
-export default function DevPrincipleActivity({ id, data, saveData, complete, onBack, state }) {
+export default function DevPrincipleActivity({
+  id,
+  data,
+  saveData,
+  complete,
+  onBack,
+  state,
+  presenterMode = false,
+}) {
   const principleId = id?.startsWith('dev_') ? id : 'dev_info_flow';
   const principle = getPrincipleById(principleId);
   const [draft, setDraft] = useState(() => mergeDefaults(principleId, data));
@@ -769,7 +785,7 @@ export default function DevPrincipleActivity({ id, data, saveData, complete, onB
     [principleId, draft],
   );
 
-  const unlocked = isPrincipleUnlocked(principleId, state?.completed ?? []);
+  const unlocked = isPrincipleUnlocked(principleId, state?.completed ?? [], { presenterMode });
 
   if (!principle) {
     return (
@@ -788,6 +804,7 @@ export default function DevPrincipleActivity({ id, data, saveData, complete, onB
             <h2 className="question-title" style={{ marginBottom: 0 }}>🔒 아직 잠긴 원칙입니다</h2>
             <p style={{ color: 'var(--text-muted)', marginTop: 8 }}>
               이전 원칙을 완료한 뒤 다시 열어 주세요. ①→⑦ 순서로 잠금이 풀립니다.
+              키노트 중에는 상단 <strong>발표</strong> 토글로 잠금을 해제할 수 있습니다.
             </p>
           </div>
           <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
@@ -1007,7 +1024,7 @@ export default function DevPrincipleActivity({ id, data, saveData, complete, onB
       <div className="workspace-content" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {step === 'explain' && (
           <motion.div key="explain" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-            <ExplainPanel principle={principle} />
+            <ExplainPanel principle={principle} presenterMode={presenterMode} />
             <button
               type="button"
               className="btn btn-primary neon-btn"

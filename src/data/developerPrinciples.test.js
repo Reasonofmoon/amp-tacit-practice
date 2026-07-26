@@ -162,6 +162,11 @@ describe('developer principles series', () => {
     expect(isPrincipleUnlocked('dev_quiz', [])).toBe(true);
   });
 
+  it('bypasses principle locks in presenter mode', () => {
+    expect(isPrincipleUnlocked('dev_public_loop', [], { presenterMode: true })).toBe(true);
+    expect(isPrincipleUnlocked('dev_output_close', [], { presenterMode: true })).toBe(true);
+  });
+
   it('provides speaker notes for each principle', () => {
     for (const id of EXPECTED) {
       expect(getPrincipleSpeakerNotes(id).length).toBeGreaterThan(0);
