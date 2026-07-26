@@ -735,5 +735,85 @@ export function listPrincipleIds() {
   return DEV_PRINCIPLES.map((p) => p.id);
 }
 
+/** Immediate prerequisite activity id, or null for principle #1 / non-principles. */
+export function getPrinciplePrerequisite(id) {
+  const ids = listPrincipleIds();
+  const index = ids.indexOf(id);
+  if (index <= 0) return null;
+  return ids[index - 1];
+}
+
+/**
+ * Principles unlock in order ①→⑦.
+ * Non-principle activities are always unlocked.
+ * Completing the previous principle unlocks the next.
+ */
+export function isPrincipleUnlocked(id, completed = []) {
+  if (!listPrincipleIds().includes(id)) return true;
+  const prereq = getPrinciplePrerequisite(id);
+  if (!prereq) return true;
+  return completed.includes(prereq);
+}
+
+export function getPrincipleLockReason(id, completed = []) {
+  if (isPrincipleUnlocked(id, completed)) return null;
+  const prereq = getPrinciplePrerequisite(id);
+  const prev = getPrincipleById(prereq);
+  return prev
+    ? `먼저 ${prev.tag} 「${prev.shortTitle}」을 완료하세요`
+    : '이전 원칙을 완료하세요';
+}
+
+/** Presenter-only notes — shown in collapsible “발표 멘트” panel, not student worksheet. */
+export const PRINCIPLE_SPEAKER_NOTES = {
+  dev_info_flow: [
+    'Hook: “모델을 안 써서”가 아니라 “정보가 안 남아서”로 프레임을 잡는다.',
+    '4단계(수집·정제·저장·재사용)를 한 슬라이드에 다 던지지 말고, 판서로 하나씩.',
+    '앵커 Devlog는 라이브로 열고 “매일 흐르는가”만 보여 준다. 기술 스택 자랑은 금지.',
+    '반발 “시간이 없다” → 최소 루프는 주 1회 20분이면 된다.',
+  ],
+  dev_output_close: [
+    '이 원칙은 청중이 가장 뜨끔해하는 지점. 비난 톤 금지 — “저도 그랬습니다”를 한 번 넣는다.',
+    'Hook 질문(“3분 설명 가능한 게 몇 개?”) 후 5초 침묵. 채우지 말 것.',
+    '새 개념은 2개만: 열린/닫힌 루프, 산출물 최소 계약.',
+    '“시간이 없다” → 크기 하한을 3줄로 즉시 낮춰 보여 준다. 품질은 ⑤로 미룬다.',
+  ],
+  dev_prompt_asset: [
+    'Hook의 478→7 숫자를 앵커(LLM Wiki)에서 반드시 회수한다. 열고 안 닫으면 ② 위반.',
+    'NAME→SLOT→SHAPE→CHECK는 판서로 하나씩. 한 슬라이드에 4개 동시 금지.',
+    '비개발 청중에게 SLOT = “메일 템플릿의 [고객명]” 비유.',
+    '스킬 파일 포맷 세부는 ④로 이관. 여기서는 절차 승격만.',
+  ],
+  dev_harness_design: [
+    '시리즈 난이도 정점. 중간 1회 손들기 체크(“여기까지 따라오셨나요”).',
+    '핵심 개념 3개: 역할 / 배선 / 경계. Tool·Skill·Subagent는 짧은 휴지 후 별도.',
+    '앵커 3종은 각 30초. 깊이 들어가면 시간 붕괴.',
+    '실습 15분 지점 안내: “경계 선언 칸 비어 있으면 지금 채우세요.”',
+  ],
+  dev_verify_loop: [
+    '④에서 “가장 먼저 깨질 단계”라고 적은 것을 재료로 시작한다.',
+    '겸손 구간: 강연자 본인의 검증 실패 사례 1개 필수. 없으면 설교가 된다.',
+    '3층(형식·사실·의도)은 아래에서 위로 판서.',
+    'Reward Hacking: AI가 나쁜 게 아니라 기준이 허술하다는 프레임 유지.',
+  ],
+  dev_domain_moat: [
+    '④⑤ 직후 회복 구간. 톤을 낮추고 성찰형으로. 새 도구를 꺼내지 말 것.',
+    'Hook 위축 방지: “없는 게 아니라 안 꺼내본 것”을 먼저 못 박는다.',
+    '오답 감각은 강연자 본인 사례 1개로 설명.',
+    '좁힘 공식은 청중 1명에게 즉석 적용하면 몰입도가 오른다.',
+  ],
+  dev_public_loop: [
+    '시리즈 클로징. 새 정보 최소화, ①~⑦ 회수와 연결에 시간을 쓴다.',
+    '앵커 사이트는 스크린샷이 아니라 브라우저 라이브.',
+    '①~⑦ 매핑표를 한 줄씩 천천히 읽는다.',
+    'CTA는 오늘 실행 가능 크기: 팀 채널에 워크시트 1장. 마무리 후 침묵 3초.',
+  ],
+};
+
+export function getPrincipleSpeakerNotes(id) {
+  const principle = getPrincipleById(id);
+  return principle?.speakerNotes ?? PRINCIPLE_SPEAKER_NOTES[id] ?? [];
+}
+
 // silence unused helper warning in some bundlers
 export { pathGet };

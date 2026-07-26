@@ -1,6 +1,11 @@
 import React from 'react';
 import { Bot, ClipboardCheck, Presentation } from 'lucide-react';
 import { SHOWCASE_ACTIVITIES, SHOWCASE_LEVELS } from '../data/showcaseActivities';
+import {
+  getPrincipleLockReason,
+  isPrincipleUnlocked,
+  listPrincipleIds,
+} from '../data/developerPrinciples';
 import { getActivityProgress } from '../utils/scoring';
 import ActivityCard from './ActivityCard';
 
@@ -160,7 +165,9 @@ export default function HomeJourneyView({
 
       <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '1.8rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>직접 둘러보기</h2>
       <p style={{ color: 'var(--ink-700)', marginBottom: 'var(--space-md)' }}>
-        추천 경로 외에도 전체 활동을 자유롭게 열 수 있습니다.
+        {activeJourney === 'developer'
+          ? '원칙 ①→⑦은 순서 잠금입니다. 이전 원칙을 완료하면 다음이 열립니다. 그 아래 스택 랩은 자유 탐색입니다.'
+          : '추천 경로 외에도 전체 활동을 자유롭게 열 수 있습니다.'}
       </p>
 
       {activeJourney === 'showcase' && (() => {
@@ -182,6 +189,9 @@ export default function HomeJourneyView({
       <div className="monopoly-board">
         {journeyActivities.map((activity, index) => {
           const isCompleted = state.completed.includes(activity.id);
+          const isPrinciple = listPrincipleIds().includes(activity.id);
+          const locked = isPrinciple && !isPrincipleUnlocked(activity.id, state.completed);
+          const lockReason = locked ? getPrincipleLockReason(activity.id, state.completed) : '';
 
           let bridgeSlide = null;
           if (activeJourney === 'showcase') {
@@ -211,6 +221,8 @@ export default function HomeJourneyView({
                   activity={activity}
                   index={index}
                   completed={isCompleted}
+                  locked={locked}
+                  lockReason={lockReason}
                   progress={getActivityProgress(activity.id, state.activityData[activity.id])}
                   onClick={() => onSelectActivity(activity.id)}
                 />

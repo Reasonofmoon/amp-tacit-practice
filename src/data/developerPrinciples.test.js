@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   createPrincipleDefaultData,
   DEV_PRINCIPLES,
+  getPrinciplePrerequisite,
+  getPrincipleSpeakerNotes,
   isPrinciplePracticeReady,
+  isPrincipleUnlocked,
   listPrincipleIds,
 } from './developerPrinciples';
 import { DEV_ACTIVITIES } from './developerActivities';
@@ -149,5 +152,19 @@ describe('developer principles series', () => {
     expect(card).toBeTruthy();
     expect(card.condition({ completed: EXPECTED })).toBe(true);
     expect(card.condition({ completed: EXPECTED.slice(0, 6) })).toBe(false);
+  });
+
+  it('locks principles until the previous one is completed', () => {
+    expect(isPrincipleUnlocked('dev_info_flow', [])).toBe(true);
+    expect(isPrincipleUnlocked('dev_output_close', [])).toBe(false);
+    expect(isPrincipleUnlocked('dev_output_close', ['dev_info_flow'])).toBe(true);
+    expect(getPrinciplePrerequisite('dev_prompt_asset')).toBe('dev_output_close');
+    expect(isPrincipleUnlocked('dev_quiz', [])).toBe(true);
+  });
+
+  it('provides speaker notes for each principle', () => {
+    for (const id of EXPECTED) {
+      expect(getPrincipleSpeakerNotes(id).length).toBeGreaterThan(0);
+    }
   });
 });

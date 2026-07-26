@@ -1,31 +1,41 @@
 import { motion } from 'framer-motion';
 
-export default function ActivityCard({ activity, completed, progress = 0, index, onClick }) {
+export default function ActivityCard({
+  activity,
+  completed,
+  progress = 0,
+  index,
+  onClick,
+  locked = false,
+  lockReason = '',
+}) {
   const stars = activity.difficulty || 0;
 
   return (
     <motion.button
       type="button"
-      className={`activity-card ${completed ? 'completed' : ''}`}
-      onClick={onClick}
+      className={`activity-card ${completed ? 'completed' : ''} ${locked ? 'locked' : ''}`}
+      onClick={locked ? undefined : onClick}
+      disabled={locked}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      aria-label={`${activity.title} 활동 열기`}
+      aria-label={locked ? `${activity.title} 잠김. ${lockReason}` : `${activity.title} 활동 열기`}
+      title={locked ? lockReason : undefined}
     >
       <div className="activity-card-header">
         <div className="activity-icon-wrap">
           <span style={{ fontSize: '1.5rem' }} aria-hidden="true">
-            {activity.icon}
+            {locked ? '🔒' : activity.icon}
           </span>
         </div>
-        <span className={`activity-status ${completed ? 'done' : ''}`}>
-          {completed ? '완료됨' : activity.time}
+        <span className={`activity-status ${completed ? 'done' : ''} ${locked ? 'locked' : ''}`}>
+          {completed ? '완료됨' : locked ? '잠김' : activity.time}
         </span>
       </div>
       
       <h3 className="activity-card-title">{activity.title}</h3>
-      <p className="activity-card-desc">{activity.subtitle}</p>
+      <p className="activity-card-desc">{locked && lockReason ? lockReason : activity.subtitle}</p>
 
       {/* Difficulty Stars Badge */}
       {stars > 0 && (

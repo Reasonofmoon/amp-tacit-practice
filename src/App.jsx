@@ -22,6 +22,10 @@ import { ACTIVITY_TITLES } from './utils/activityTitles';
 import { buildMicroInsight } from './utils/microInsight';
 import { findClosestChapter } from './utils/chapterProgress';
 import { buildSelectActivity, pickNextStep } from './utils/nextActivity';
+import {
+  isPrincipleUnlocked,
+  listPrincipleIds,
+} from './data/developerPrinciples';
 const PromoGallery = lazyWithRetry(() => import('./components/PromoGallery'), 'PromoGallery');
 const ResultReport = lazyWithRetry(() => import('./components/ResultReport'), 'ResultReport');
 const ReportAIWorkbench = lazyWithRetry(() => import('./components/ReportAIWorkbench'), 'ReportAIWorkbench');
@@ -126,7 +130,14 @@ export default function App() {
   const game = useGameState();
 
   // 어떤 활동으로든 한 번에 이동하면서 activeJourney 도 자연스럽게 같이 갱신.
-  const selectActivity = buildSelectActivity(setActiveJourney, setCurrentView);
+  // 원칙 ①→⑦은 선행 완료 전에는 진입 차단.
+  const selectActivityRaw = buildSelectActivity(setActiveJourney, setCurrentView);
+  const selectActivity = (id) => {
+    if (listPrincipleIds().includes(id) && !isPrincipleUnlocked(id, game.state.completed)) {
+      return;
+    }
+    selectActivityRaw(id);
+  };
 
   const handlePrintChapter = (chapterId) => {
     setPrintingChapter(chapterId);
@@ -228,7 +239,7 @@ export default function App() {
             onStartRecommendedDemo={() => handleStartRecommendedDemo(activeJourney)}
             onGoReport={goReport}
             onOpenQr={() => setQrInterstitialOpen(true)}
-            onSelectActivity={setCurrentView}
+            onSelectActivity={selectActivity}
             onChooseJourney={handleToggleJourney}
           />
         )}

@@ -4,7 +4,9 @@ import ActivityFooter from '../components/ActivityFooter';
 import {
   createPrincipleDefaultData,
   getPrincipleById,
+  getPrincipleSpeakerNotes,
   isPrinciplePracticeReady,
+  isPrincipleUnlocked,
 } from '../data/developerPrinciples';
 
 function mergeDefaults(id, data) {
@@ -44,12 +46,41 @@ function mergeDefaults(id, data) {
   };
 }
 
+function SpeakerNotesPanel({ principleId, color }) {
+  const notes = getPrincipleSpeakerNotes(principleId);
+  const [open, setOpen] = useState(false);
+  if (!notes.length) return null;
+  return (
+    <div className="card speaker-notes-panel" style={{ padding: '14px 16px', border: `1px dashed ${color}55` }}>
+      <button
+        type="button"
+        className="speaker-notes-toggle"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+      >
+        <span>🎤 발표 멘트 / 강연자 노트</span>
+        <span aria-hidden="true">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <ul className="speaker-notes-list">
+          {notes.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      )}
+      <p className="speaker-notes-hint">수강생 워크시트가 아닙니다. 발표자만 펼치세요.</p>
+    </div>
+  );
+}
+
 function ExplainPanel({ principle }) {
   const { explain, myth, contrast, liveExamples } = principle;
   const examples = liveExamples ?? (principle.liveExample ? [principle.liveExample] : []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <SpeakerNotesPanel principleId={principle.id} color={principle.color} />
+
       <div className="card" style={{ padding: '20px', borderLeft: `4px solid ${principle.color}` }}>
         <p style={{ margin: 0, fontSize: '1.05rem', lineHeight: 1.65 }}>{explain.hook}</p>
       </div>
@@ -738,11 +769,29 @@ export default function DevPrincipleActivity({ id, data, saveData, complete, onB
     [principleId, draft],
   );
 
+  const unlocked = isPrincipleUnlocked(principleId, state?.completed ?? []);
+
   if (!principle) {
     return (
       <div className="activity-workspace">
         <p>원칙 콘텐츠를 찾을 수 없습니다.</p>
         <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
+      </div>
+    );
+  }
+
+  if (!unlocked) {
+    return (
+      <div className="activity-workspace">
+        <header className="workspace-header">
+          <div>
+            <h2 className="question-title" style={{ marginBottom: 0 }}>🔒 아직 잠긴 원칙입니다</h2>
+            <p style={{ color: 'var(--text-muted)', marginTop: 8 }}>
+              이전 원칙을 완료한 뒤 다시 열어 주세요. ①→⑦ 순서로 잠금이 풀립니다.
+            </p>
+          </div>
+          <button type="button" className="btn btn-ghost" onClick={onBack}>돌아가기</button>
+        </header>
       </div>
     );
   }
