@@ -7,7 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const outPath = path.join(__dirname, 'AMP26_Lecture_Slides.pptx');
+const outPath = path.join(__dirname, process.env.AMP26_SLIDES_OUT || 'AMP26_Lecture_Slides.pptx');
 
 const C = {
   ink: '1A1915',
