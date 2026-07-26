@@ -624,6 +624,19 @@ p { color: var(--text-muted); }
   color: var(--text-muted);
 }
 
+.presenter-mode-banner {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e3a5f;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.22), rgba(167, 139, 250, 0.22));
+  border-bottom: 1px solid rgba(56, 189, 248, 0.35);
+}
+
 .workspace-header {
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px dashed var(--paper-300);

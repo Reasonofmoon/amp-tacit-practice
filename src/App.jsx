@@ -25,6 +25,8 @@ import { buildSelectActivity, pickNextStep } from './utils/nextActivity';
 import {
   isPrincipleUnlocked,
   listPrincipleIds,
+  readPresenterMode,
+  writePresenterMode,
 } from './data/developerPrinciples';
 const PromoGallery = lazyWithRetry(() => import('./components/PromoGallery'), 'PromoGallery');
 const ResultReport = lazyWithRetry(() => import('./components/ResultReport'), 'ResultReport');
@@ -126,14 +128,26 @@ export default function App() {
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [pendingGift, setPendingGift] = useState(null);
   const [printingChapter, setPrintingChapter] = useState(null);
+  const [presenterMode, setPresenterMode] = useState(() => readPresenterMode());
   const appContentRef = useRef(null);
   const game = useGameState();
 
+  const handleTogglePresenterMode = () => {
+    setPresenterMode((previous) => {
+      const next = !previous;
+      writePresenterMode(next);
+      return next;
+    });
+  };
+
   // 어떤 활동으로든 한 번에 이동하면서 activeJourney 도 자연스럽게 같이 갱신.
-  // 원칙 ①→⑦은 선행 완료 전에는 진입 차단.
+  // 원칙 ①→⑦은 선행 완료 전에는 진입 차단 (발표 모드에서는 해제).
   const selectActivityRaw = buildSelectActivity(setActiveJourney, setCurrentView);
   const selectActivity = (id) => {
-    if (listPrincipleIds().includes(id) && !isPrincipleUnlocked(id, game.state.completed)) {
+    if (
+      listPrincipleIds().includes(id)
+      && !isPrincipleUnlocked(id, game.state.completed, { presenterMode })
+    ) {
       return;
     }
     selectActivityRaw(id);
@@ -224,6 +238,8 @@ export default function App() {
         recommendedJourney={recommendedJourney}
         onPrintChapter={handlePrintChapter}
         onResumeActivity={selectActivity}
+        presenterMode={presenterMode}
+        onTogglePresenterMode={handleTogglePresenterMode}
       >
         {currentView === 'home' && activeJourney === 'promo' && (
           <Suspense fallback={<LoadingPanel />}>
@@ -236,6 +252,7 @@ export default function App() {
             activeJourney={activeJourney}
             state={game.state}
             homeView={homeView}
+            presenterMode={presenterMode}
             onStartRecommendedDemo={() => handleStartRecommendedDemo(activeJourney)}
             onGoReport={goReport}
             onOpenQr={() => setQrInterstitialOpen(true)}
@@ -269,6 +286,7 @@ export default function App() {
               key={currentView}
               id={currentView}
               state={game.state}
+              presenterMode={presenterMode}
               data={game.state.activityData[currentView]}
               saveData={(next) => game.saveActivityData(currentView, next)}
               complete={(options) => {

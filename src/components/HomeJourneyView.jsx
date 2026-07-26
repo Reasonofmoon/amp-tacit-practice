@@ -34,6 +34,7 @@ export default function HomeJourneyView({
   activeJourney,
   state,
   homeView,
+  presenterMode = false,
   onStartRecommendedDemo,
   onGoReport,
   onOpenQr,
@@ -166,7 +167,9 @@ export default function HomeJourneyView({
       <h2 style={{ marginBottom: 'var(--space-md)', fontSize: '1.8rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>직접 둘러보기</h2>
       <p style={{ color: 'var(--ink-700)', marginBottom: 'var(--space-md)' }}>
         {activeJourney === 'developer'
-          ? '원칙 ①→⑦은 순서 잠금입니다. 이전 원칙을 완료하면 다음이 열립니다. 그 아래 스택 랩은 자유 탐색입니다.'
+          ? (presenterMode
+            ? '발표 모드: 원칙 ①→⑦ 잠금이 해제되어 있습니다. 키노트에서 임의 순서로 열 수 있습니다.'
+            : '원칙 ①→⑦은 순서 잠금입니다. 이전 원칙을 완료하면 다음이 열립니다. 그 아래 스택 랩은 자유 탐색입니다.')
           : '추천 경로 외에도 전체 활동을 자유롭게 열 수 있습니다.'}
       </p>
 
@@ -190,8 +193,10 @@ export default function HomeJourneyView({
         {journeyActivities.map((activity, index) => {
           const isCompleted = state.completed.includes(activity.id);
           const isPrinciple = listPrincipleIds().includes(activity.id);
-          const locked = isPrinciple && !isPrincipleUnlocked(activity.id, state.completed);
-          const lockReason = locked ? getPrincipleLockReason(activity.id, state.completed) : '';
+          const locked = isPrinciple && !isPrincipleUnlocked(activity.id, state.completed, { presenterMode });
+          const lockReason = locked
+            ? getPrincipleLockReason(activity.id, state.completed, { presenterMode })
+            : '';
 
           let bridgeSlide = null;
           if (activeJourney === 'showcase') {

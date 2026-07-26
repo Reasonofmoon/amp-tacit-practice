@@ -747,21 +747,47 @@ export function getPrinciplePrerequisite(id) {
  * Principles unlock in order ①→⑦.
  * Non-principle activities are always unlocked.
  * Completing the previous principle unlocks the next.
+ * Presenter mode bypasses locks for keynote demos.
  */
-export function isPrincipleUnlocked(id, completed = []) {
+export function isPrincipleUnlocked(id, completed = [], options = {}) {
+  if (options.presenterMode) return true;
   if (!listPrincipleIds().includes(id)) return true;
   const prereq = getPrinciplePrerequisite(id);
   if (!prereq) return true;
   return completed.includes(prereq);
 }
 
-export function getPrincipleLockReason(id, completed = []) {
-  if (isPrincipleUnlocked(id, completed)) return null;
+export function getPrincipleLockReason(id, completed = [], options = {}) {
+  if (isPrincipleUnlocked(id, completed, options)) return null;
   const prereq = getPrinciplePrerequisite(id);
   const prev = getPrincipleById(prereq);
   return prev
     ? `먼저 ${prev.tag} 「${prev.shortTitle}」을 완료하세요`
     : '이전 원칙을 완료하세요';
+}
+
+export const PRESENTER_MODE_STORAGE_KEY = 'tacit-presenter-mode';
+
+export function readPresenterMode() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.localStorage.getItem(PRESENTER_MODE_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function writePresenterMode(enabled) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (enabled) {
+      window.localStorage.setItem(PRESENTER_MODE_STORAGE_KEY, '1');
+    } else {
+      window.localStorage.removeItem(PRESENTER_MODE_STORAGE_KEY);
+    }
+  } catch {
+    // ignore quota / private mode
+  }
 }
 
 /** Presenter-only notes — shown in collapsible “발표 멘트” panel, not student worksheet. */
