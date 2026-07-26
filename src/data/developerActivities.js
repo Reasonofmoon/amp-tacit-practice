@@ -1,4 +1,12 @@
+import { DEV_PRINCIPLES, getPrincipleActivityMeta } from './developerPrinciples';
+
+/** Principle series first (S1), then existing stack labs. */
+const PRINCIPLE_ACTIVITIES = DEV_PRINCIPLES.map(getPrincipleActivityMeta);
+
 export const DEV_ACTIVITIES = [
+  // --- Principles: AI 시대에 뒤쳐지지 않는 방법 ---
+  ...PRINCIPLE_ACTIVITIES,
+
   // --- Layer A: 기초 진단 (4개) ---
   {
     id: 'dev_quiz',

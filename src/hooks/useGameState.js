@@ -5,6 +5,7 @@ import { parseStoredGameState } from '../schemas/gameState';
 import { ACTIVITY_XP, getComboMultiplier, getLevelInfo, getNextLevel, getOverallProgress } from '../utils/scoring';
 import { buildBenchmarkSnapshot } from '../utils/benchmarkSnapshot';
 import { submitBenchmarkSnapshot, isBenchmarkServerEnabled } from '../utils/benchmarkClient';
+import { createPrincipleDefaultData, listPrincipleIds } from '../data/developerPrinciples';
 
 const STORAGE_KEY = 'tacit-game-state';
 const BENCHMARK_CACHE_KEY = 'tacit-benchmark-cache-v1';
@@ -57,7 +58,8 @@ export function createDefaultState() {
         card: { cue: '', interpret: '', action: '', boundary: '', alt: '' },
         insight: '',
       },
-      // Developer Journey
+      // Developer Journey — principles + stack mirrors
+      ...Object.fromEntries(listPrincipleIds().map((id) => [id, createPrincipleDefaultData(id)])),
       dev_timeline: { placedEvents: {}, insight: '' },
       dev_autopilot: { answers: {} },
       dev_crisis: { answers: {}, completedScenarios: 0 },
@@ -140,7 +142,52 @@ export function mergeState(savedState) {
         timeline: [...(savedState.activityData?.cdm?.timeline ?? base.activityData.cdm.timeline)],
       },
       
-      // Developer Journey Merges
+      // Developer Journey Merges (principles: shallow merge + nested defaults)
+      ...Object.fromEntries(
+        listPrincipleIds().map((id) => [
+          id,
+          {
+            ...base.activityData[id],
+            ...savedState.activityData?.[id],
+            loop: mergeRecord(base.activityData[id]?.loop, savedState.activityData?.[id]?.loop),
+            contract: mergeRecord(base.activityData[id]?.contract, savedState.activityData?.[id]?.contract),
+            checklist: mergeRecord(base.activityData[id]?.checklist, savedState.activityData?.[id]?.checklist),
+            promotion: mergeRecord(base.activityData[id]?.promotion, savedState.activityData?.[id]?.promotion),
+            storage: mergeRecord(base.activityData[id]?.storage, savedState.activityData?.[id]?.storage),
+            target: mergeRecord(base.activityData[id]?.target, savedState.activityData?.[id]?.target),
+            boundary: mergeRecord(base.activityData[id]?.boundary, savedState.activityData?.[id]?.boundary),
+            probes: mergeRecord(base.activityData[id]?.probes, savedState.activityData?.[id]?.probes),
+            narrowing: mergeRecord(base.activityData[id]?.narrowing, savedState.activityData?.[id]?.narrowing),
+            selfTest: mergeRecord(base.activityData[id]?.selfTest, savedState.activityData?.[id]?.selfTest),
+            plan: mergeRecord(base.activityData[id]?.plan, savedState.activityData?.[id]?.plan),
+            levers: mergeRecord(base.activityData[id]?.levers, savedState.activityData?.[id]?.levers),
+            ship: mergeRecord(base.activityData[id]?.ship, savedState.activityData?.[id]?.ship),
+            weekPlan: mergeRecord(base.activityData[id]?.weekPlan, savedState.activityData?.[id]?.weekPlan),
+            log: {
+              ...base.activityData[id]?.log,
+              ...savedState.activityData?.[id]?.log,
+              fields: mergeRecord(
+                base.activityData[id]?.log?.fields,
+                savedState.activityData?.[id]?.log?.fields,
+              ),
+            },
+            rubric: {
+              format: mergeRecord(
+                base.activityData[id]?.rubric?.format,
+                savedState.activityData?.[id]?.rubric?.format,
+              ),
+              fact: mergeRecord(
+                base.activityData[id]?.rubric?.fact,
+                savedState.activityData?.[id]?.rubric?.fact,
+              ),
+              intent: mergeRecord(
+                base.activityData[id]?.rubric?.intent,
+                savedState.activityData?.[id]?.rubric?.intent,
+              ),
+            },
+          },
+        ]),
+      ),
       dev_timeline: {
         ...base.activityData.dev_timeline,
         ...savedState.activityData?.dev_timeline,

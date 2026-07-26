@@ -8,6 +8,7 @@ import { PATTERN_CARDS } from '../data/patternCards';
 import { QUIZZES } from '../data/quizzes';
 import { ROLEPLAY_SCENARIOS } from '../data/scenarios';
 import { SHOWCASE_ACTIVITIES } from '../data/showcaseActivities';
+import { DEV_PRINCIPLES, getPrincipleProgress, listPrincipleIds } from '../data/developerPrinciples';
 
 // 직책 카드: 게임식 호칭(견습/장인) 대신 "결과물 기반 정체성".
 // 무엇을 가졌는가 / 무엇을 하는가로 정의. minXP는 누적 페이지(=내부 xp) 임계값.
@@ -31,6 +32,7 @@ export const ACTIVITY_XP = {
   pattern: 60,
   noticing: 60,
   cdm: 110,
+  ...Object.fromEntries(DEV_PRINCIPLES.map((p) => [p.id, p.xp ?? 100])),
   dev_timeline: 40,
   dev_autopilot: 50,
   dev_crisis: 60,
@@ -139,6 +141,10 @@ function countFilledValues(record = {}) {
 
 export function getActivityProgress(activityId, activityData) {
   const normalizedActivityId = activityId?.replace(/^dev_/, '');
+
+  if (listPrincipleIds().includes(activityId)) {
+    return clamp(getPrincipleProgress(activityId, activityData), 0, 1);
+  }
 
   switch (activityId) {
     case 'timeline':

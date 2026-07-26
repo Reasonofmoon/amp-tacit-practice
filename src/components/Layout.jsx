@@ -18,9 +18,9 @@ const HERO_NOTEBOOKS = {
     { label: '원장님 수업 노트 #3', title: '퇴원 위기 신호', accent: 'var(--pink-wash)' },
   ],
   developer: [
-    { label: '개발자 작업 노트 #1', title: '디버깅 직감', accent: 'var(--blue-wash)' },
+    { label: '개발자 작업 노트 #1', title: '정보 흐름 루프', accent: 'var(--blue-wash)' },
     { label: '개발자 작업 노트 #2', title: '구조화 습관', accent: 'var(--green-wash)' },
-    { label: '개발자 작업 노트 #3', title: '프롬프트 규칙', accent: 'var(--lavender-wash)' },
+    { label: '개발자 작업 노트 #3', title: '에이전트 스킬', accent: 'var(--lavender-wash)' },
   ],
   automation: [
     { label: '자동화 실습 노트 #1', title: '반복 업무 찾기', accent: 'var(--green-wash)' },
@@ -96,13 +96,13 @@ export default function Layout({
 }) {
   const isHome = currentView === 'home';
 
-  const title = activeJourney === 'developer' ? 'AI 개발자의 1년' :
+  const title = activeJourney === 'developer' ? 'AI 시대에 뒤쳐지지 않는 방법' :
                 activeJourney === 'automation' ? '나만의 AI 서기 만들기' :
                 activeJourney === 'showcase' ? '현장 노하우가 앱으로 변하는 그 순간' :
                 activeJourney === 'promo' ? '키노트 모션 그래픽 갤러리' :
                 '학원 원장의 1년';
   const subtitle = activeJourney === 'developer'
-    ? '소프트웨어 개발 과정의 현장 노하우(암묵지)를 추출해 시스템 프롬프트로 변환합니다.'
+    ? '먼저 정보가 나를 통해 흐르는 시스템을 만들고, 이어서 스택·에이전트 스킬 랩으로 확장합니다.'
     : activeJourney === 'automation'
     ? '코딩을 몰라도 괜찮습니다. 복사+붙여넣기로 나만의 24시간 AI 비서를 완성해보세요!'
     : activeJourney === 'showcase'

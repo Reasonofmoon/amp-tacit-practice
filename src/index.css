@@ -506,6 +506,89 @@ p { color: var(--text-muted); }
   opacity: 0.55;
 }
 
+/* Developer principle module (explain + practice) */
+.dev-principle-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px 0;
+  background: var(--paper-100);
+  border-bottom: 1px dashed var(--paper-300);
+}
+.dev-principle-tab {
+  flex: 1;
+  border: 1px solid var(--paper-300);
+  background: var(--paper-50);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.dev-principle-tab.active {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(14, 165, 233, 0.45);
+  color: var(--text-main);
+}
+.dev-flow-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dev-flow-stage {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.dev-flow-stage-n {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(14, 165, 233, 0.15);
+  color: #0284c7;
+}
+.dev-contrast-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dev-contrast-head,
+.dev-contrast-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 0.92rem;
+}
+.dev-contrast-head {
+  font-weight: 700;
+  color: var(--text-main);
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--paper-300);
+}
+.dev-contrast-row span {
+  padding: 6px 8px;
+  background: var(--paper-100);
+  border-radius: 8px;
+  line-height: 1.45;
+}
+.dev-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  align-items: center;
+}
+.dev-mini-grid input {
+  width: 100%;
+  padding: 8px 10px;
+}
+
 .workspace-header {
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px dashed var(--paper-300);

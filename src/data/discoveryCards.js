@@ -193,6 +193,27 @@ export const DISCOVERY_CARDS = [
     condition: (state) => state.completed.length >= 9,
     evidence: (state) => `${state.completed.length}개 활동을 가로질러 매뉴얼을 채웠습니다 — 다중 챕터 동시 진행 패턴.`,
   },
+  {
+    id: 'system_owner',
+    name: 'System Owner',
+    icon: '🏛️',
+    desc: '정보 흐름부터 공개 루프까지 7원칙을 닫아 개인 운영체제를 소유한다.',
+    benchmark: 'AI 시대 생존 7원칙 전 코스를 완료한 개발자 여정 완주자.',
+    condition: (state) => {
+      const required = [
+        'dev_info_flow',
+        'dev_output_close',
+        'dev_prompt_asset',
+        'dev_harness_design',
+        'dev_verify_loop',
+        'dev_domain_moat',
+        'dev_public_loop',
+      ];
+      return required.every((id) => state.completed?.includes(id));
+    },
+    evidence: () =>
+      '원칙 ①~⑦을 모두 완료했습니다 — 수집·닫기·절차·하네스·검증·도메인·공개의 한 바퀴를 돌렸습니다.',
+  },
 ];
 
 // useGameState 가 호출하는 평가 함수.
