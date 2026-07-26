@@ -85,7 +85,7 @@ const TOTAL = 21;
     x: 0.7, y: 1.7, w: 8.5, h: 1.6,
     fontSize: 40, fontFace: 'Georgia', color: C.white, bold: true, margin: 0,
   });
-  s.addText('암묵지를 시스템으로 만드는 90분', {
+  s.addText('보고 · 3줄 남기고 · AI 말에 이름 붙이기', {
     x: 0.7, y: 3.5, w: 8.5, h: 0.4,
     fontSize: 18, fontFace: 'Calibri', color: '5EEAD4', margin: 0,
   });
@@ -105,9 +105,9 @@ const TOTAL = 21;
     fontSize: 32, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
   });
   const items = [
-    { t: '도구 자랑이 아닙니다', d: '운영 방식 3가지를 손에 쥐고 나갑니다' },
-    { t: '① ② ③ 을 깊게', d: '정보 흐름 · 산출물로 닫기 · 프롬프트 자산화' },
-    { t: '④ ~ ⑦ 은 지도로', d: '하네스 · 검증 · 도메인 · 공개 — 이름과 한 문장' },
+    { t: '도구·코딩 수업이 아닙니다', d: '메모장에 적을 수 있는 것 3개만 가져가면 성공' },
+    { t: '① ② ③ 을 깊게', d: '정보 문·서랍 정하기 · 3줄 남기기 · AI 단축어 이름' },
+    { t: '④ ~ ⑦ 은 지도로', d: '역할 쪽지 · 합격 기준 · 센 한 줄 · 팀 채널 한 장' },
   ];
   items.forEach((it, i) => {
     const y = 1.2 + i * 1.2;
@@ -142,9 +142,9 @@ const TOTAL = 21;
     fontSize: 28, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
   });
   const msgs = [
-    { n: '01', c: C.accent, t: '뒤처지는 이유는 모델이 아닙니다', d: '정보가 안 흐르고, 안 닫히고, 절차가 안 되기 때문' },
-    { n: '02', c: C.blue, t: '몸으로 아는 판단이 암묵지입니다', d: '원장·실무·기획 — 조직의 암묵지로 일반화' },
-    { n: '03', c: C.violet, t: '증거는 루프입니다', d: '앱과 매일 돌아가는 시스템으로 증명' },
+    { n: '01', c: C.accent, t: 'ChatGPT 종류 문제가 아닙니다', d: '정보가 흩어지고, 본 걸 안 적고, 같은 말을 매번 다시 침' },
+    { n: '02', c: C.blue, t: '말로 설명 못 하는 판단이 보물입니다', d: '원장=상담 감 / 실무=처리 순서 / 기획=안 만들 기준' },
+    { n: '03', c: C.violet, t: '증명 방법은 매일 돌리는 습관입니다', d: '앱 시연 + 데브로그처럼 “받는 주소”가 있는 사람' },
   ];
   msgs.forEach((m, i) => {
     const y = 1.05 + i * 1.3;
@@ -248,13 +248,13 @@ const TOTAL = 21;
     fontSize: 14, fontFace: 'Calibri', color: C.muted, margin: 0,
   });
   const principles = [
-    { n: '①', t: '정보 흐름', deep: true },
-    { n: '②', t: '산출물 닫기', deep: true },
-    { n: '③', t: '절차 자산화', deep: true },
-    { n: '④', t: '하네스', deep: false },
-    { n: '⑤', t: '검증 루프', deep: false },
-    { n: '⑥', t: '도메인 해자', deep: false },
-    { n: '⑦', t: '공개 루프', deep: false },
+    { n: '①', t: '문·서랍\n정하기', deep: true },
+    { n: '②', t: '3줄\n남기기', deep: true },
+    { n: '③', t: 'AI\n단축어', deep: true },
+    { n: '④', t: '역할\n쪽지', deep: false },
+    { n: '⑤', t: '합격\n기준', deep: false },
+    { n: '⑥', t: '센\n한 줄', deep: false },
+    { n: '⑦', t: '팀 채널\n한 장', deep: false },
   ];
   principles.forEach((p, i) => {
     const x = 0.35 + i * 1.35;
@@ -285,11 +285,11 @@ const TOTAL = 21;
     x: 0.7, y: 1.6, w: 8.5, h: 0.45,
     fontSize: 18, fontFace: 'Calibri', color: '99F6E4', margin: 0,
   });
-  s.addText('정보가 나를 통해 흐르는\n시스템을 구축하라', {
+  s.addText('정보 문 하나,\n서랍 하나 정하기', {
     x: 0.7, y: 2.15, w: 8.5, h: 1.4,
     fontSize: 32, fontFace: 'Georgia', color: C.white, bold: true, margin: 0,
   });
-  s.addText('14:14 – 14:28  ·  앱: dev_info_flow', {
+  s.addText('14:14 – 14:28  ·  받기→골라내기→넣어두기→다시 꺼내기', {
     x: 0.7, y: 4.3, w: 8.5, h: 0.35,
     fontSize: 14, fontFace: 'Calibri', color: 'CCFBF1', margin: 0,
   });
@@ -309,11 +309,11 @@ const TOTAL = 21;
     x: 0.7, y: 1.5, w: 3.9, h: 0.5,
     fontSize: 28, align: 'center', margin: 0,
   });
-  s.addText('많이 저장하면\n내 것이 된다', {
+  s.addText('북마크·폴더만\n늘리면 된다', {
     x: 0.7, y: 2.2, w: 3.9, h: 1.2,
     fontSize: 22, fontFace: 'Georgia', color: C.coral, bold: true, align: 'center', margin: 0,
   });
-  s.addText('고이기만 하면 창고', {
+  s.addText('나중에 못 찾음 = 창고', {
     x: 0.7, y: 3.6, w: 3.9, h: 0.4,
     fontSize: 15, fontFace: 'Calibri', color: C.muted, align: 'center', margin: 0,
   });
@@ -322,11 +322,11 @@ const TOTAL = 21;
     x: 5.4, y: 1.5, w: 3.9, h: 0.5,
     fontSize: 28, align: 'center', margin: 0,
   });
-  s.addText('흐르게 만들어야\n내 것이 된다', {
+  s.addText('받는 문 하나\n서랍 하나 정한다', {
     x: 5.4, y: 2.2, w: 3.9, h: 1.2,
     fontSize: 22, fontFace: 'Georgia', color: C.accent, bold: true, align: 'center', margin: 0,
   });
-  s.addText('자산은 순환에서 생긴다', {
+  s.addText('금요일에 다시 꺼내 쓴다', {
     x: 5.4, y: 3.6, w: 3.9, h: 0.4,
     fontSize: 15, fontFace: 'Calibri', color: C.muted, align: 'center', margin: 0,
   });
@@ -338,15 +338,15 @@ const TOTAL = 21;
   const s = pres.addSlide();
   s.background = { color: C.paper };
   sectionBar(s, C.accent);
-  s.addText('① 정보 루프 4단계', {
+  s.addText('① 네 칸만 채우면 됩니다', {
     x: 0.5, y: 0.3, w: 9, h: 0.45,
     fontSize: 26, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
   });
   const stages = [
-    { n: '1', t: '수집', d: '어디에 들어오는가' },
-    { n: '2', t: '정제', d: '무엇을 남기는가' },
-    { n: '3', t: '저장', d: '다시 꺼낼 곳' },
-    { n: '4', t: '재사용', d: '언제 다시 쓰는가' },
+    { n: '1', t: '받기', d: '카톡? 메일?\n입구 1개' },
+    { n: '2', t: '골라내기', d: '이번 주에\n쓸 것만' },
+    { n: '3', t: '넣어두기', d: '노션/메모\n서랍 1개' },
+    { n: '4', t: '다시 꺼내기', d: '금 20분\n다시 보기' },
   ];
   stages.forEach((st, i) => {
     const x = 0.45 + i * 2.4;
@@ -401,11 +401,11 @@ const TOTAL = 21;
     x: 0.7, y: 1.6, w: 8.5, h: 0.45,
     fontSize: 18, fontFace: 'Calibri', color: 'FDE68A', margin: 0,
   });
-  s.addText('배운 것은 반드시\n산출물로 닫아라', {
+  s.addText('보면 끝?\n3줄 남기고 끝', {
     x: 0.7, y: 2.15, w: 8.5, h: 1.4,
     fontSize: 32, fontFace: 'Georgia', color: C.white, bold: true, margin: 0,
   });
-  s.addText('14:28 – 14:41  ·  앱: dev_output_close', {
+  s.addText('14:28 – 14:41  ·  형태 · 시한 · 3줄이면 닫힘', {
     x: 0.7, y: 4.3, w: 8.5, h: 0.35,
     fontSize: 14, fontFace: 'Calibri', color: 'FEF3C7', margin: 0,
   });
@@ -434,14 +434,14 @@ const TOTAL = 21;
   const s = pres.addSlide();
   s.background = { color: C.paper };
   sectionBar(s, C.gold);
-  s.addText('② 산출물 최소 계약', {
+  s.addText('② 나는 이렇게 쓰기로 한다 (빈칸)', {
     x: 0.5, y: 0.3, w: 9, h: 0.45,
-    fontSize: 26, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
+    fontSize: 24, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
   });
   const contracts = [
-    { n: '형태', d: '매번 같은 그릇에 담는다' },
-    { n: '시한', d: '소비 후 24시간 이내 등' },
-    { n: '크기 하한', d: '3줄이면 닫은 것으로 인정' },
+    { n: '형태', d: '유튜브 보면 → 제목 + 핵심 3줄 + 내 생각 1줄' },
+    { n: '시한', d: '본 날 자정 전 / 늦어도 24시간 안' },
+    { n: '최소', d: '3줄만 써도 “끝”으로 친다 (완벽 금지)' },
   ];
   contracts.forEach((c, i) => {
     const y = 1.1 + i * 1.2;
@@ -470,11 +470,11 @@ const TOTAL = 21;
     x: 0.7, y: 1.6, w: 8.5, h: 0.45,
     fontSize: 18, fontFace: 'Calibri', color: 'DDD6FE', margin: 0,
   });
-  s.addText('프롬프트를 절차로 바꿔\n자산화하라', {
+  s.addText('AI에 맨날 치는 그 말,\n이름 붙여 두기', {
     x: 0.7, y: 2.15, w: 8.5, h: 1.4,
     fontSize: 32, fontFace: 'Georgia', color: C.white, bold: true, margin: 0,
   });
-  s.addText('14:41 – 14:55  ·  앱: dev_prompt_asset', {
+  s.addText('14:41 – 14:55  ·  이름 · 빈칸 · 결과 모양 · 합격 기준', {
     x: 0.7, y: 4.3, w: 8.5, h: 0.35,
     fontSize: 14, fontFace: 'Calibri', color: 'EDE9FE', margin: 0,
   });
@@ -519,15 +519,15 @@ const TOTAL = 21;
   const s = pres.addSlide();
   s.background = { color: C.paper };
   sectionBar(s, C.violet);
-  s.addText('③ NAME → SLOT → SHAPE → CHECK', {
+  s.addText('③ AI 단축어 네 칸', {
     x: 0.5, y: 0.3, w: 9, h: 0.45,
-    fontSize: 24, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
+    fontSize: 26, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
   });
   const steps = [
-    { k: 'NAME', d: '이름을 붙인다' },
-    { k: 'SLOT', d: '변하는 칸을 뚫는다' },
-    { k: 'SHAPE', d: '출력 형태를 고정' },
-    { k: 'CHECK', d: '성공 기준을 적는다' },
+    { k: '이름', d: 'parent-reply\n주간보고' },
+    { k: '빈칸', d: '{학부모 요지}\n{기간}' },
+    { k: '결과 모양', d: '공감 2문장\n+ 할 일 3개' },
+    { k: '합격 기준', d: '비난 톤 없음\n숫자 1개' },
   ];
   steps.forEach((st, i) => {
     const x = 0.45 + i * 2.4;
@@ -541,7 +541,7 @@ const TOTAL = 21;
       fontSize: 15, fontFace: 'Calibri', color: C.inkSoft, align: 'center', margin: 0,
     });
   });
-  s.addText('두 번 쓸 것 같으면, 그 자리에서 절차로 만들어라.', {
+  s.addText('두 번 비슷하게 쳤으면, 그 자리에서 이름 붙여라.', {
     x: 0.5, y: 4.0, w: 9, h: 0.45,
     fontSize: 16, fontFace: 'Georgia', color: C.violet, italic: true, margin: 0,
   });
@@ -553,15 +553,15 @@ const TOTAL = 21;
   const s = pres.addSlide();
   s.background = { color: C.paper };
   sectionBar(s);
-  s.addText('④ ~ ⑦ 지도로만', {
+  s.addText('④ ~ ⑦ 이름만 기억 (깊게 안 함)', {
     x: 0.5, y: 0.3, w: 9, h: 0.45,
-    fontSize: 26, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
+    fontSize: 24, fontFace: 'Georgia', color: C.ink, bold: true, margin: 0,
   });
   const map = [
-    { n: '④', t: '하네스', d: '위임하지 말고 고삐를 쥔다' },
-    { n: '⑤', t: '검증', d: '그럴듯함 말고 게이트' },
-    { n: '⑥', t: '도메인', d: '좁고 깊게 소유한다' },
-    { n: '⑦', t: '공개', d: '피드백을 복리로' },
+    { n: '④', t: '역할 쪽지', d: '“알아서 해줘” 금지 · 설계/실행/검사 · 하지 말 것' },
+    { n: '⑤', t: '합격 기준 3개', d: '받기 전에: 형식·사실·의도 체크' },
+    { n: '⑥', t: '센 한 줄', d: '영역 × 누구 × 제약 = 내가 제일 센 자리' },
+    { n: '⑦', t: '팀 채널 한 장', d: '완성 기다리지 말고 올리고 “틀리면 알려주세요”' },
   ];
   map.forEach((m, i) => {
     const y = 1.0 + i * 0.95;
@@ -656,11 +656,11 @@ const TOTAL = 21;
     x: 0.7, y: 1.4, w: 8.5, h: 0.4,
     fontSize: 16, fontFace: 'Calibri', color: '5EEAD4', margin: 0,
   });
-  s.addText('흐르게 하고, 닫고, 절차로 만들고\n— 묶고, 검증하고, 좁히고, 연다.', {
-    x: 0.7, y: 2.0, w: 8.5, h: 1.4,
+  s.addText('정보 문 하나 정하고,\n본 건 3줄 남기고,\nAI 말에 이름 붙이세요.', {
+    x: 0.7, y: 1.9, w: 8.5, h: 1.6,
     fontSize: 26, fontFace: 'Georgia', color: C.white, bold: true, margin: 0,
   });
-  s.addText('모델은 바뀝니다. 루프의 주인은 여러분입니다.', {
+  s.addText('모델은 바뀝니다. 메모를 돌리는 사람이 이깁니다.', {
     x: 0.7, y: 3.7, w: 8.5, h: 0.4,
     fontSize: 16, fontFace: 'Calibri', color: '94A3B8', margin: 0,
   });
