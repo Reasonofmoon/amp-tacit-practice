@@ -277,7 +277,94 @@ ${truncate(JSON.stringify(data ?? {}, null, 2), 1800)}
 };
 
 // ─── DEVELOPER JOURNEY ─────────────────────────
+const principleGift = (emoji, title, payoff, body, focus) => makeGift({
+  emoji,
+  title,
+  useCase: 'ChatGPT/Claude/Cursor에 붙여 실행 계획·스킬·체크리스트로 확장합니다.',
+  payoff,
+  prompt: `[역할] AI 시대 개인 운영체제 코치.
+[원칙 초점] ${focus}
+[사용자 워크시트]
+${fallback(body, '(워크시트 비어 있음 — 일반 모범 사례로 초안 제안)')}
+
+[출력]
+1. 7일 실행 체크리스트
+2. 막히는 지점 3개와 우회법
+3. 재사용 가능한 템플릿/스킬 초안 1개
+한국어, 간결하게.`,
+});
+
 const developerGifts = {
+  dev_info_flow: (data) => {
+    const loop = data?.loop ?? {};
+    const body = [
+      data?.sources && `입구: ${truncate(data.sources, 200)}`,
+      data?.bottlenecks && `병목: ${truncate(data.bottlenecks, 160)}`,
+      loop.collect && `수집: ${truncate(loop.collect, 120)}`,
+      loop.refine && `정제: ${truncate(loop.refine, 120)}`,
+      loop.store && `저장: ${truncate(loop.store, 120)}`,
+      loop.reuse && `재사용: ${truncate(loop.reuse, 120)}`,
+      data?.weeklyCadence && `리듬: ${truncate(data.weeklyCadence, 100)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('🌊', '정보 루프 → 주간 운영 루틴', '흐르는 시스템이 체크리스트가 됩니다.', body, '정보가 나를 통해 흐르는 시스템');
+  },
+  dev_output_close: (data) => {
+    const c = data?.contract ?? {};
+    const body = [
+      c.form && `형태: ${truncate(c.form, 200)}`,
+      c.deadline && `시한: ${truncate(c.deadline, 80)}`,
+      c.minSize && `하한: ${truncate(c.minSize, 80)}`,
+      data?.checklist?.storePath && `저장: ${truncate(data.checklist.storePath, 120)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('📦', '산출물 계약 → 템플릿 1장', '열린 루프를 닫는 계약서가 템플릿이 됩니다.', body, '배운 것은 산출물로 닫기');
+  },
+  dev_prompt_asset: (data) => {
+    const p = data?.promotion ?? {};
+    const body = [
+      data?.candidate && `후보: ${truncate(data.candidate, 160)}`,
+      p.name && `NAME: ${p.name}`,
+      p.slots && `SLOT: ${p.slots}`,
+      p.shape && `SHAPE: ${truncate(p.shape, 160)}`,
+      p.check && `CHECK: ${truncate(p.check, 160)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('🧩', '절차 승격 → 스킬 파일 초안', '일회성 대화가 호출 가능한 스킬이 됩니다.', body, 'NAME SLOT SHAPE CHECK');
+  },
+  dev_harness_design: (data) => {
+    const body = [
+      data?.target?.task && `업무: ${truncate(data.target.task, 160)}`,
+      data?.target?.output && `산출: ${truncate(data.target.output, 120)}`,
+      data?.boundary?.humanGate && `인간 게이트: ${truncate(data.boundary.humanGate, 120)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('🪢', '하네스 → 역할/경계 운영 문서', '방목이 고삐 있는 계약서가 됩니다.', body, '역할 분할 · 절차 배선 · 경계 선언');
+  },
+  dev_verify_loop: (data) => {
+    const body = [
+      data?.target?.step && `단계: ${truncate(data.target.step, 100)}`,
+      data?.gate?.hardFail && `절대 탈락: ${truncate(data.gate.hardFail, 120)}`,
+      data?.log?.path && `로그: ${truncate(data.log.path, 100)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('✅', '검증 게이트 → 재시도 런북', '그럴듯함 대신 통과 기준이 남습니다.', body, 'RUBRIC GATE RETRY LOG');
+  },
+  dev_domain_moat: (data) => {
+    const n = data?.narrowing ?? {};
+    const body = [
+      n.field && `영역: ${n.field}`,
+      n.audience && `대상: ${n.audience}`,
+      n.constraint && `제약: ${n.constraint}`,
+      data?.plan?.form && `90일: ${truncate(data.plan.form, 120)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('🏰', '도메인 좌표 → 90일 축적 플랜', '좁은 해자가 콘텐츠 캘린더가 됩니다.', body, '좁고 깊은 도메인 소유');
+  },
+  dev_public_loop: (data) => {
+    const L = data?.levers ?? {};
+    const body = [
+      data?.firstPublic && `공개 대상: ${truncate(data.firstPublic, 120)}`,
+      L.cadence && `주기: ${L.cadence}`,
+      L.channel && `경로: ${L.channel}`,
+      L.invite && `반박 초대: ${truncate(L.invite, 160)}`,
+    ].filter(Boolean).join('\n');
+    return principleGift('📢', '공개 루프 → 4주 발행 캘린더', '개인 루프가 피드백 복리로 열립니다.', body, '발행 주기 · 경로 · 반박 초대');
+  },
   dev_timeline: () => makeGift({
     emoji: '🗓️',
     title: '개발 1년 회고 → 다음 분기 OKR',
