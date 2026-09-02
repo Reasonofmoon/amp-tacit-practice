@@ -35,6 +35,7 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 1,
     techTags: ["React", "Vercel"],
     url: "https://readmaster-funnel.vercel.app/",
+    repoUrl: "https://github.com/Reasonofmoon/readmaster-funnel.git",
     storyText: "학생의 읽기 능력을 초기 진단하여 맞춤형 교육의 첫 단추를 끼우는 원장님의 직관적 파악력",
     speakerNotes: "새 학생이 오면 레벨테스트 전에 이미 느낌이 온다 → 이것이 암묵지. 이 직관을 알고리즘으로 체계화해서 앱에 넣으면, 원장님이 안 계셔도 진단이 된다."
   },
@@ -77,6 +78,7 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 2,
     techTags: ["React", "Graph Viz", "Vercel"],
     url: "https://eduontology.vercel.app/vocab",
+    repoUrl: "https://github.com/Reasonofmoon/eduontology.git",
     storyText: "단순한 암기를 넘어, 단어의 어원과 철학적 본질을 연결하여 깊이 있는 사고력을 확장시키는 에듀 온톨로지망",
     speakerNotes: "tragedy = 그리스어 tragos(염소) + oide(노래). 스토리가 있는 단어는 절대 잊지 않는다. 원장님이 머릿속으로 아시던 연결 고리를 시각적 그래프로 펼쳐놓은 것."
   },
@@ -104,6 +106,7 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 3,
     techTags: ["React", "Graph DB", "PKM"],
     url: "https://knot-ebon.vercel.app/",
+    repoUrl: "https://github.com/Reasonofmoon/knot.git",
     storyText: "파편화된 지식들을 유기적으로 연결하고 확장하여 나만의 지식 생태계를 구축하는 학습용 PKM 시스템",
     speakerNotes: "메모를 어디에 적어두십니까? 나중에 못 찾는 이유: 연결이 안 되어 있으니까. PKM = 메모가 섬이 아니라 대륙의 일부. 후임 선생님 인수인계 시 그래프만 보여주면 됨."
   },
@@ -131,8 +134,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Next.js", "AI", "MECE"],
     url: "https://bluel-app.vercel.app/",
+    repoUrl: "https://github.com/Reasonofmoon/bluel.git",
     extraLinks: [
-      { label: "Version 2", url: "https://bluel.lovable.app/" },
+      { label: "Version 2", url: "https://bluel.lovable.app/", repoUrl: "https://github.com/Reasonofmoon/bluel.git" },
     ],
     embedDisabled: true,
     storyText: "강사의 수업을 정교하게 설계(Blueprint Lecture)하고, 인지적 부하 없이 MECE하게 실습하도록 이끄는 학습 환경",
@@ -148,8 +152,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Next.js", "Supabase", "Gemini AI"],
     url: "https://librainy-platform.vercel.app/",
+    repoUrl: "https://github.com/Reasonofmoon/librainy-platform.git",
     extraLinks: [
-      { label: "Audio Book Quest", url: "https://audio-book-quest.lovable.app/", password: "darlbit123" },
+      { label: "Audio Book Quest", url: "https://audio-book-quest.lovable.app/", repoUrl: "https://github.com/Reasonofmoon/audio-book-quest.git", password: "darlbit123" },
     ],
     embedDisabled: true,
     storyText: "방대한 원서와 독서 데이터를 한곳에 모아, 가장 체계적이고 몰입감 있는 영어 도서관 경험을 제공하는 에듀테크 생태계",
@@ -165,6 +170,7 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Next.js", "SEO", "Impact.com"],
     url: "https://tools.moonlang.com/",
+    repoUrl: "https://github.com/Reasonofmoon/moonlang-tools.git",
     storyText: "단순한 정보 제공을 넘어, 유용한 AI 툴 정보와 레퍼럴 코드 사이의 중개를 통해 실제 비즈니스 수익 창출이 가능한지 검증하는 실험 모델",
     speakerNotes: "어떤 AI 도구가 진짜 쓸모있는지 아는 안목도 암묵지. 이 안목 자체를 비즈니스로. 교재 추천 사이트 + 제휴 링크 = 암묵지가 월 수입이 됨."
   },
@@ -178,8 +184,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["React", "TypeScript", "Tailwind", "Go Metaphor"],
     url: "https://gido-board.vercel.app/",
+    repoUrl: "https://github.com/Reasonofmoon/gido-board.git",
     extraLinks: [
-      { label: "Version 2", url: "https://baduck-coding.vercel.app/" },
+      { label: "Version 2", url: "https://baduck-coding.vercel.app/", repoUrl: "https://github.com/Reasonofmoon/baduck-coding.git" },
     ],
     storyText: "바둑의 포석·정석·선수 개념으로 소프트웨어 개발 수순을 설계하고, 목표에 맞는 기술 스택을 자동 추천하는 바이브 코딩 워크벤치",
     speakerNotes: "개발을 어디서부터 시작할지 모르겠다 → 바둑처럼 첫 수(포석)부터 끝내기까지 순서가 있다. 목표를 말하면 언어·라이브러리·수순이 자동 설계된다. 개발 경험이 곧 기보(棋譜)."
@@ -194,8 +201,9 @@ export const SHOWCASE_ACTIVITIES = [
     difficulty: 4,
     techTags: ["Ontology", "Prompt", "AI Chat"],
     url: "https://sabo-dashboard.onrender.com/",
+    repoUrl: "https://github.com/Reasonofmoon/sabo-philosophy.git",
     extraLinks: [
-      { label: "Version 2", url: "https://sabo-philosophy.vercel.app/" },
+      { label: "Version 2", url: "https://sabo-philosophy.vercel.app/", repoUrl: "https://github.com/Reasonofmoon/sabo-philosophy.git" },
     ],
     storyText: "학생의 표면 행동 너머에 있는 인정 욕구와 관계 신호를 읽어 상담 첫 문장을 고르는 철학적 직관",
     speakerNotes: "마지막으로 기술이 더 깊어지는 지점입니다. 어떤 학생을 야단칠지, 먼저 인정할지, 기다릴지는 매뉴얼보다 존재 이해의 관점에 가깝습니다. 사보 철학 AI는 그 철학적 판단 체계를 챗봇 형태로 실험한 사례입니다."
