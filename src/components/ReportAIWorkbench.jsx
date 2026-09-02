@@ -96,7 +96,7 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
                 <button
                   type="button"
                   className="btn-paper-primary"
-                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  style={{ alignSelf: 'flex-end', width: '240px', maxWidth: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
                   onClick={() => handleCopy(prompt, index)}
                   aria-label="프롬프트 템플릿 복사"
                 >
@@ -135,7 +135,7 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
                 <button
                   type="button"
                   className="btn-paper-primary"
-                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}
+                  style={{ alignSelf: 'flex-end', width: '220px', maxWidth: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.9rem' }}
                   onClick={() => handleVibeCopy(vp.prompt, index)}
                   aria-label="바이브코딩 프롬프트 복사"
                 >

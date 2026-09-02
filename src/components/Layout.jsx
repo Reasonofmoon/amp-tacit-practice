@@ -137,18 +137,20 @@ export default function Layout({
             type="button"
             className={`btn btn-sm ${isHome ? 'btn-secondary' : 'btn-ghost'}`}
             onClick={onGoHome}
+            aria-label="홈"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
           >
-            <Home size={16} /> 홈
+            <Home size={16} /> <span>홈</span>
           </button>
           {showReportButton && (
             <button
               type="button"
               className={`btn btn-sm ${currentView === 'report' ? 'btn-primary' : 'btn-ghost'}`}
               onClick={onGoReport}
+              aria-label="진단 리포트"
               style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
             >
-              <BarChart2 size={16} /> 진단 리포트
+              <BarChart2 size={16} /> <span>진단 리포트</span>
             </button>
           )}
           <button
@@ -161,7 +163,7 @@ export default function Layout({
             style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
           >
             <Presentation size={16} />
-            {presenterMode ? '발표 ON' : '발표'}
+            <span>{presenterMode ? '발표 ON' : '발표'}</span>
           </button>
           <button
             type="button"
@@ -170,7 +172,7 @@ export default function Layout({
             aria-label="저장된 테스트 결과 초기화"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px' }}
           >
-            <RotateCcw size={16} /> 초기화
+            <RotateCcw size={16} /> <span>초기화</span>
           </button>
         </nav>
       </header>
