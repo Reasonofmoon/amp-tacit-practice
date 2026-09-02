@@ -15,4 +15,16 @@ describe('offline AI policy', () => {
 
     expect(runtimeSource).not.toMatch(/llmClient|VITE_LLM|\/api\/llm|API 키 입력|AI에게 프롬프트 보내기/);
   });
+
+  it('pins the tutorial Apps Script to the approved Gemini model', () => {
+    const tutorialSource = read('src/activities/AutoCodeActivity.jsx');
+
+    expect(tutorialSource).toContain('gemini-3.6-flash');
+  });
+
+  it('does not document provider keys or LLM proxy environment variables', () => {
+    const envSource = read('.env.example');
+
+    expect(envSource).not.toMatch(/VITE_LLM|GEMINI_API_KEY|OPENAI_API_KEY|ANTHROPIC_API_KEY/);
+  });
 });

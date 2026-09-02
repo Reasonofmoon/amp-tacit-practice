@@ -4,6 +4,7 @@ import ActivityFooter from '../components/ActivityFooter';
 import ConceptModeBanner from '../components/ConceptModeBanner';
 
 const SCRIPT_CODE = `const MY_EMAIL = "당신의이메일@gmail.com";
+const GEMINI_MODEL = "gemini-3.6-flash";
 
 function sendMorningLetter() {
   // 스크립트 속성(비밀 금고)에서 API 키를 안전하게 불러옵니다.
@@ -15,7 +16,7 @@ function sendMorningLetter() {
   }
 
   const prompt = "오늘 하루를 힘차게 시작할 수 있는 짧은 동기부여 명언 1개와 해석을 알려줘.";
-  const url = \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=\${GEMINI_API_KEY}\`;
+  const url = \`https://generativelanguage.googleapis.com/v1beta/models/\${GEMINI_MODEL}:generateContent?key=\${GEMINI_API_KEY}\`;
   
   const options = {
     method: 'post',
