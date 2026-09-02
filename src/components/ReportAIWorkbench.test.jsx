@@ -1,10 +1,26 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import ReportAIWorkbench from './ReportAIWorkbench';
+import ResultReport from './ResultReport';
+
+vi.mock('./ReportRadarCard', () => ({ default: () => null }));
+vi.mock('./KnowledgeGraph', () => ({ default: () => null }));
+vi.mock('./PromptGiftModal', () => ({ default: () => null }));
+vi.mock('./DiscoveryShowcase', () => ({ default: () => null }));
+vi.mock('./BenchmarkSection', () => ({ default: () => null }));
+vi.mock('./BackupPanel', () => ({ default: () => null }));
 
 const workbenchState = { activityData: {}, profile: { name: '문 원장' } };
+const reportState = {
+  completed: [],
+  activityData: {},
+  profile: { name: '', career: '', academy: '' },
+  xp: 0,
+  badges: [],
+  maxCombo: 0,
+  consent: {},
+};
+const promptStudioCopy = '활동 답변으로 만든 프롬프트를 확인하고 복사해 원하는 AI 도구에서 사용하세요. 앱은 외부 AI를 직접 호출하지 않습니다.';
 
 function renderWorkbench() {
   render(
@@ -44,14 +60,25 @@ describe('ReportAIWorkbench', () => {
     expect(writeText).toHaveBeenCalledWith(vibePrompt);
   });
 
-  it('keeps the prompt studio entry and modal aria-label contracts', () => {
-    const resultReportSource = readFileSync(resolve(process.cwd(), 'src/components/ResultReport.jsx'), 'utf8');
-    const appSource = readFileSync(resolve(process.cwd(), 'src/App.jsx'), 'utf8');
+  it('renders the prompt studio entry and invokes its open action', () => {
+    const onOpenAIWorkbench = vi.fn();
 
-    expect(resultReportSource).toContain('PROMPT STUDIO');
-    expect(resultReportSource).toContain('로컬 프롬프트 작업실 (선택)');
-    expect(resultReportSource).toContain('활동 답변으로 만든 프롬프트를 확인하고 복사해 원하는 AI 도구에서 사용하세요. 앱은 외부 AI를 직접 호출하지 않습니다.');
-    expect(resultReportSource).toContain('프롬프트 작업실 열기 →');
-    expect(appSource).toContain('ariaLabel="로컬 프롬프트 작업실"');
+    render(
+      <ResultReport
+        state={reportState}
+        levelInfo={{ icon: '🌱', title: '견습 원장' }}
+        activeJourney="director"
+        onOpenAIWorkbench={onOpenAIWorkbench}
+        onUpdateConsent={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('PROMPT STUDIO', { exact: true })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '로컬 프롬프트 작업실 (선택)', exact: true })).toBeInTheDocument();
+    expect(screen.getByText(promptStudioCopy, { exact: true })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '프롬프트 작업실 열기 →', exact: true }));
+
+    expect(onOpenAIWorkbench).toHaveBeenCalledTimes(1);
   });
 });
