@@ -26,12 +26,34 @@
 | MoonLang | `moonlang-tools` | P2 | AI 제품 소개 콘텐츠만 있고 사용자 런타임 호출은 미발견 | 콘텐츠와 런타임 분리 기록 |
 | Gido Board | `gido-board` | P0 -> 해소 | 종료 Sonnet 4, `gpt-4o`, Chat Completions, 느슨한 응답 파싱 | `078bca1`: Sonnet 5/GPT current, Responses API, Zod; 테스트 10개·타입·CLI 빌드 통과 |
 | Baduck Coding | `baduck-coding` | P0 -> 해소 | CLI/UI/code generator의 구 모델과 OpenAI Chat Completions | `f5f269e` + `6b8dd73`: provider transport/registry/Zod, 활성 호환 모델 보존; 테스트 24개·빌드 통과 |
-| Sabo Philosophy | `sabo-philosophy` | P1 -> 코드 해소 | 브라우저 localStorage API 키와 직접 Gemini 호출 | `0869c45` + `982feeb`: serverless proxy, strict Zod/error contract; 테스트 9개·타입·빌드 통과 |
+| Sabo Philosophy | `sabo-philosophy` | P1 -> 코드 해소 | 브라우저 localStorage API 키와 직접 Gemini 호출 | `0869c45` + `982feeb` + `8d275b2`: serverless proxy, strict Zod/error contract, Vercel ESM 경계; 테스트 10개·타입·빌드 통과 |
 | App Factory | `app-factory` | P0 -> 해소 | 종료 모델과 얕은 output 검사 | `33990b7` + `f7a102b` + `31d5a32` + `6f875e0`: 전체 runtime migration + Ajv 중첩 schema; core 15개·타입·빌드 통과 |
 
 ## 저장소 매핑
 
 AMP의 모든 외부 시연 항목은 `src/data/showcaseActivities.js`에서 GitHub 저장소와 연결한다. 대체 배포본도 `extraLinks[].repoUrl`로 원본 저장소를 기록한다.
+
+## 2026-09-02 production 배포 결과
+
+모든 수정 커밋은 원격 `codex/model-lifecycle` 브랜치와 각 저장소의 기본 `main` 또는 `master` 브랜치에 fast-forward push했다.
+
+| 앱 | production 커밋 | 배포 결과 |
+|---|---|---|
+| AMP Tacit Knowledge | `a6d5739` | Vercel `Ready`, 기본/Practice alias HTTP 200 |
+| Sign Design | `f18cfbe` | Vercel `Ready`, HTTP 200 |
+| 영어 작문 첨삭 | `d653719` | Vercel `Ready`; 익명 요청은 프로젝트 보호 설정에 따라 SSO 이동 |
+| Level Test Proto | `858b6ae` | Vercel `Ready`, HTTP 200 |
+| Edu Ontology | `14e1862` | Vercel `Ready`, `/vocab` HTTP 200 |
+| Storyboard Gen | `610896a` | Vercel `Ready`, HTTP 200 |
+| Knot | `b7cb24f` | Vercel `Ready`, HTTP 200 |
+| BlueL | `0c85989` | Vercel `Ready`, HTTP 200; Firebase 영향 함수 4개 업데이트 성공 |
+| Librainy | `4f14f43` | Vercel `Ready`, HTTP 200 |
+| Gido Board | `078bca1` | Vercel `Ready`, HTTP 200 |
+| Baduck Coding | `6b8dd73` | Vercel `Ready`, HTTP 200 |
+| Sabo Philosophy | `8d275b2` | Vercel `Ready`, HTTP 200; 키 미설정 API가 계약대로 503 JSON 반환 |
+| App Factory | `6f875e0` | Vercel `Ready`, HTTP 200 |
+
+BlueL Firebase는 기존 `onUserCreated(asia-northeast3)` 삭제를 피하기 위해 모델 변경 영향이 있는 `meceValidate`, `embedText`, `itemQualityGate`, `generateItemsServer`만 선택 배포했다. Node.js 20 런타임은 2026-10-30 decommission 예정이므로 별도 업그레이드가 필요하다. Sabo Render URL은 HTTP 200을 확인했지만 Render API 자격증명이 없어 배포 SHA는 검증하지 못했다.
 
 ## 검증 경계
 
