@@ -12,22 +12,22 @@
 | 앱 | 저장소 | 런타임 판정 | 확인 내용 | 조치 상태 |
 |---|---|---:|---|---|
 | AMP Tacit Knowledge | `amp-tacit-knowledge` | P0 -> 해소 | 외부 LLM 프록시, 키, 모델 UI가 오프라인 ADR과 충돌 | `main@b50fd88`부터 로컬 Prompt Studio로 전환 |
-| Sign Design | `sign-design-automation` | P1 -> 해소 | 활성 모델 하드코딩 | `19a96c8`: Sonnet 5/Opus 5 Zod registry, 테스트·타입·빌드 통과 |
+| Sign Design | `sign-design-automation` | P1 -> 해소 | 활성 모델 하드코딩, tool input 단언 | `19a96c8` + `fda150d`: model/tool Zod 경계, 테스트·타입·빌드 통과 |
 | ReadMaster | `readmaster-funnel` | P2 | 공급자 SDK, 모델 ID, API 키 환경변수 미발견 | AI runtime none 기록 |
-| 영어 작문 첨삭 | `moon-writing-correction` | P0 -> 해소 | 최신 UI 선택을 종료 모델로 숨은 치환, 저장 설정 migration 위험 | `f017c89` + `1be566f`: 직접 호출, Zod allowlist, 세션 보존 migration; 테스트 34개·빌드 통과 |
-| Level Test Proto | `echobridge-web` | P2 -> 정비 | 앱 런타임이 아닌 reading curation script에서 Claude 사용 | `8073a62`: Haiku 4.5/Sonnet 5/Opus 5 registry; 과거 provenance 보존 |
-| Edu Ontology | `eduontology` | P0 -> 해소 | 분석 API와 DB 신규 기본값에 종료된 `gemini-2.0-flash` | `36a85ce` + `541fad5`: stable Gemini registry, Zod 직접 의존성, 테스트·타입·빌드 통과 |
-| Storyboard Gen | `storyboard-gen` | P0 -> 해소 | 종료 Gemini preview와 registry 우회 call-site | `1fde9d4` + `216f04a`: text/image registry, 전체 프로젝트 migration; 테스트 6개·타입·빌드 통과 |
+| 영어 작문 첨삭 | `moon-writing-correction` | P0 -> 해소 | 숨은 종료 모델 치환, 저장 migration, provider/domain 응답 단언 | `f017c89` + `1be566f` + `bbca0cd` + `58c66ae`: Zod 전 경계; 테스트 40개·빌드 통과 |
+| Level Test Proto | `echobridge-web` | P2 -> 정비 | reading curation script의 모델/응답 단언 | `8073a62` + `858b6ae`: current registry + 호출자 Zod schema; 과거 provenance 보존 |
+| Edu Ontology | `eduontology` | P0 -> 해소 | 종료 2.0 Flash와 raw JSON 분석 응답 | `36a85ce` + `541fad5` + `14e1862`: stable registry + 3개 응답 schema, 테스트·타입·빌드 통과 |
+| Storyboard Gen | `storyboard-gen` | P0 -> 해소 | 종료 preview, registry 우회, provider JSON 단언 | `1fde9d4` + `216f04a` + `610896a`: text/image registry + provider/domain Zod; 전체 61개 통과 |
 | Knot | `knot` | P0 -> 해소 | `gpt-4o-mini` Chat Completions, 잘못된 Claude 테스트 ID, UI model drift | `fe201ad` + `b7cb24f`: current registry/Responses API/UI 정합, 테스트 8개·타입·빌드 통과 |
 | Academy OS | `lms-main` | P2 | 공급자 SDK, 모델 ID, API 키 환경변수 미발견 | AI runtime none 기록 |
-| BlueL | `bluel` | P0 -> 해소 | Cloud Functions에 종료된 `gemini-2.0-flash` 다수 | `c469cb2` + `61d121a` + `3460aae`: 3.6 registry, frontend/functions Zod, 생성·임베딩 분리 |
-| Librainy | `librainy-platform` | P0 -> 해소 | 오래된 2.5 preview와 종료 2.0 Flash | `58efb41` + `836a88e`: 8 route 단일 stable registry, retired override 거부 |
+| BlueL | `bluel` | P0 -> 해소 | 종료 2.0 Flash와 embedding 응답 단언 | `c469cb2` + `61d121a` + `0c85989`: 양쪽 Zod registry + strict embedding parse; 전체 105개 통과 |
+| Librainy | `librainy-platform` | P0 -> 해소 | 오래된 preview/2.0 Flash와 route 응답 단언 | `58efb41` + `836a88e` + `4f14f43`: 8 route registry + reading/annotation Zod 경계 |
 | Audio Book Quest | `audio-book-quest` | P2 | 런타임 LLM 호출 미발견 | AI runtime none 기록 |
 | MoonLang | `moonlang-tools` | P2 | AI 제품 소개 콘텐츠만 있고 사용자 런타임 호출은 미발견 | 콘텐츠와 런타임 분리 기록 |
 | Gido Board | `gido-board` | P0 -> 해소 | 종료 Sonnet 4, `gpt-4o`, Chat Completions, 느슨한 응답 파싱 | `078bca1`: Sonnet 5/GPT current, Responses API, Zod; 테스트 10개·타입·CLI 빌드 통과 |
 | Baduck Coding | `baduck-coding` | P0 -> 해소 | CLI/UI/code generator의 구 모델과 OpenAI Chat Completions | `f5f269e` + `6b8dd73`: provider transport/registry/Zod, 활성 호환 모델 보존; 테스트 24개·빌드 통과 |
 | Sabo Philosophy | `sabo-philosophy` | P1 -> 코드 해소 | 브라우저 localStorage API 키와 직접 Gemini 호출 | `0869c45` + `982feeb`: serverless proxy, strict Zod/error contract; 테스트 9개·타입·빌드 통과 |
-| App Factory | `app-factory` | P0 -> 해소 | 런타임 기본과 다수 YAML에 종료 Sonnet 4 ID | `33990b7` + `f7a102b` + `31d5a32` + `a40b94f`: 87 YAML/전체 runtime migration, 활성 4.6 보존; core 12개·타입·빌드 통과 |
+| App Factory | `app-factory` | P0 -> 해소 | 종료 모델과 얕은 output 검사 | `33990b7` + `f7a102b` + `31d5a32` + `6f875e0`: 전체 runtime migration + Ajv 중첩 schema; core 15개·타입·빌드 통과 |
 
 ## 저장소 매핑
 
