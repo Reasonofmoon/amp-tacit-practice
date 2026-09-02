@@ -435,7 +435,7 @@ export default function App() {
         open={aiWorkbenchOpen}
         onClose={() => setAIWorkbenchOpen(false)}
         appRootRef={appContentRef}
-        ariaLabel="AI 실행 워크벤치"
+        ariaLabel="로컬 프롬프트 작업실"
       >
         <Suspense fallback={<LoadingPanel />}>
           <ReportAIWorkbench

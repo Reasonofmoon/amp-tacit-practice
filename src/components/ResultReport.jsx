@@ -257,15 +257,15 @@ export default function ResultReport({ state, levelInfo, activeJourney = 'direct
         <div className="section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <div>
             <span className="flow-eyebrow-tag" style={{ background: 'var(--paper-50)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
-              AI WORKBENCH
+              PROMPT STUDIO
             </span>
-            <h3 style={{ fontSize: '1.3rem', marginTop: '12px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>AI 실행 워크벤치 (선택)</h3>
+            <h3 style={{ fontSize: '1.3rem', marginTop: '12px', fontFamily: 'var(--font-display)', color: 'var(--ink-900)' }}>로컬 프롬프트 작업실 (선택)</h3>
             <p style={{ color: 'var(--ink-700)', fontSize: '0.9rem', marginTop: '4px', maxWidth: '540px' }}>
-              위 가방의 프롬프트를 외부 ChatGPT/Claude/Gemini로 보내는 대신, 앱 안에서 바로 실행하고 싶을 때 사용하세요. API 키는 가져오거나 서버 프록시가 켜져 있어야 합니다.
+              활동 답변으로 만든 프롬프트를 확인하고 복사해 원하는 AI 도구에서 사용하세요. 앱은 외부 AI를 직접 호출하지 않습니다.
             </p>
           </div>
           <button type="button" className="btn-paper-primary" onClick={onOpenAIWorkbench}>
-            AI 워크벤치 열기 →
+            프롬프트 작업실 열기 →
           </button>
         </div>
       </article>

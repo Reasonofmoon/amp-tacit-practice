@@ -3,11 +3,6 @@ import { ACTIVITIES, AXES } from '../data/activities';
 import { DEV_ACTIVITIES, DEV_AXES } from '../data/developerActivities';
 import { buildPromptPack, buildVibeCodingPrompts } from '../utils/promptGenerator';
 import { getActivityProgress } from '../utils/scoring';
-import { PROVIDERS, getStoredApiKey } from '../utils/llmClient';
-import GlobalAIToolbar from './GlobalAIToolbar';
-import AITaskRunner from './AITaskRunner';
-
-const PROVIDER_ORDER = ['gemini', 'openai', 'claude'];
 
 function buildAxisScores(state, isDev = false) {
   const targetAxes = isDev ? DEV_AXES : AXES;
@@ -42,17 +37,6 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
 
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [vibeCopied, setVibeCopied] = useState(null);
-  const [activeProvider, setActiveProvider] = useState('gemini');
-  const [apiKeys, setApiKeys] = useState(() => {
-    const keys = {};
-    PROVIDER_ORDER.forEach((id) => { keys[id] = getStoredApiKey(id); });
-    return keys;
-  });
-  const [selectedModels, setSelectedModels] = useState(() => {
-    const models = {};
-    PROVIDER_ORDER.forEach((id) => { models[id] = PROVIDERS[id].defaultModel; });
-    return models;
-  });
 
   const handleCopy = async (text, index) => {
     try {
@@ -79,28 +63,19 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
         <div>
           <span className="flow-eyebrow-tag" style={{ background: 'var(--blue-wash)', borderColor: 'var(--ink-blue)', color: 'var(--ink-blue-deep)' }}>
-            AI WORKBENCH
+            PROMPT STUDIO
           </span>
           <h2 style={{ fontSize: '1.8rem', fontFamily: 'var(--font-display)', color: 'var(--ink-900)', marginTop: '12px' }}>
-            AI 실행 워크벤치
+            로컬 프롬프트 작업실
           </h2>
           <p style={{ color: 'var(--ink-700)', marginTop: '6px', maxWidth: '540px' }}>
-            리포트 본문과 분리된 전용 실행 공간입니다. 프롬프트 복사, 모델 선택, 즉시 실행을 여기서 처리합니다.
+            활동 답변으로 만든 프롬프트를 확인하고 복사해 원하는 AI 도구에서 사용하세요. 앱은 외부 AI를 직접 호출하지 않습니다.
           </p>
         </div>
         <button type="button" className="btn-paper-outline" onClick={onClose}>
           닫기
         </button>
       </div>
-
-      <GlobalAIToolbar
-        activeProvider={activeProvider}
-        setActiveProvider={setActiveProvider}
-        apiKeys={apiKeys}
-        setApiKeys={setApiKeys}
-        selectedModels={selectedModels}
-        setSelectedModels={setSelectedModels}
-      />
 
       <div className="report-grid">
         <article className="report-paper-card">
@@ -127,12 +102,6 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
                 >
                   {copiedIndex === index ? '✅ 클립보드에 복사됨' : '📋 전체 프롬프트 복사하기'}
                 </button>
-                <AITaskRunner
-                  prompt={prompt}
-                  activeProvider={activeProvider}
-                  currentKey={apiKeys[activeProvider]}
-                  currentModel={selectedModels[activeProvider]}
-                />
               </article>
             ))}
           </div>
@@ -172,12 +141,6 @@ export default function ReportAIWorkbench({ state, activeJourney = 'director', o
                 >
                   {vibeCopied === index ? '✅ 복사됨!' : `📋 ${vp.icon} 프롬프트 복사`}
                 </button>
-                <AITaskRunner
-                  prompt={vp.prompt}
-                  activeProvider={activeProvider}
-                  currentKey={apiKeys[activeProvider]}
-                  currentModel={selectedModels[activeProvider]}
-                />
               </article>
             ))}
           </div>
