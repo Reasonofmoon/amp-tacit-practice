@@ -12,9 +12,9 @@
 | 앱 | 저장소 | 런타임 판정 | 확인 내용 | 조치 상태 |
 |---|---|---:|---|---|
 | AMP Tacit Knowledge | `amp-tacit-knowledge` | P0 -> 해소 | 외부 LLM 프록시, 키, 모델 UI가 오프라인 ADR과 충돌 | `main@b50fd88`부터 로컬 Prompt Studio로 전환 |
-| Sign Design | `sign-design-automation` | P1 -> 해소 | 활성 모델 하드코딩, tool input 단언 | `19a96c8` + `fda150d`: model/tool Zod 경계, 테스트·타입·빌드 통과 |
+| Sign Design | `sign-design-automation` | P1 -> 해소 | 활성 모델 하드코딩, tool input 단언 | `19a96c8` + `fda150d` + `f18cfbe`: 전체 emit 경로 Zod 검증; AI 테스트 7개·타입·빌드 통과 |
 | ReadMaster | `readmaster-funnel` | P2 | 공급자 SDK, 모델 ID, API 키 환경변수 미발견 | AI runtime none 기록 |
-| 영어 작문 첨삭 | `moon-writing-correction` | P0 -> 해소 | 숨은 종료 모델 치환, 저장 migration, provider/domain 응답 단언 | `f017c89` + `1be566f` + `bbca0cd` + `58c66ae`: Zod 전 경계; 테스트 40개·빌드 통과 |
+| 영어 작문 첨삭 | `moon-writing-correction` | P0 -> 해소 | 숨은 종료 모델 치환, 저장 migration, provider/domain 응답 단언 | `f017c89` + `1be566f` + `bbca0cd` + `58c66ae` + `d653719`: malformed 응답 거부; 테스트 42개·lint·빌드 통과 |
 | Level Test Proto | `echobridge-web` | P2 -> 정비 | reading curation script의 모델/응답 단언 | `8073a62` + `858b6ae`: current registry + 호출자 Zod schema; 과거 provenance 보존 |
 | Edu Ontology | `eduontology` | P0 -> 해소 | 종료 2.0 Flash와 raw JSON 분석 응답 | `36a85ce` + `541fad5` + `14e1862`: stable registry + 3개 응답 schema, 테스트·타입·빌드 통과 |
 | Storyboard Gen | `storyboard-gen` | P0 -> 해소 | 종료 preview, registry 우회, provider JSON 단언 | `1fde9d4` + `216f04a` + `610896a`: text/image registry + provider/domain Zod; 전체 61개 통과 |
