@@ -2,14 +2,14 @@ import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.beforeEach(async ({ page }) => {
-  // Skip onboarding modal so each test starts on the home view directly.
+  // Skip onboarding modal so each test starts on the preserved legacy home view directly.
   await page.addInitScript(() => {
     window.localStorage.setItem('tacit-game-state', JSON.stringify({ onboardingSeen: true }));
   });
 });
 
 test('home loads and exposes primary journeys', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#legacy');
 
   // W7 변경 후 본문은 "현장 노하우". 옛 표현도 함께 허용 — 회귀 보호.
   await expect(
@@ -20,7 +20,7 @@ test('home loads and exposes primary journeys', async ({ page }) => {
 });
 
 test('home has no critical accessibility violations', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#legacy');
 
   const results = await new AxeBuilder({ page }).analyze();
   const critical = results.violations.filter((violation) => violation.impact === 'critical');
@@ -29,7 +29,7 @@ test('home has no critical accessibility violations', async ({ page }) => {
 });
 
 test('NextStepBeacon advances the user from cold start', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#legacy');
 
   // 0개 완료 상태에서 beacon 은 ReadMaster 데모로 안내.
   const beacon = page.getByRole('button', { name: /1분 데모|ReadMaster부터 시작/ });
@@ -50,7 +50,7 @@ test('reset button clears saved workshop progress', async ({ page }) => {
     );
   });
 
-  await page.goto('/');
+  await page.goto('/#legacy');
   await page.getByRole('button', { name: /저장된 테스트 결과 초기화/ }).click();
   await expect(page.getByRole('dialog', { name: /저장된 테스트 결과 초기화 확인/ })).toBeVisible();
   await page.getByRole('button', { name: '저장 결과 초기화' }).click();
@@ -67,7 +67,7 @@ test('developer principles: lock then unlock with presenter mode', async ({ page
     window.localStorage.setItem('tacit-game-state', JSON.stringify({ onboardingSeen: true }));
     window.localStorage.removeItem('tacit-presenter-mode');
   });
-  await page.goto('/');
+  await page.goto('/#legacy');
 
   await page.getByRole('button', { name: /천천히 둘러보기/ }).click();
   await page.getByRole('button', { name: /개발자 여정/ }).click();
@@ -89,7 +89,7 @@ test('clicking a director activity card opens the activity workspace', async ({ 
       JSON.stringify({ onboardingSeen: true })
     );
   });
-  await page.goto('/');
+  await page.goto('/#legacy');
 
   // mode-selector 의 "진단 시작" 카드 클릭 → director 여정 활성화.
   await page.getByRole('button', { name: /진단 시작/ }).click();
