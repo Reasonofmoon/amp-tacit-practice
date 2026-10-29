@@ -28,6 +28,10 @@ test('keyboard tabs, persistence, and harness JSON download', async ({ page }) =
 });
 test('legacy return link restores the workshop anchor', async ({ page }) => {
   await page.goto('/#legacy');
+  const onboarding = page.getByRole('dialog', { name: '첫 진입 안내', exact: true });
+  await expect(onboarding).toBeVisible();
+  await onboarding.getByRole('button', { name: '먼저 둘러볼게요', exact: true }).click();
+  await expect(onboarding).not.toBeVisible();
   await page.getByRole('link', { name: 'AMP 26 새 워크숍으로 돌아가기', exact: true }).click();
   await expect(page.locator('#workshop')).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toContainText('실제로 만들어');
