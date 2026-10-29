@@ -1,0 +1,48 @@
+{
+  "verifiedAt": "2026-10-29T04:02:08.732Z",
+  "baseCommit": "541eac4",
+  "status": "private-source-review-not-deployed",
+  "nativeSmokeChecksPassed": 17,
+  "nativeBuild": "blocked: offline dependency cache missing zod-validation-error-4.0.2.tgz; no online CLI install attempted",
+  "nativeVitestLintTypecheckE2E": "not run",
+  "browserHarness": {
+    "babel": "7.28.4",
+    "reactFinal": "19.2.4",
+    "globalStylesIncluded": true,
+    "strictMode": true,
+    "scope": "Workshop component, not the complete Vite bundle or legacy route",
+    "checks": [
+      "editable prompt",
+      "unsafe result URL rejected",
+      "copy blocked fallback",
+      "keyboard tab navigation",
+      "harness preview",
+      "Markdown and JSON Blob payloads (test-intercepted; not native download delivery)",
+      "storage provider round trip",
+      "blocked storage fallback",
+      "390px no horizontal overflow",
+      "reduced-motion suppresses particles"
+    ]
+  },
+  "axe": {
+    "version": "4.11.3",
+    "tags": [
+      "wcag2a",
+      "wcag2aa"
+    ],
+    "pomelliDesktopViolations": 0,
+    "notebookMobileViolations": 0,
+    "harnessMobileViolations": 0,
+    "manualReview": "Background-image text contrast remains an incomplete automated check; visually reviewed, not a full accessibility certification."
+  },
+  "legacy": {
+    "verbatimBaseApp": true,
+    "route": "#legacy",
+    "oldE2ENavigationsUpdated": 6,
+    "completeRuntime": "not re-executed"
+  },
+  "newBrowserTestsWritten": 4,
+  "privateDriveAndPersonalStoryIncluded": false,
+  "push": false,
+  "deploy": false
+}

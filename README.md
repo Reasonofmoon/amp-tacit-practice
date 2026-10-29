@@ -1,3 +1,17 @@
+# AMP 26 Live Workshop
+
+기본 화면: Pomelli · Gemini Notebook · 나의 하네스 설계. 자료와 프롬프트를 준비하고 실제 서비스에서 생성한 결과를 직접 기록합니다. 자동 생성·업로드·에이전트 설치는 하지 않습니다.
+
+- 이전 실습: URL 끝에 \#legacy (기존 데이터 유지)
+- 새 워크숍 저장: amp26-live-workshop-v1, 현재 브라우저만 사용
+- 기록/설계: Markdown 및 JSON 로컬 다운로드
+- 서비스 확인 범위와 구현/검증: [AMP26 Workshop Update](docs/AMP26_Workshop_Update.md)
+- 입력 금지: 학생 개인정보, 연락처, 비공개 문서와 링크
+
+---
+
+## Preserved project documentation
+
 <div align="center">
 
 # AMP Tacit Knowledge
